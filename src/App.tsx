@@ -8,7 +8,7 @@ import {
   Search,
   Code,
   TrendingUp,
-  BarChart3,
+  Bot,
   ChevronDown,
   ArrowRight,
   Home,
@@ -20,6 +20,7 @@ const serviceIconBySlug = {
   'consultor-seo-sem': <Search className="w-8 h-8" />,
   'desarrollo-web': <Code className="w-8 h-8" />,
   'landing-pages-cro': <TrendingUp className="w-8 h-8" />,
+  'soluciones-ia': <Bot className="w-8 h-8" />,
 };
 
 const serviceSummaries = [
@@ -42,10 +43,10 @@ const serviceSummaries = [
     desc: 'Páginas orientadas a captar leads desde campañas, SEO local y marketing digital.',
   },
   {
-    icon: <BarChart3 className="w-8 h-8" />,
-    title: 'Analítica Digital',
-    desc: 'Medición de eventos, embudos y reportes para tomar decisiones con datos reales.',
-    path: '/#contact',
+    ...servicePages[3],
+    icon: serviceIconBySlug['soluciones-ia'],
+    title: 'Soluciones con IA',
+    desc: 'Chatbots, asistentes y automatizaciones con IA conectadas a procesos reales.',
   },
 ];
 
@@ -93,7 +94,9 @@ export default function App() {
       category: 'Web Development',
       description:
         'Aplicación web que monitorea precios de productos y notifica al usuario cuando alcanzan el umbral deseado.',
-      image: '/price-tracker-desktop.png',
+      image: '/price-tracker-dashboard.png',
+      imageAlt:
+        'Dashboard de Price Tracker con historial de precios, alertas activas y seguimiento de productos',
       size: 'large',
       tags: ['WEB DEV'],
       link: 'https://atmospheric-analyst-price-tracker.vercel.app/',
@@ -121,7 +124,7 @@ export default function App() {
           </h1>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light">
             Desarrollo web, SEO, SEM y marketing digital en Vigo para negocios que quieren captar
-            leads con webs rápidas, landing pages, CRO y analítica digital.
+            leads con webs rápidas, landing pages, IA, CRO y analítica digital.
           </p>
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
             <a
@@ -184,7 +187,10 @@ export default function App() {
                 >
                   <img
                     src={project.image}
-                    alt={`${project.title}: ${project.category} de Samuel Martínez`}
+                    alt={
+                      project.imageAlt ??
+                      `${project.title}: ${project.category} de Samuel Martínez`
+                    }
                     referrerPolicy="no-referrer"
                     className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
                   />
@@ -237,8 +243,8 @@ export default function App() {
                 Soluciones <br /> que <span className="text-secondary">Convierten.</span>
               </h2>
               <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
-                Desarrollo web SEO, consultoría SEO SEM, landing pages y analítica para negocios de
-                Vigo, Galicia y España que necesitan convertir tráfico en contactos.
+                Desarrollo web SEO, consultoría SEO SEM, landing pages, soluciones con IA y analítica
+                para negocios de Vigo, Galicia y España que necesitan convertir tráfico en contactos.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -276,8 +282,8 @@ export default function App() {
             Desarrollador web SEO con mentalidad de negocio
           </h2>
           <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
-            "Mi enfoque combina desarrollo web, SEO, SEM, CRO, marketing digital y analítica para
-            que cada página tenga una función comercial clara."
+            "Mi enfoque combina desarrollo web, SEO, SEM, CRO, IA, marketing digital y analítica
+            para que cada solución tenga una función comercial clara."
           </p>
         </div>
       </section>
@@ -539,6 +545,7 @@ function ContactSection({
                 <option>Desarrollo Web</option>
                 <option>Estrategia SEO/SEM</option>
                 <option>Landing Pages y CRO</option>
+                <option>Soluciones con IA</option>
                 <option>Consultoría Integral</option>
                 <option>Otro</option>
               </select>

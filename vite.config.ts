@@ -56,6 +56,7 @@ export default defineConfig({
         seoSem: path.resolve(__dirname, 'servicios/consultor-seo-sem/index.html'),
         webDev: path.resolve(__dirname, 'servicios/desarrollo-web/index.html'),
         landingCro: path.resolve(__dirname, 'servicios/landing-pages-cro/index.html'),
+        aiSolutions: path.resolve(__dirname, 'servicios/soluciones-ia/index.html'),
       },
     },
   },

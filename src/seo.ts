@@ -48,6 +48,9 @@ export const personSchema = {
     'Landing pages',
     'CRO',
     'Analítica digital',
+    'Soluciones con IA',
+    'Chatbots',
+    'Automatización de procesos',
   ],
 };
 
@@ -90,11 +93,15 @@ const professionalServiceSchema = {
     'Consultoría SEO SEM',
     'Landing pages CRO',
     'Analítica digital',
+    'Soluciones con IA',
+    'Chatbots con IA',
+    'Automatización con IA',
   ],
   makesOffer: [
     {'@id': `${SITE_URL}/servicios/consultor-seo-sem/#service`},
     {'@id': `${SITE_URL}/servicios/desarrollo-web/#service`},
     {'@id': `${SITE_URL}/servicios/landing-pages-cro/#service`},
+    {'@id': `${SITE_URL}/servicios/soluciones-ia/#service`},
   ],
 };
 
@@ -198,6 +205,24 @@ const croFaqs = [
   },
 ];
 
+const aiFaqs = [
+  {
+    question: '¿Qué tipo de soluciones con IA puedes implementar?',
+    answer:
+      'Puedo implementar chatbots, asistentes internos, automatizaciones, análisis de documentos, generación de contenido e integraciones con herramientas existentes.',
+  },
+  {
+    question: '¿La IA se conecta con mi web o mis herramientas?',
+    answer:
+      'Sí. El objetivo es integrar la IA en procesos reales: formularios, bases de datos, CRMs, documentación, paneles internos o productos web.',
+  },
+  {
+    question: '¿Empiezas con un prototipo o con una solución final?',
+    answer:
+      'Lo recomendable es empezar con un caso de uso concreto, validar un prototipo y después convertirlo en una solución estable, medible y mantenible.',
+  },
+];
+
 export const servicePages: ServicePage[] = [
   {
     slug: 'consultor-seo-sem',
@@ -228,7 +253,11 @@ export const servicePages: ServicePage[] = [
       'Entrega de plan táctico con quick wins y acciones de crecimiento.',
     ],
     faqs: seoSemFaqs,
-    related: ['/servicios/desarrollo-web/', '/servicios/landing-pages-cro/'],
+    related: [
+      '/servicios/desarrollo-web/',
+      '/servicios/landing-pages-cro/',
+      '/servicios/soluciones-ia/',
+    ],
     schema: [
       personSchema,
       {
@@ -273,7 +302,11 @@ export const servicePages: ServicePage[] = [
       'Revisión de conversión, medición y preparación para publicación.',
     ],
     faqs: webFaqs,
-    related: ['/servicios/consultor-seo-sem/', '/servicios/landing-pages-cro/'],
+    related: [
+      '/servicios/consultor-seo-sem/',
+      '/servicios/landing-pages-cro/',
+      '/servicios/soluciones-ia/',
+    ],
     schema: [
       personSchema,
       {
@@ -318,7 +351,11 @@ export const servicePages: ServicePage[] = [
       'Medición de eventos y propuesta de iteraciones CRO.',
     ],
     faqs: croFaqs,
-    related: ['/servicios/consultor-seo-sem/', '/servicios/desarrollo-web/'],
+    related: [
+      '/servicios/consultor-seo-sem/',
+      '/servicios/desarrollo-web/',
+      '/servicios/soluciones-ia/',
+    ],
     schema: [
       personSchema,
       {
@@ -334,16 +371,65 @@ export const servicePages: ServicePage[] = [
       buildFaqSchema(croFaqs),
     ],
   },
+  {
+    slug: 'soluciones-ia',
+    path: '/servicios/soluciones-ia/',
+    navLabel: 'IA y chatbots',
+    eyebrow: 'Soluciones con IA para empresas',
+    title: 'Soluciones con IA y Chatbots | Samuel Martínez',
+    description:
+      'Chatbots, asistentes y automatizaciones con IA para empresas. Integro IA en webs, procesos y herramientas de negocio.',
+    ogTitle: 'Soluciones con IA para empresas',
+    ogDescription:
+      'Chatbots, asistentes y automatizaciones con IA conectadas a procesos reales de negocio.',
+    ogType: 'website',
+    h1: 'Soluciones con IA para automatizar y mejorar procesos',
+    lead:
+      'Implemento soluciones con inteligencia artificial, chatbots y asistentes para empresas y productos digitales que necesitan automatizar tareas, responder mejor a clientes o añadir funcionalidades inteligentes.',
+    commercialIntent:
+      'La prioridad es detectar un caso de uso rentable, validarlo rápido y llevarlo a una implementación práctica: conectada a tus herramientas, medible y fácil de mantener.',
+    outcomes: [
+      'Chatbots y asistentes para atención al cliente, soporte interno o captación.',
+      'Automatizaciones para resumir, clasificar, redactar o extraer información.',
+      'Integración de IA en webs, formularios, dashboards y productos digitales.',
+      'Prototipos controlados antes de invertir en una solución completa.',
+    ],
+    process: [
+      'Identificación del caso de uso, datos disponibles y herramientas implicadas.',
+      'Diseño de un flujo claro con prompts, APIs, permisos y puntos de control.',
+      'Implementación, pruebas y medición para asegurar utilidad real en el proceso.',
+    ],
+    faqs: aiFaqs,
+    related: [
+      '/servicios/desarrollo-web/',
+      '/servicios/landing-pages-cro/',
+      '/servicios/consultor-seo-sem/',
+    ],
+    schema: [
+      personSchema,
+      {
+        ...serviceBase,
+        '@id': `${SITE_URL}/servicios/soluciones-ia/#service`,
+        name: 'Soluciones con IA para empresas',
+        serviceType: 'Soluciones con IA y chatbots',
+        url: `${SITE_URL}/servicios/soluciones-ia/`,
+        description:
+          'Implementación de soluciones con IA, chatbots, asistentes y automatizaciones para empresas y productos digitales.',
+      },
+      buildBreadcrumbSchema('Soluciones con IA', `${SITE_URL}/servicios/soluciones-ia/`),
+      buildFaqSchema(aiFaqs),
+    ],
+  },
 ];
 
 export const homePage: PageSeo = {
   path: '/',
   title: 'Desarrollador Web SEO y Marketing Digital en Vigo',
   description:
-    'Desarrollo web, SEO, SEM y marketing digital en Vigo y España para captar leads con webs rápidas, landing pages, CRO y analítica.',
+    'Desarrollo web, SEO, SEM, soluciones con IA y marketing digital en Vigo y España para captar leads con webs rápidas, landing pages, CRO y analítica.',
   ogTitle: 'Desarrollador web SEO y marketing digital en Vigo',
   ogDescription:
-    'Desarrollo web, SEO, SEM, landing pages y CRO para negocios que necesitan captar leads medibles.',
+    'Desarrollo web, SEO, SEM, landing pages, IA y CRO para negocios que necesitan captar leads medibles.',
   ogType: 'website',
   schema: [
     {
