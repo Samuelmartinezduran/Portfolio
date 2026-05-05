@@ -1,0 +1,19 @@
+{
+  "name": "Samuel Martínez Portfolio",
+  "short_name": "Samuel Martínez",
+  "description": "Portfolio SEO, SEM, desarrollo web, landing pages, CRO y analítica.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#131313",
+  "theme_color": "#131313",
+  "icons": [
+    {
+      "src": "/profile.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

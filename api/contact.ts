@@ -1,10 +1,24 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Resend } from "resend";
+
+type ContactRequest = {
+  method?: string;
+  body: {
+    nombre?: string;
+    email?: string;
+    asunto?: string;
+    mensaje?: string;
+  };
+};
+
+type JsonResponse = {
+  status: (code: number) => JsonResponse;
+  json: (body: unknown) => void;
+};
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const TO_EMAIL = process.env.CONTACT_EMAIL!;
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ContactRequest, res: JsonResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
