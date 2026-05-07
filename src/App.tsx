@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {motion} from 'motion/react';
+import {motion, useReducedMotion} from 'motion/react';
 import {
   Search,
   Code,
@@ -13,8 +13,25 @@ import {
   ArrowRight,
   Home,
 } from 'lucide-react';
+import type {CSSProperties, ReactNode} from 'react';
 import {useEffect, useState} from 'react';
 import {findServiceByPath, servicePages, type ServicePage as ServicePageType} from './seo';
+
+const NAV_SCROLL_RANGE = 100;
+const NAV_MAX_TOP = 20;
+const NAV_MAX_SIDE_PADDING_VW = 20;
+const NAV_MAX_SIDE_PADDING_MOBILE_VW = 6;
+const NAV_RESYNC_DELAYS = [0, 80, 180];
+const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+
+function getScrollProgress(): number {
+  const scrollTop = Math.max(
+    window.scrollY ?? document.documentElement.scrollTop ?? document.body.scrollTop ?? 0,
+    0,
+  );
+
+  return Math.min(scrollTop / NAV_SCROLL_RANGE, 1);
+}
 
 const serviceIconBySlug = {
   'consultor-seo-sem': <Search className="w-8 h-8" />,
@@ -50,22 +67,94 @@ const serviceSummaries = [
   },
 ];
 
+function Reveal({
+  children,
+  className,
+  delay = 0,
+  y = 28,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  y?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={reduceMotion ? false : {opacity: 0, y}}
+      whileInView={reduceMotion ? undefined : {opacity: 1, y: 0}}
+      viewport={{once: true, amount: 0.24, margin: '0px 0px -80px 0px'}}
+      transition={{duration: 0.65, ease: EASE_OUT, delay}}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function RevealGroup({
+  children,
+  className,
+  delay = 0,
+  stagger = 0.08,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  stagger?: number;
+}) {
+  const reduceMotion = useReducedMotion();
+
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="show"
+      viewport={{once: true, amount: 0.24, margin: '0px 0px -80px 0px'}}
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            delayChildren: delay,
+            staggerChildren: stagger,
+          },
+        },
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function RevealItem({children, className}: {children: ReactNode; className?: string}) {
+  return (
+    <motion.div
+      variants={{
+        hidden: {opacity: 0, y: 22},
+        show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export default function App() {
   const [activeFilter, setActiveFilter] = useState('ALL');
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [formState, setFormState] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
+  const reduceMotion = useReducedMotion();
   const currentService = findServiceByPath(window.location.pathname);
-
-  useEffect(() => {
-    const onScroll = () => setScrollProgress(Math.min(window.scrollY / 100, 1));
-    window.addEventListener('scroll', onScroll, {passive: true});
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   if (currentService) {
     return (
       <div className="min-h-screen selection:bg-primary selection:text-white">
-        <Navigation scrollProgress={scrollProgress} />
+        <Navigation />
         <ServicePage service={currentService} />
         <Footer />
       </div>
@@ -109,56 +198,101 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-primary selection:text-white">
-      <Navigation scrollProgress={scrollProgress} />
+      <Navigation />
 
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-20">
+      <section className="relative isolate min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-20">
         <motion.div
-          initial={{opacity: 0, y: 20}}
-          animate={{opacity: 1, y: 0}}
-          transition={{duration: 0.8}}
+          aria-hidden="true"
+          className="hero-gradient-blur left-[-10vw] top-[18vh]"
+          initial={reduceMotion ? false : {opacity: 0, scale: 0.9}}
+          animate={reduceMotion ? undefined : {opacity: 1, scale: 1}}
+          transition={{duration: 1.2, ease: EASE_OUT}}
+        />
+        <motion.div
+          aria-hidden="true"
+          className="hero-gradient-blur right-[-12vw] bottom-[14vh]"
+          initial={reduceMotion ? false : {opacity: 0, scale: 0.9}}
+          animate={reduceMotion ? undefined : {opacity: 1, scale: 1}}
+          transition={{duration: 1.2, ease: EASE_OUT, delay: 0.12}}
+        />
+        <motion.div
+          initial={reduceMotion ? false : 'hidden'}
+          animate={reduceMotion ? undefined : 'show'}
+          variants={{
+            hidden: {},
+            show: {
+              transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.1,
+              },
+            },
+          }}
           className="max-w-5xl mx-auto text-center space-y-8"
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]">
+          <motion.h1
+            variants={{
+              hidden: {opacity: 0, y: 24},
+              show: {opacity: 1, y: 0, transition: {duration: 0.75, ease: EASE_OUT}},
+            }}
+            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]"
+          >
             Desarrollador Web SEO <br />y Marketing Digital en{' '}
             <span className="text-editorial-gradient">Vigo</span>
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light">
+          </motion.h1>
+          <motion.p
+            variants={{
+              hidden: {opacity: 0, y: 18},
+              show: {opacity: 1, y: 0, transition: {duration: 0.65, ease: EASE_OUT}},
+            }}
+            className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light"
+          >
             Desarrollo web, SEO, SEM y marketing digital en Vigo para negocios que quieren captar
             leads con webs rápidas, landing pages, IA, CRO y analítica digital.
-          </p>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
-            <a
+          </motion.p>
+          <motion.div
+            variants={{
+              hidden: {opacity: 0, y: 16},
+              show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+            }}
+            className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4"
+          >
+            <motion.a
               href="#projects"
+              whileHover={reduceMotion ? undefined : {y: -2}}
+              whileTap={reduceMotion ? undefined : {scale: 0.98}}
               className="w-full md:w-auto px-10 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.4)] transition-all text-center"
             >
               Ver Proyectos
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               href="#services"
+              whileHover={reduceMotion ? undefined : {y: -2}}
+              whileTap={reduceMotion ? undefined : {scale: 0.98}}
               className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center"
             >
               Mis Servicios
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </motion.div>
       </section>
 
       <section id="projects" className="py-32 bg-surface-low px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-            <div className="space-y-4">
+          <RevealGroup className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+            <RevealItem className="space-y-4">
               <span className="text-secondary font-bold text-xs uppercase tracking-widest">
                 Portfolio SEO y desarrollo web
               </span>
               <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
                 Proyectos Destacados
               </h2>
-            </div>
-            <div className="flex flex-wrap gap-2">
+            </RevealItem>
+            <RevealItem className="flex flex-wrap gap-2">
               {['ALL', 'SEM/SEO', 'WEB DEV', 'LANDINGS'].map((filter) => (
-                <button
+                <motion.button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
+                  whileTap={reduceMotion ? undefined : {scale: 0.96}}
                   className={`px-6 py-2 rounded-md text-xs font-bold transition-all border ${
                     activeFilter === filter
                       ? 'bg-surface-high text-secondary border-primary/50'
@@ -166,19 +300,24 @@ export default function App() {
                   }`}
                 >
                   {filter}
-                </button>
+                </motion.button>
               ))}
-            </div>
-          </div>
+            </RevealItem>
+          </RevealGroup>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {filteredProjects.map((project) => (
               <motion.div
                 layout
                 key={project.id}
+                initial={reduceMotion ? false : {opacity: 0, y: 28}}
+                whileInView={reduceMotion ? undefined : {opacity: 1, y: 0}}
+                whileHover={reduceMotion ? undefined : {y: -8}}
+                viewport={{once: true, amount: 0.2}}
+                transition={{duration: 0.6, ease: EASE_OUT}}
                 className={`${
                   project.size === 'large' ? 'md:col-span-8' : 'md:col-span-4'
-                } group flex flex-col md:flex-row rounded-2xl bg-surface-high transition-all hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] overflow-hidden`}
+                } group flex flex-col md:flex-row rounded-2xl bg-surface-high transition-shadow duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] overflow-hidden`}
               >
                 <div
                   className={`overflow-hidden shrink-0 ${
@@ -192,7 +331,7 @@ export default function App() {
                       `${project.title}: ${project.category} de Samuel Martínez`
                     }
                     referrerPolicy="no-referrer"
-                    className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
+                    className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 md:group-hover:-translate-y-1 transition-all duration-700 opacity-50 group-hover:opacity-100"
                   />
                 </div>
                 <div className="flex flex-col justify-start p-8 pt-10 self-start w-full">
@@ -217,9 +356,10 @@ export default function App() {
                         href={project.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all"
+                        className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all group/link"
                       >
-                        {project.ctaLabel ?? 'Ver Vista Previa'} <ArrowRight className="w-3 h-3" />
+                        {project.ctaLabel ?? 'Ver Vista Previa'}{' '}
+                        <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
                       </a>
                       {project.linkNote && (
                         <p className="text-on-surface/30 text-[11px] leading-relaxed">
@@ -238,7 +378,7 @@ export default function App() {
       <section id="services" className="py-32 bg-surface px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="space-y-8">
+            <Reveal className="space-y-8">
               <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter">
                 Soluciones <br /> que <span className="text-secondary">Convierten.</span>
               </h2>
@@ -246,13 +386,18 @@ export default function App() {
                 Desarrollo web SEO, consultoría SEO SEM, landing pages, soluciones con IA y analítica
                 para negocios de Vigo, Galicia y España que necesitan convertir tráfico en contactos.
               </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            </Reveal>
+            <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
               {serviceSummaries.map((service) => (
-                <a
+                <motion.a
                   key={service.title}
                   href={service.path}
-                  className="p-10 rounded-2xl bg-surface-low border border-white/5 hover:bg-surface-high transition-all group"
+                  variants={{
+                    hidden: {opacity: 0, y: 22},
+                    show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+                  }}
+                  whileHover={reduceMotion ? undefined : {y: -6}}
+                  className="p-10 rounded-2xl bg-surface-low border border-white/5 hover:bg-surface-high transition-colors duration-300 group"
                 >
                   <div className="text-secondary mb-6 group-hover:text-primary transition-colors">
                     {service.icon}
@@ -260,32 +405,37 @@ export default function App() {
                   <h3 className="text-xl font-bold mb-3">{service.title}</h3>
                   <p className="text-sm text-on-surface/50 leading-relaxed">{service.desc}</p>
                   <span className="inline-flex items-center gap-2 mt-6 text-xs font-bold text-primary">
-                    Ver servicio <ArrowRight className="w-3 h-3" />
+                    Ver servicio{' '}
+                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
                   </span>
-                </a>
+                </motion.a>
               ))}
-            </div>
+            </RevealGroup>
           </div>
         </div>
       </section>
 
       <section id="about" className="py-32 bg-surface-low px-6">
-        <div className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
-          <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-surface-high shadow-2xl">
+        <RevealGroup className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
+          <RevealItem className="w-40 h-40 rounded-full overflow-hidden border-4 border-surface-high shadow-2xl">
             <img
               src="/profile.jpg"
               alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
               className="w-full h-full object-cover"
             />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Desarrollador web SEO con mentalidad de negocio
-          </h2>
-          <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
-            "Mi enfoque combina desarrollo web, SEO, SEM, CRO, IA, marketing digital y analítica
-            para que cada solución tenga una función comercial clara."
-          </p>
-        </div>
+          </RevealItem>
+          <RevealItem>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+              Desarrollador web SEO con mentalidad de negocio
+            </h2>
+          </RevealItem>
+          <RevealItem>
+            <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
+              "Mi enfoque combina desarrollo web, SEO, SEM, CRO, IA, marketing digital y analítica
+              para que cada solución tenga una función comercial clara."
+            </p>
+          </RevealItem>
+        </RevealGroup>
       </section>
 
       <ContactSection formState={formState} setFormState={setFormState} />
@@ -294,19 +444,68 @@ export default function App() {
   );
 }
 
-function Navigation({scrollProgress}: {scrollProgress: number}) {
+function Navigation() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let raf = 0;
+    const timers: number[] = [];
+
+    const syncProgress = () => {
+      const nextProgress = getScrollProgress();
+      setProgress((currentProgress) =>
+        Math.abs(currentProgress - nextProgress) < 0.01 ? currentProgress : nextProgress,
+      );
+    };
+
+    const scheduleSync = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(syncProgress);
+    };
+
+    window.addEventListener('scroll', scheduleSync, {passive: true});
+    window.addEventListener('touchmove', scheduleSync, {passive: true});
+    window.addEventListener('touchend', scheduleSync, {passive: true});
+    window.addEventListener('resize', scheduleSync);
+    window.addEventListener('pageshow', scheduleSync);
+
+    scheduleSync();
+    for (const delay of NAV_RESYNC_DELAYS) {
+      timers.push(window.setTimeout(scheduleSync, delay));
+    }
+
+    return () => {
+      window.removeEventListener('scroll', scheduleSync);
+      window.removeEventListener('touchmove', scheduleSync);
+      window.removeEventListener('touchend', scheduleSync);
+      window.removeEventListener('resize', scheduleSync);
+      window.removeEventListener('pageshow', scheduleSync);
+      cancelAnimationFrame(raf);
+      for (const timer of timers) {
+        window.clearTimeout(timer);
+      }
+    };
+  }, []);
+
+  const inverseProgress = 1 - progress;
+  const navStyle = {
+    top: `${NAV_MAX_TOP * inverseProgress}px`,
+    '--nav-mobile-side-padding': `${NAV_MAX_SIDE_PADDING_MOBILE_VW}vw`,
+    '--nav-desktop-side-padding': `${NAV_MAX_SIDE_PADDING_VW}vw`,
+    '--nav-progress-inverse': inverseProgress,
+  } as CSSProperties;
+  const innerStyle = {
+    borderRadius: `${9999 * inverseProgress}px`,
+  };
+
   return (
     <nav
-      className="fixed left-0 w-full z-50"
-      style={{
-        top: `${20 * (1 - scrollProgress)}px`,
-        paddingLeft: `${20 * (1 - scrollProgress)}vw`,
-        paddingRight: `${20 * (1 - scrollProgress)}vw`,
-      }}
+      className="fixed left-0 w-full z-50 px-[calc(var(--nav-mobile-side-padding)*var(--nav-progress-inverse))] transition-[top,padding-left,padding-right] duration-200 ease-out md:px-[calc(var(--nav-desktop-side-padding)*var(--nav-progress-inverse))]"
+      style={navStyle}
     >
       <div
-        className="glass-nav flex items-center justify-between px-5 py-3"
-        style={{borderRadius: `${9999 * (1 - scrollProgress)}px`}}
+        className="glass-nav flex items-center justify-between px-5 py-3 transition-[border-radius] duration-200 ease-out"
+        style={innerStyle}
       >
         <a href="/" className="text-base font-black tracking-tighter text-primary shrink-0">
           Samuel Martínez
@@ -334,6 +533,7 @@ function Navigation({scrollProgress}: {scrollProgress: number}) {
 }
 
 function ServicePage({service}: {service: ServicePageType}) {
+  const reduceMotion = useReducedMotion();
   const relatedServices = service.related
     .map((path) => servicePages.find((item) => item.path === path))
     .filter(Boolean) as ServicePageType[];
@@ -341,8 +541,8 @@ function ServicePage({service}: {service: ServicePageType}) {
   return (
     <main>
       <section className="pt-40 pb-24 px-6 bg-surface">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
-          <div className="space-y-8">
+        <RevealGroup className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
+          <RevealItem className="space-y-8">
             <nav className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest text-on-surface/40">
               <a href="/" className="hover:text-secondary inline-flex items-center gap-2">
                 <Home className="w-3 h-3" /> Inicio
@@ -379,8 +579,8 @@ function ServicePage({service}: {service: ServicePageType}) {
                 Ver proyectos
               </a>
             </div>
-          </div>
-          <div className="rounded-2xl bg-surface-low border border-white/5 p-8 md:p-10 space-y-6">
+          </RevealItem>
+          <RevealItem className="rounded-2xl bg-surface-low border border-white/5 p-8 md:p-10 space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">Enfoque comercial</h2>
             <p className="text-on-surface/60 leading-relaxed">{service.commercialIntent}</p>
             <div className="grid gap-4">
@@ -391,82 +591,104 @@ function ServicePage({service}: {service: ServicePageType}) {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </RevealItem>
+        </RevealGroup>
       </section>
 
       <section className="py-24 px-6 bg-surface-low">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
-          <div className="space-y-6">
+          <Reveal className="space-y-6">
             <span className="text-secondary font-bold text-xs uppercase tracking-widest">
               Proceso
             </span>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
               De diagnóstico a ejecución medible
             </h2>
-          </div>
-          <div className="space-y-5">
+          </Reveal>
+          <RevealGroup className="space-y-5" delay={0.1}>
             {service.process.map((step, index) => (
-              <div
+              <motion.div
                 key={step}
+                variants={{
+                  hidden: {opacity: 0, y: 22},
+                  show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+                }}
+                whileHover={reduceMotion ? undefined : {x: 4}}
                 className="flex gap-5 p-6 rounded-2xl bg-surface border border-white/5"
               >
                 <span className="text-secondary font-black text-xl">{index + 1}</span>
                 <p className="text-on-surface/70 leading-relaxed">{step}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </RevealGroup>
         </div>
       </section>
 
       <section className="py-24 px-6 bg-surface">
         <div className="max-w-5xl mx-auto space-y-10">
-          <div className="space-y-4 text-center">
+          <Reveal className="space-y-4 text-center">
             <span className="text-secondary font-bold text-xs uppercase tracking-widest">FAQ</span>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
               Preguntas frecuentes
             </h2>
-          </div>
-          <div className="grid gap-5">
+          </Reveal>
+          <RevealGroup className="grid gap-5" delay={0.08}>
             {service.faqs.map((faq) => (
-              <article key={faq.question} className="p-7 rounded-2xl bg-surface-low border border-white/5">
+              <motion.article
+                key={faq.question}
+                variants={{
+                  hidden: {opacity: 0, y: 22},
+                  show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+                }}
+                className="p-7 rounded-2xl bg-surface-low border border-white/5"
+              >
                 <h3 className="text-lg font-bold mb-3">{faq.question}</h3>
                 <p className="text-on-surface/60 leading-relaxed">{faq.answer}</p>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </RevealGroup>
         </div>
       </section>
 
       <section className="py-24 px-6 bg-surface-low">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
-          <div className="space-y-4 max-w-xl">
+          <Reveal className="space-y-4 max-w-xl">
             <span className="text-secondary font-bold text-xs uppercase tracking-widest">
               Servicios relacionados
             </span>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
               Completa la estrategia
             </h2>
-          </div>
-          <div className="grid gap-4 min-w-[280px]">
+          </Reveal>
+          <RevealGroup className="grid gap-4 min-w-[280px]" delay={0.08}>
             {relatedServices.map((related) => (
-              <a
+              <motion.a
                 key={related.path}
                 href={related.path}
-                className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-surface border border-white/5 hover:border-primary/40 transition-colors"
+                variants={{
+                  hidden: {opacity: 0, y: 18},
+                  show: {opacity: 1, y: 0, transition: {duration: 0.55, ease: EASE_OUT}},
+                }}
+                whileHover={reduceMotion ? undefined : {x: 4}}
+                className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-surface border border-white/5 hover:border-primary/40 transition-colors group"
               >
                 <span className="font-bold">{related.navLabel}</span>
-                <ArrowRight className="w-4 h-4 text-primary" />
-              </a>
+                <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
+              </motion.a>
             ))}
-            <a
+            <motion.a
               href="/#contact"
-              className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 transition-colors"
+              variants={{
+                hidden: {opacity: 0, y: 18},
+                show: {opacity: 1, y: 0, transition: {duration: 0.55, ease: EASE_OUT}},
+              }}
+              whileHover={reduceMotion ? undefined : {x: 4}}
+              className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 transition-colors group"
             >
               <span>Hablar del proyecto</span>
-              <ArrowRight className="w-4 h-4" />
-            </a>
-          </div>
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </motion.a>
+          </RevealGroup>
         </div>
       </section>
     </main>
@@ -482,14 +704,18 @@ function ContactSection({
 }) {
   return (
     <section id="contact" className="py-32 bg-surface px-6 relative overflow-hidden">
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-16 text-center space-y-4">
+      <RevealGroup className="max-w-3xl mx-auto">
+        <RevealItem className="mb-16 text-center space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">¿Listo para escalar?</h2>
           <p className="text-on-surface/50 text-lg">
             Hablemos sobre tu próximo proyecto y cómo podemos alcanzar tus objetivos.
           </p>
-        </div>
-        <form
+        </RevealItem>
+        <motion.form
+          variants={{
+            hidden: {opacity: 0, y: 24},
+            show: {opacity: 1, y: 0, transition: {duration: 0.65, ease: EASE_OUT}},
+          }}
           className="space-y-8 bg-surface-low p-8 md:p-16 rounded-3xl shadow-2xl relative z-10 border border-white/5"
           onSubmit={async (e) => {
             e.preventDefault();
@@ -586,8 +812,8 @@ function ContactSection({
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             )}
           </button>
-        </form>
-      </div>
+        </motion.form>
+      </RevealGroup>
     </section>
   );
 }

@@ -33,8 +33,20 @@
 
 .hero-gradient-blur {
   position: absolute;
+  pointer-events: none;
   width: 40vw;
   height: 40vw;
   background: radial-gradient(circle, rgba(255, 95, 31, 0.08) 0%, rgba(19, 19, 19, 0) 70%);
   z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
 }
