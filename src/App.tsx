@@ -122,6 +122,19 @@ export default function App() {
       link: 'https://atmospheric-analyst-price-tracker.vercel.app/',
       linkNote: 'Vista previa — el backend requiere descarga desde GitHub para funcionar.',
     },
+    {
+      id: 3,
+      title: 'E-commerce Experience',
+      category: 'Web Development',
+      description:
+        'Plataforma de comercio electrónico con enfoque en UX, catálogo dinámico y optimización de conversión.',
+      image: '/e-commerce.png',
+      size: 'large',
+      tags: ['WEB DEV', 'LANDINGS'],
+      link: 'https://e-commerce-nine-topaz-59.vercel.app/',
+      ctaLabel: 'Ver Proyecto',
+      linkNote: 'Desarrollado con React y optimizado para SEO y rendimiento.',
+    },
   ];
 
   const filteredProjects =
