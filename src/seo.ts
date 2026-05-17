@@ -2,8 +2,8 @@ export const SITE_URL = 'https://samuel-martinez-portfolio.vercel.app';
 export const SITE_NAME = 'Samuel Martínez';
 export const PERSON_ID = `${SITE_URL}/#samuel-martinez`;
 export const BUSINESS_ID = `${SITE_URL}/#desarrollo-web-seo-vigo`;
-export const OG_IMAGE = `${SITE_URL}/og-image.png`;
-export const PROFILE_IMAGE = `${SITE_URL}/profile.jpg`;
+export const OG_IMAGE = `${SITE_URL}/og-image.webp`;
+export const PROFILE_IMAGE = `${SITE_URL}/profile.webp`;
 
 export type PageSeo = {
   path: string;

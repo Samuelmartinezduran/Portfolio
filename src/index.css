@@ -16,6 +16,11 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+
   body {
     @apply bg-surface text-on-surface font-sans antialiased;
   }

@@ -122,7 +122,7 @@ export default function App() {
       category: 'Web Development',
       description:
         'Aplicación web que monitorea precios de productos y notifica al usuario cuando alcanzan el umbral deseado.',
-      image: '/price-tracker-dashboard.png',
+      image: '/price-tracker-dashboard.webp',
       imageAlt:
         'Dashboard de Price Tracker con historial de precios, alertas activas y seguimiento de productos',
       size: 'large',
@@ -136,7 +136,7 @@ export default function App() {
       category: 'Web Development',
       description:
         'Plataforma de comercio electrónico con enfoque en UX, catálogo dinámico y optimización de conversión.',
-      image: '/e-commerce.png',
+      image: '/e-commerce.webp',
       imageAlt: 'Captura de pantalla de la plataforma e-commerce desarrollada con React',
       size: 'large',
       tags: ['WEB DEV', 'LANDINGS'],
@@ -373,7 +373,7 @@ export default function App() {
         <RevealGroup className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
           <RevealItem className="w-40 h-40 rounded-full overflow-hidden border-4 border-surface-high shadow-2xl">
             <img
-              src="/profile.jpg"
+              src="/profile.webp"
               alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
               loading="lazy"
               width={160}
