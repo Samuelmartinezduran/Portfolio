@@ -131,7 +131,7 @@ export default function App() {
       image: '/e-commerce.png',
       size: 'large',
       tags: ['WEB DEV', 'LANDINGS'],
-      link: 'https://e-commerce-nine-topaz-59.vercel.app/',
+      link: 'https://e-commerce-sigma-ochre-81.vercel.app/es',
       ctaLabel: 'Ver Proyecto',
       linkNote: 'Desarrollado con React y optimizado para SEO y rendimiento.',
     },
