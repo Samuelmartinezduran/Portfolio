@@ -19,6 +19,13 @@
   body {
     @apply bg-surface text-on-surface font-sans antialiased;
   }
+
+  /* Hide default cursor on desktop when using the custom LiquidCursor */
+  @media (hover: hover) and (pointer: fine) {
+    body, a, button, select, input, textarea {
+      cursor: none !important;
+    }
+  }
 }
 
 .text-editorial-gradient {
