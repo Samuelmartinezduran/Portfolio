@@ -15,7 +15,12 @@ import {
 } from 'lucide-react';
 import type {CSSProperties, ReactNode} from 'react';
 import {useEffect, useState} from 'react';
-import {findServiceByPath, servicePages, type ServicePage as ServicePageType} from './seo';
+import {
+  findServiceByPath,
+  servicePages,
+  vigoPages,
+  type ServicePage as ServicePageType,
+} from './seo';
 import {Reveal, RevealGroup, RevealItem} from './components/animations/Reveal';
 import {SplitText} from './components/animations/SplitText';
 import {Magnetic} from './components/animations/Magnetic';
@@ -23,6 +28,7 @@ import {LiquidCursor} from './components/animations/LiquidCursor';
 import {ParallaxBlob} from './components/animations/ParallaxBlob';
 import {TiltCard} from './components/animations/TiltCard';
 import {ScrollProgress} from './components/animations/ScrollProgress';
+import {Seo} from './components/Seo';
 
 const NAV_SCROLL_RANGE = 100;
 const NAV_MAX_TOP = 20;
@@ -83,6 +89,7 @@ export default function App() {
   if (currentService) {
     return (
       <div className="min-h-screen selection:bg-primary selection:text-white">
+        <Seo />
         <LiquidCursor />
         <ScrollProgress />
         <Navigation />
@@ -101,6 +108,7 @@ export default function App() {
         'Landing editorial para una guía de autor sobre bubble tea en España, con ciudades destacadas, jerarquía visual premium y CTAs orientados a exploración y ranking.',
       image:
         'https://lh3.googleusercontent.com/aida-public/AB6AXuB_QDsx6cbv7uYVuBzXgGtWC5VRpwLr6MEOqB6iFsF0tJ9brXx_sNt_Ht_Abus9XAmhfHk038WNKJzffFKr7P92DMkCK1rclHwq2UOC77BRyp0Pe3WJ_sQqvTKfDZCK8f-261KkrPhddtmP7YJCjiOH-Vvl89QFE7ooSEoTR7sZH3OHMUc8q_EbVR_j1f_yFcGmcPhrWbL9OLYsmSZw-keGDSgxktrSwUx11OkmsAC-zU0j_QxvHJ99t-blp2aH__Rdo4NfoXo6u_d9',
+      imageAlt: 'Landing page premium para Bubble Tea España con diseño editorial',
       size: 'large',
       tags: ['LANDINGS'],
       link: 'https://bubble-tea-ebon.vercel.app/',
@@ -129,6 +137,7 @@ export default function App() {
       description:
         'Plataforma de comercio electrónico con enfoque en UX, catálogo dinámico y optimización de conversión.',
       image: '/e-commerce.png',
+      imageAlt: 'Captura de pantalla de la plataforma e-commerce desarrollada con React',
       size: 'large',
       tags: ['WEB DEV', 'LANDINGS'],
       link: 'https://e-commerce-sigma-ochre-81.vercel.app/es',
@@ -142,6 +151,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-primary selection:text-white">
+      <Seo />
       <LiquidCursor />
       <ScrollProgress />
       <Navigation />
@@ -270,6 +280,9 @@ export default function App() {
                         `${project.title}: ${project.category} de Samuel Martínez`
                       }
                       referrerPolicy="no-referrer"
+                      loading="lazy"
+                      width={800}
+                      height={600}
                       className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
                     />
                   </div>
@@ -362,6 +375,9 @@ export default function App() {
             <img
               src="/profile.jpg"
               alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
+              loading="lazy"
+              width={160}
+              height={160}
               className="w-full h-full object-cover"
             />
           </RevealItem>
@@ -778,6 +794,17 @@ function Footer() {
               {service.navLabel}
             </a>
           ))}
+          <div className="hidden md:block w-px h-3 bg-white/10 self-center" />
+          {vigoPages.map((service) => (
+            <a
+              key={service.path}
+              href={service.path}
+              className="text-primary/60 hover:text-primary transition-colors"
+            >
+              {service.navLabel}
+            </a>
+          ))}
+          <div className="hidden md:block w-px h-3 bg-white/10 self-center" />
           <a
             href="https://www.linkedin.com/in/samuel-martínez-durán-40a70335b"
             target="_blank"
