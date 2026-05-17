@@ -82,7 +82,7 @@ const serviceSummaries = [
 
 export default function App() {
   const [activeFilter, setActiveFilter] = useState('ALL');
-  const [formState, setFormState] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle');
+  const [formState, setFormState] = useState<'idle' | 'sending' | 'ok' | 'error' | 'ratelimit'>('idle');
   const reduceMotion = useReducedMotion();
   const currentService = findServiceByPath(window.location.pathname);
 
@@ -656,8 +656,8 @@ function ContactSection({
   formState,
   setFormState,
 }: {
-  formState: 'idle' | 'sending' | 'ok' | 'error';
-  setFormState: (state: 'idle' | 'sending' | 'ok' | 'error') => void;
+  formState: 'idle' | 'sending' | 'ok' | 'error' | 'ratelimit';
+  setFormState: (state: 'idle' | 'sending' | 'ok' | 'error' | 'ratelimit') => void;
 }) {
   return (
     <section id="contact" className="py-32 bg-surface px-6 relative overflow-hidden">
@@ -684,7 +684,11 @@ function ContactSection({
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data),
               });
-              setFormState(res.ok ? 'ok' : 'error');
+              if (res.status === 429) {
+                setFormState('ratelimit');
+              } else {
+                setFormState(res.ok ? 'ok' : 'error');
+              }
             } catch {
               setFormState('error');
             }
@@ -758,11 +762,16 @@ function ContactSection({
               Algo salió mal. Inténtalo de nuevo.
             </p>
           )}
+          {formState === 'ratelimit' && (
+            <p className="text-center text-sm font-bold text-primary">
+              Demasiados intentos. Espera unos minutos.
+            </p>
+          )}
 
           <Magnetic>
             <button
               type="submit"
-              disabled={formState === 'sending' || formState === 'ok'}
+              disabled={formState === 'sending' || formState === 'ok' || formState === 'ratelimit'}
               className="w-full py-5 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-black rounded-full shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:pointer-events-none px-10"
             >
               {formState === 'sending' ? 'ENVIANDO...' : 'ENVIAR PROPUESTA'}
