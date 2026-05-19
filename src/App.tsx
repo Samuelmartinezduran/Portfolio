@@ -30,6 +30,14 @@ import {TiltCard} from './components/animations/TiltCard';
 import {ScrollProgress} from './components/animations/ScrollProgress';
 import {Seo} from './components/Seo';
 
+function scrollTo(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
+  const el = document.getElementById(id);
+  if (el) {
+    e.preventDefault();
+    el.scrollIntoView({behavior: 'smooth'});
+  }
+}
+
 const NAV_SCROLL_RANGE = 100;
 const NAV_MAX_TOP = 20;
 const NAV_MAX_SIDE_PADDING_VW = 20;
@@ -57,26 +65,26 @@ const serviceSummaries = [
   {
     ...servicePages[0],
     icon: serviceIconBySlug['consultor-seo-sem'],
-    title: 'Auditoría SEO & SEM',
-    desc: 'Análisis de visibilidad, intención de búsqueda y optimización de campañas de pago.',
+    title: 'Web + SEO Local',
+    desc: 'Tu negocio visible en Google cuando alguien en Vigo busca lo que ofreces. Sin tecnicismos.',
   },
   {
     ...servicePages[1],
     icon: serviceIconBySlug['desarrollo-web'],
-    title: 'Desarrollo Web SEO',
-    desc: 'Webs rápidas para Vigo y España, preparadas para SEO, móvil, analítica y conversión.',
+    title: 'Tienda Online Gestionable',
+    desc: 'Tienda online con panel de gestión para que tu cliente actualice productos sin tocar código. Pagos con Stripe incluidos.',
   },
   {
     ...servicePages[2],
     icon: serviceIconBySlug['landing-pages-cro'],
-    title: 'Landing Pages y CRO',
-    desc: 'Páginas orientadas a captar leads desde campañas, SEO local y marketing digital.',
+    title: 'Landing Page',
+    desc: 'Una página clara y rápida para que tus campañas o tu SEO local conviertan visitas en llamadas.',
   },
   {
     ...servicePages[3],
     icon: serviceIconBySlug['soluciones-ia'],
-    title: 'Soluciones con IA',
-    desc: 'Chatbots, asistentes y automatizaciones con IA conectadas a procesos reales.',
+    title: 'Reservas con IA',
+    desc: 'Chatbot que gestiona reservas 24 h para tu restaurante o bar. Los clientes reservan solos, tú gestionas desde el móvil.',
   },
 ];
 
@@ -100,6 +108,20 @@ export default function App() {
   }
 
   const projects = [
+    {
+      id: 0,
+      title: 'Sistema de Reservas para Hostelería',
+      category: 'Producto IA',
+      description:
+        'Chatbot que gestiona reservas 24 h para tu restaurante o bar. Los clientes reservan conversando desde tu web y tú lo controlas desde un panel privado. Sin comisiones, sin intermediarios.',
+      youtubeId: null as string | null, // ← pega aquí el ID del vídeo de YouTube cuando lo tengas
+      imageAlt: 'Demo del sistema de reservas con chatbot IA para hostelería',
+      size: 'large',
+      tags: ['IA', 'WEB DEV'],
+      link: '/#contact',
+      ctaLabel: 'Solicitar Demo',
+      linkNote: 'Instalación personalizada para tu negocio · desde 300 €',
+    },
     {
       id: 1,
       title: 'Bubble Tea España',
@@ -132,17 +154,17 @@ export default function App() {
     },
     {
       id: 3,
-      title: 'E-commerce Experience',
-      category: 'Web Development',
+      title: 'Tienda Online Gestionable',
+      category: 'Producto E-commerce',
       description:
-        'Plataforma de comercio electrónico con enfoque en UX, catálogo dinámico y optimización de conversión.',
+        'Tienda online completa con panel de administración para gestionar productos sin tocar código. Pagos con Stripe integrados. Tu cliente actualiza el catálogo desde el móvil.',
       image: '/e-commerce.webp',
       imageAlt: 'Captura de pantalla de la plataforma e-commerce desarrollada con React',
       size: 'large',
       tags: ['WEB DEV', 'LANDINGS'],
       link: 'https://e-commerce-sigma-ochre-81.vercel.app/es',
-      ctaLabel: 'Ver Proyecto',
-      linkNote: 'Desarrollado con React y optimizado para SEO y rendimiento.',
+      ctaLabel: 'Ver Demo',
+      linkNote: 'Instalación personalizada para tu negocio · desde 400 €',
     },
   ];
 
@@ -189,8 +211,8 @@ export default function App() {
             }}
             className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light"
           >
-            Desarrollo web, SEO, SEM y marketing digital en Vigo para negocios que quieren captar
-            leads con webs rápidas, landing pages, IA, CRO y analítica digital.
+            Webs, tiendas online y sistemas de reservas para negocios en Vigo. Rápidos,
+            gestionables y listos para captar clientes desde el primer día.
           </motion.p>
           <motion.div
             variants={{
@@ -202,6 +224,7 @@ export default function App() {
             <Magnetic>
               <motion.a
                 href="#projects"
+                onClick={(e) => scrollTo(e, 'projects')}
                 whileHover={reduceMotion ? undefined : {y: -2}}
                 whileTap={reduceMotion ? undefined : {scale: 0.98}}
                 className="w-full md:w-auto px-10 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.4)] transition-all text-center block"
@@ -212,11 +235,12 @@ export default function App() {
             <Magnetic>
               <motion.a
                 href="#services"
+                onClick={(e) => scrollTo(e, 'services')}
                 whileHover={reduceMotion ? undefined : {y: -2}}
                 whileTap={reduceMotion ? undefined : {scale: 0.98}}
                 className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center block"
               >
-                Mis Servicios
+                Mis Productos
               </motion.a>
             </Magnetic>
           </motion.div>
@@ -228,14 +252,14 @@ export default function App() {
           <RevealGroup className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
             <RevealItem className="space-y-4">
               <span className="text-secondary font-bold text-xs uppercase tracking-widest">
-                Portfolio SEO y desarrollo web
+                Proyectos y productos
               </span>
               <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
                 Proyectos Destacados
               </h2>
             </RevealItem>
             <RevealItem className="flex flex-wrap gap-2">
-              {['ALL', 'SEM/SEO', 'WEB DEV', 'LANDINGS'].map((filter) => (
+              {['ALL', 'IA', 'WEB DEV', 'LANDINGS'].map((filter) => (
                 <motion.button
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
@@ -273,18 +297,33 @@ export default function App() {
                       project.size === 'large' ? 'md:w-1/2' : 'md:w-2/5'
                     }`}
                   >
-                    <img
-                      src={project.image}
-                      alt={
-                        project.imageAlt ??
-                        `${project.title}: ${project.category} de Samuel Martínez`
-                      }
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      width={800}
-                      height={600}
-                      className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
-                    />
+                    {'youtubeId' in project && project.youtubeId ? (
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${project.youtubeId}`}
+                        title={project.imageAlt}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-72 md:h-full"
+                      />
+                    ) : 'youtubeId' in project ? (
+                      <div className="w-full h-72 md:h-full bg-surface flex flex-col items-center justify-center gap-4 text-on-surface/20 border-r border-white/5">
+                        <Bot className="w-14 h-14 text-primary/30" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Vídeo demo próximamente</span>
+                      </div>
+                    ) : (
+                      <img
+                        src={(project as {image: string}).image}
+                        alt={
+                          project.imageAlt ??
+                          `${project.title}: ${project.category} de Samuel Martínez`
+                        }
+                        referrerPolicy="no-referrer"
+                        loading="lazy"
+                        width={800}
+                        height={600}
+                        className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
+                      />
+                    )}
                   </div>
                   <div className="flex flex-col justify-start p-8 pt-10 self-start w-full">
                     <span className="text-secondary text-[10px] font-bold uppercase tracking-widest">
@@ -337,8 +376,8 @@ export default function App() {
                 Soluciones <br /> que <span className="text-secondary">Convierten.</span>
               </h2>
               <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
-                Desarrollo web SEO, consultoría SEO SEM, landing pages, soluciones con IA y analítica
-                para negocios de Vigo, Galicia y España que necesitan convertir tráfico en contactos.
+                Creo webs, tiendas online y chatbots de reservas para negocios locales en Vigo.
+                Cada proyecto tiene un objetivo claro: que tu cliente encuentre tu negocio y actúe.
               </p>
             </Reveal>
             <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
@@ -388,8 +427,8 @@ export default function App() {
           </RevealItem>
           <RevealItem>
             <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
-              "Mi enfoque combina desarrollo web, SEO, SEM, CRO, IA, marketing digital y analítica
-              para que cada solución tenga una función comercial clara."
+              "Construyo herramientas digitales que resuelven problemas reales: reservas
+              automatizadas, ventas online y presencia en Google para negocios locales en Vigo."
             </p>
           </RevealItem>
         </RevealGroup>
@@ -468,18 +507,19 @@ function Navigation() {
           Samuel Martínez
         </a>
         <div className="hidden md:flex gap-6 items-center text-xs font-semibold uppercase tracking-widest">
-          <a href="/#projects" className="text-on-surface/50 hover:text-primary-soft transition-colors">
+          <a href="/#projects" onClick={(e) => scrollTo(e, 'projects')} className="text-on-surface/50 hover:text-primary-soft transition-colors">
             Proyectos
           </a>
-          <a href="/#services" className="text-on-surface/50 hover:text-primary-soft transition-colors">
+          <a href="/#services" onClick={(e) => scrollTo(e, 'services')} className="text-on-surface/50 hover:text-primary-soft transition-colors">
             Servicios
           </a>
-          <a href="/#about" className="text-on-surface/50 hover:text-primary-soft transition-colors">
+          <a href="/#about" onClick={(e) => scrollTo(e, 'about')} className="text-on-surface/50 hover:text-primary-soft transition-colors">
             Sobre mí
           </a>
         </div>
         <a
           href="/#contact"
+          onClick={(e) => scrollTo(e, 'contact')}
           className="bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white px-5 py-2 rounded-full font-bold text-xs hover:shadow-[0_0_20px_rgba(255,95,31,0.3)] transition-all active:scale-95 shrink-0"
         >
           Contacto
@@ -663,9 +703,9 @@ function ContactSection({
     <section id="contact" className="py-32 bg-surface px-6 relative overflow-hidden">
       <RevealGroup className="max-w-3xl mx-auto">
         <RevealItem className="mb-16 text-center space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">¿Listo para escalar?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">¿Hablamos sobre tu negocio?</h2>
           <p className="text-on-surface/50 text-lg">
-            Hablemos sobre tu próximo proyecto y cómo podemos alcanzar tus objetivos.
+            Cuéntame qué necesitas y te preparo una propuesta sin compromiso en 24 h.
           </p>
         </RevealItem>
         <motion.form
@@ -729,11 +769,10 @@ function ContactSection({
                 name="asunto"
                 className="w-full bg-surface-high border border-outline-variant/20 rounded-xl p-5 focus:ring-2 focus:ring-primary/50 text-sm transition-all text-on-surface/60 appearance-none outline-none"
               >
-                <option>Desarrollo Web</option>
-                <option>Estrategia SEO/SEM</option>
-                <option>Landing Pages y CRO</option>
-                <option>Soluciones con IA</option>
-                <option>Consultoría Integral</option>
+                <option>Sistema de Reservas para mi negocio</option>
+                <option>Tienda Online</option>
+                <option>Web + SEO</option>
+                <option>Landing Page</option>
                 <option>Otro</option>
               </select>
               <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface/40 pointer-events-none" />

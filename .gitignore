@@ -9,3 +9,4 @@ coverage/
 !.env.example
 CLAUDE.md
 claude-seo
+.vercel
