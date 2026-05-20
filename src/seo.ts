@@ -38,7 +38,7 @@ export const personSchema = {
   url: SITE_URL,
   sameAs: [
     'https://www.linkedin.com/in/samuel-martínez-durán-40a70335b',
-    'https://github.com/anonimo4smp-blip',
+    'https://github.com/Samuelmartinezduran',
   ],
   knowsAbout: [
     'SEO',

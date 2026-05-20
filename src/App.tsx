@@ -862,7 +862,7 @@ function Footer() {
             LinkedIn
           </a>
           <a
-            href="https://github.com/anonimo4smp-blip"
+            href="https://github.com/Samuelmartinezduran"
             target="_blank"
             rel="noopener noreferrer"
             className="text-on-surface/40 hover:text-secondary transition-colors"
