@@ -123,6 +123,20 @@ export default function App() {
       linkNote: 'Instalación personalizada para tu negocio · desde 300 €',
     },
     {
+      id: 4,
+      title: 'Agente IA de Citas por WhatsApp',
+      category: 'Producto IA',
+      description:
+        'Recepcionista virtual que atiende WhatsApp 24 h, responde a tus clientes y agenda las citas directamente en tu Google Calendar. Tú lo gestionas sin estar pendiente del móvil.',
+      youtubeId: 'UHxZyXY4cXU' as string | null,
+      imageAlt: 'Demo del agente de IA que gestiona citas por WhatsApp y Google Calendar',
+      size: 'large',
+      tags: ['IA'],
+      link: '/#contact',
+      ctaLabel: 'Solicitar Demo',
+      linkNote: 'Agente conectado a tu WhatsApp y Google Calendar · instalación personalizada.',
+    },
+    {
       id: 1,
       title: 'Bubble Tea España',
       category: 'Landing Page',
