@@ -24,7 +24,6 @@ import {
 import {Reveal, RevealGroup, RevealItem} from './components/animations/Reveal';
 import {SplitText} from './components/animations/SplitText';
 import {Magnetic} from './components/animations/Magnetic';
-import {LiquidCursor} from './components/animations/LiquidCursor';
 import {ParallaxBlob} from './components/animations/ParallaxBlob';
 import {TiltCard} from './components/animations/TiltCard';
 import {ScrollProgress} from './components/animations/ScrollProgress';
@@ -98,7 +97,6 @@ export default function App() {
     return (
       <div className="min-h-screen selection:bg-primary selection:text-white">
         <Seo />
-        <LiquidCursor />
         <ScrollProgress />
         <Navigation />
         <ServicePage service={currentService} />
@@ -188,7 +186,6 @@ export default function App() {
   return (
     <div className="min-h-screen selection:bg-primary selection:text-white">
       <Seo />
-      <LiquidCursor />
       <ScrollProgress />
       <Navigation />
 
@@ -361,7 +358,6 @@ export default function App() {
                           href={project.link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          data-cursor="hover"
                           className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all group/link"
                         >
                           {project.ctaLabel ?? 'Ver Vista Previa'}{' '}
