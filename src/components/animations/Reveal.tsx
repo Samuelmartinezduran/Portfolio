@@ -47,14 +47,12 @@ export function RevealGroup({
 }) {
   const reduceMotion = useReducedMotion();
 
-  if (reduceMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
+  // La raíz no cambia según `reduceMotion`: el servidor no puede conocer esa
+  // preferencia, así que devolver un <div> aquí rompería la hidratación.
   return (
     <motion.div
-      initial="hidden"
-      whileInView="show"
+      initial={reduceMotion ? false : 'hidden'}
+      whileInView={reduceMotion ? undefined : 'show'}
       viewport={{once: true, amount: 0.24, margin: '0px 0px -80px 0px'}}
       variants={{
         hidden: {},

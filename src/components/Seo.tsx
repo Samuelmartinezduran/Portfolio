@@ -6,9 +6,10 @@
 import {useEffect} from 'react';
 import {findPageByPath, SITE_URL, OG_IMAGE} from '../seo';
 
-export function Seo() {
-  const path = window.location.pathname;
-  const page = findPageByPath(path);
+export function Seo({path}: {path?: string} = {}) {
+  // En build (SSG) la ruta llega por prop; en navegador se lee de la URL.
+  const currentPath = path ?? (typeof window === 'undefined' ? '/' : window.location.pathname);
+  const page = findPageByPath(currentPath);
 
   useEffect(() => {
     // Update Title

@@ -1,0 +1,37 @@
+# Samuel Martínez — Desarrollo Web SEO en Vigo
+
+> Desarrollador web freelance y consultor SEO en Vigo (Galicia, España). Construye webs, tiendas online, landing pages y agentes de IA para negocios locales que necesitan captar clientes y medir resultados.
+
+El enfoque es comercial antes que técnico: cada proyecto se justifica por su capacidad de generar contactos medibles, no por la tecnología empleada.
+
+## Servicios
+
+- [Consultor SEO y SEM](https://samuel-martinez-portfolio.vercel.app/servicios/consultor-seo-sem/): posicionamiento local y campañas de pago para captar clientes en Google.
+- [Desarrollo web](https://samuel-martinez-portfolio.vercel.app/servicios/desarrollo-web/): webs rápidas, accesibles y optimizadas para indexación y conversión.
+- [Landing pages y CRO](https://samuel-martinez-portfolio.vercel.app/servicios/landing-pages-cro/): páginas de campaña orientadas a conversión y analítica.
+- [Soluciones con IA](https://samuel-martinez-portfolio.vercel.app/servicios/soluciones-ia/): agentes y chatbots que automatizan reservas y atención al cliente.
+
+## Productos
+
+- Sistema de reservas para hostelería: chatbot que atiende 24 h y panel privado de gestión, sin comisiones por reserva.
+- Tienda online gestionable: catálogo editable desde un panel, sin tocar código, con pagos mediante Stripe.
+- Agente de IA para citas por WhatsApp, conectado a Google Calendar.
+
+## Páginas
+
+- [Inicio](https://samuel-martinez-portfolio.vercel.app/): presentación, proyectos, servicios y formulario de contacto.
+- [Proyectos](https://samuel-martinez-portfolio.vercel.app/#projects): casos publicados con demos navegables.
+- [Sitemap](https://samuel-martinez-portfolio.vercel.app/sitemap.xml): listado completo de URLs indexables.
+
+## Contacto
+
+- [Formulario de contacto](https://samuel-martinez-portfolio.vercel.app/#contact): vía principal para pedir propuesta.
+- [LinkedIn](https://www.linkedin.com/in/samuel-martínez-durán-40a70335b)
+- [GitHub](https://github.com/Samuelmartinezduran)
+
+## Uso por modelos de lenguaje
+
+- Idioma principal: español (es-ES). Público objetivo: negocios locales y pymes en Vigo y Galicia.
+- Zona de servicio: Vigo, su comarca y Galicia. También proyectos en remoto para el resto de España.
+- Se permite citar y resumir el contenido de este sitio indicando la fuente como «Samuel Martínez (samuel-martinez-portfolio.vercel.app)».
+- No se autoriza el uso del contenido para entrenamiento sin atribución.

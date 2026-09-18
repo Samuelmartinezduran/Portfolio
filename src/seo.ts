@@ -426,63 +426,6 @@ export const servicePages: ServicePage[] = [
   },
 ];
 
-export const vigoPages: ServicePage[] = [
-  {
-    ...servicePages[0],
-    slug: 'seo-vigo',
-    path: '/vigo/seo/',
-    navLabel: 'SEO Vigo',
-    eyebrow: 'Consultoría SEO en Vigo',
-    title: 'Consultor SEO en Vigo | Posicionamiento Web Local | Samuel Martínez',
-    description:
-      'Consultor SEO en Vigo para empresas gallegas. Auditoría SEO local, Google Business Profile y estrategias para captar clientes en Vigo y Galicia.',
-    ogTitle: 'SEO en Vigo | Posicionamiento Web Local',
-    h1: 'Consultor SEO en Vigo para empresas que quieren crecer localmente',
-    lead:
-      'Ayudo a negocios de Vigo y alrededores a dominar los resultados locales, captar tráfico de la zona y convertir búsquedas en visitas reales.',
-    schema: [
-      personSchema,
-      {
-        ...serviceBase(true),
-        '@id': `${SITE_URL}/vigo/seo/#service`,
-        name: 'Consultoría SEO en Vigo',
-        serviceType: 'SEO Local',
-        url: `${SITE_URL}/vigo/seo/`,
-        description: 'Estrategia de posicionamiento web local para negocios en Vigo y Galicia.',
-      },
-      buildBreadcrumbSchema('SEO en Vigo', `${SITE_URL}/vigo/seo/`, true),
-      buildFaqSchema(seoSemFaqs),
-    ],
-  },
-  {
-    ...servicePages[1],
-    slug: 'desarrollo-web-vigo',
-    path: '/vigo/desarrollo-web/',
-    navLabel: 'Web Vigo',
-    eyebrow: 'Desarrollo web en Vigo',
-    title: 'Desarrollador Web en Vigo | Webs Rápidas y SEO | Samuel Martínez',
-    description:
-      'Desarrollo web en Vigo para profesionales y pymes. Webs a medida con React, optimizadas para SEO local y listas para vender en Vigo y Galicia.',
-    ogTitle: 'Desarrollo Web en Vigo | Programación y SEO',
-    h1: 'Desarrollo web en Vigo para negocios gallegos con visión digital',
-    lead:
-      'Construyo la web de tu negocio en Vigo con tecnología moderna, asegurando que sea rápida, segura y que aparezca cuando tus vecinos te busquen.',
-    schema: [
-      personSchema,
-      {
-        ...serviceBase(true),
-        '@id': `${SITE_URL}/vigo/desarrollo-web/#service`,
-        name: 'Desarrollo web en Vigo',
-        serviceType: 'Diseño y desarrollo web local',
-        url: `${SITE_URL}/vigo/desarrollo-web/`,
-        description: 'Desarrollo de sitios web optimizados para el mercado local de Vigo.',
-      },
-      buildBreadcrumbSchema('Desarrollo web en Vigo', `${SITE_URL}/vigo/desarrollo-web/`, true),
-      buildFaqSchema(webFaqs),
-    ],
-  },
-];
-
 export const homePage: PageSeo = {
   path: '/',
   title: 'Desarrollador Web SEO y Marketing Digital en Vigo',
@@ -498,7 +441,7 @@ export const homePage: PageSeo = {
       offers: {
         '@type': 'OfferCatalog',
         name: 'Servicios de marketing digital y desarrollo web',
-        itemListElement: [...servicePages, ...vigoPages].map((service) => ({
+        itemListElement: [...servicePages].map((service) => ({
           '@type': 'Offer',
           itemOffered: {'@id': `${SITE_URL}${service.path}#service`},
         })),
@@ -508,7 +451,7 @@ export const homePage: PageSeo = {
   ],
 };
 
-export const pages = [homePage, ...servicePages, ...vigoPages];
+export const pages = [homePage, ...servicePages];
 
 export const normalizePath = (path: string) => {
   let cleanPath = path.split('?')[0].split('#')[0];

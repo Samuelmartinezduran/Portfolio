@@ -7,7 +7,7 @@
     "dev": "concurrently \"vite --port=3000 --host=0.0.0.0 --strictPort\" \"tsx watch server/index.ts\"",
     "dev:client": "vite --port=3000 --host=0.0.0.0 --strictPort",
     "dev:server": "tsx watch server/index.ts",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"

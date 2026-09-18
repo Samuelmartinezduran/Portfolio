@@ -14,12 +14,13 @@ export function ScrollProgress() {
     restDelta: 0.001,
   });
 
-  if (reduceMotion) return null;
-
+  // No se devuelve null con `reduceMotion`: el servidor no puede conocer esa
+  // preferencia y la hidratación no coincidiría. En su lugar la barra sigue la
+  // posición de scroll sin rebote en vez de desaparecer.
   return (
     <motion.div
       className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-[100]"
-      style={{scaleX}}
+      style={{scaleX: reduceMotion ? scrollYProgress : scaleX}}
     />
   );
 }

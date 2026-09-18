@@ -18,16 +18,15 @@ import {useEffect, useState} from 'react';
 import {
   findServiceByPath,
   servicePages,
-  vigoPages,
   type ServicePage as ServicePageType,
 } from './seo';
 import {Reveal, RevealGroup, RevealItem} from './components/animations/Reveal';
-import {SplitText} from './components/animations/SplitText';
 import {Magnetic} from './components/animations/Magnetic';
 import {ParallaxBlob} from './components/animations/ParallaxBlob';
 import {TiltCard} from './components/animations/TiltCard';
 import {ScrollProgress} from './components/animations/ScrollProgress';
 import {Seo} from './components/Seo';
+import {YouTubeFacade} from './components/YouTubeFacade';
 
 function scrollTo(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
   const el = document.getElementById(id);
@@ -87,16 +86,18 @@ const serviceSummaries = [
   },
 ];
 
-export default function App() {
+export default function App({path}: {path?: string} = {}) {
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [formState, setFormState] = useState<'idle' | 'sending' | 'ok' | 'error' | 'ratelimit'>('idle');
   const reduceMotion = useReducedMotion();
-  const currentService = findServiceByPath(window.location.pathname);
+  // En build (SSG) la ruta llega por prop; en navegador se lee de la URL.
+  const currentPath = path ?? (typeof window === 'undefined' ? '/' : window.location.pathname);
+  const currentService = findServiceByPath(currentPath);
 
   if (currentService) {
     return (
       <div className="min-h-screen selection:bg-primary selection:text-white">
-        <Seo />
+        <Seo path={currentPath} />
         <ScrollProgress />
         <Navigation />
         <ServicePage service={currentService} />
@@ -140,8 +141,7 @@ export default function App() {
       category: 'Landing Page',
       description:
         'Landing editorial para una guía de autor sobre bubble tea en España, con ciudades destacadas, jerarquía visual premium y CTAs orientados a exploración y ranking.',
-      image:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuB_QDsx6cbv7uYVuBzXgGtWC5VRpwLr6MEOqB6iFsF0tJ9brXx_sNt_Ht_Abus9XAmhfHk038WNKJzffFKr7P92DMkCK1rclHwq2UOC77BRyp0Pe3WJ_sQqvTKfDZCK8f-261KkrPhddtmP7YJCjiOH-Vvl89QFE7ooSEoTR7sZH3OHMUc8q_EbVR_j1f_yFcGmcPhrWbL9OLYsmSZw-keGDSgxktrSwUx11OkmsAC-zU0j_QxvHJ99t-blp2aH__Rdo4NfoXo6u_d9',
+      image: '/bubble-tea-espana.webp',
       imageAlt: 'Landing page premium para Bubble Tea España con diseño editorial',
       size: 'large',
       tags: ['LANDINGS'],
@@ -185,266 +185,238 @@ export default function App() {
 
   return (
     <div className="min-h-screen selection:bg-primary selection:text-white">
-      <Seo />
+      <Seo path={currentPath} />
       <ScrollProgress />
       <Navigation />
 
-      <section className="relative isolate min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-20">
-        <motion.div
-          initial={reduceMotion ? false : 'hidden'}
-          animate={reduceMotion ? undefined : 'show'}
-          variants={{
-            hidden: {},
-            show: {
-              transition: {
-                staggerChildren: 0.1,
-                delayChildren: 0.1,
-              },
-            },
-          }}
-          className="max-w-5xl mx-auto text-center space-y-8"
-        >
-          <motion.h1
-            variants={{
-              hidden: {opacity: 0, y: 24},
-              show: {opacity: 1, y: 0, transition: {duration: 0.75, ease: EASE_OUT}},
-            }}
-            className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]"
-          >
-            <SplitText text="Desarrollador Web SEO" /> <br />
-            <SplitText text="y Marketing Digital en" />{' '}
-            <span className="text-editorial-gradient">Vigo</span>
-          </motion.h1>
-          <motion.p
-            variants={{
-              hidden: {opacity: 0, y: 18},
-              show: {opacity: 1, y: 0, transition: {duration: 0.65, ease: EASE_OUT}},
-            }}
-            className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light"
-          >
-            Webs, tiendas online y sistemas de reservas para negocios en Vigo. Rápidos,
-            gestionables y listos para captar clientes desde el primer día.
-          </motion.p>
-          <motion.div
-            variants={{
-              hidden: {opacity: 0, y: 16},
-              show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
-            }}
-            className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4"
-          >
-            <Magnetic>
-              <motion.a
-                href="#projects"
-                onClick={(e) => scrollTo(e, 'projects')}
-                whileHover={reduceMotion ? undefined : {y: -2}}
-                whileTap={reduceMotion ? undefined : {scale: 0.98}}
-                className="w-full md:w-auto px-10 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.4)] transition-all text-center block"
-              >
-                Ver Proyectos
-              </motion.a>
-            </Magnetic>
-            <Magnetic>
-              <motion.a
-                href="#services"
-                onClick={(e) => scrollTo(e, 'services')}
-                whileHover={reduceMotion ? undefined : {y: -2}}
-                whileTap={reduceMotion ? undefined : {scale: 0.98}}
-                className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center block"
-              >
-                Mis Productos
-              </motion.a>
-            </Magnetic>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      <section id="projects" className="py-32 bg-surface-low px-6">
-        <div className="max-w-7xl mx-auto">
-          <RevealGroup className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-            <RevealItem className="space-y-4">
-              <span className="text-secondary font-bold text-xs uppercase tracking-widest">
-                Proyectos y productos
-              </span>
-              <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-                Proyectos Destacados
-              </h2>
-            </RevealItem>
-            <RevealItem className="flex flex-wrap gap-2">
-              {['ALL', 'IA', 'WEB DEV', 'LANDINGS'].map((filter) => (
-                <motion.button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
-                  whileTap={reduceMotion ? undefined : {scale: 0.96}}
-                  className={`px-6 py-2 rounded-md text-xs font-bold transition-all border ${
-                    activeFilter === filter
-                      ? 'bg-surface-high text-secondary border-primary/50'
-                      : 'bg-surface text-on-surface/40 border-transparent hover:text-primary'
-                  }`}
+      <main>
+        <section className="relative isolate min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-20">
+          {/* Above the fold va estático a propósito: cualquier entrada en opacity:0
+              retrasa el LCP hasta después de hidratar. Las animaciones de entrada
+              se reservan para lo que está bajo el pliegue (Reveal/whileInView). */}
+          <div className="max-w-5xl mx-auto text-center space-y-8">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]">
+              Desarrollador Web SEO <br />
+              y Marketing Digital en{' '}
+              <span className="text-editorial-gradient">Vigo</span>
+            </h1>
+            <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light">
+              Webs, tiendas online y sistemas de reservas para negocios en Vigo. Rápidos,
+              gestionables y listos para captar clientes desde el primer día.
+            </p>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
+              <Magnetic>
+                <motion.a
+                  href="#projects"
+                  onClick={(e) => scrollTo(e, 'projects')}
+                  whileHover={reduceMotion ? undefined : {y: -2}}
+                  whileTap={reduceMotion ? undefined : {scale: 0.98}}
+                  className="w-full md:w-auto px-10 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.4)] transition-all text-center block"
                 >
-                  {filter}
-                </motion.button>
-              ))}
-            </RevealItem>
-          </RevealGroup>
-
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-            {filteredProjects.map((project) => (
-              <TiltCard
-                key={project.id}
-                className={`${
-                  project.size === 'large' ? 'md:col-span-8' : 'md:col-span-4'
-                } group`}
-              >
-                <motion.div
-                  layout
-                  initial={reduceMotion ? false : {opacity: 0, y: 28}}
-                  whileInView={reduceMotion ? undefined : {opacity: 1, y: 0}}
-                  viewport={{once: true, amount: 0.2}}
-                  transition={{duration: 0.6, ease: EASE_OUT}}
-                  className="flex flex-col md:flex-row rounded-2xl bg-surface-high transition-shadow duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] overflow-hidden h-full"
+                  Ver Proyectos
+                </motion.a>
+              </Magnetic>
+              <Magnetic>
+                <motion.a
+                  href="#services"
+                  onClick={(e) => scrollTo(e, 'services')}
+                  whileHover={reduceMotion ? undefined : {y: -2}}
+                  whileTap={reduceMotion ? undefined : {scale: 0.98}}
+                  className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center block"
                 >
-                  <div
-                    className={`overflow-hidden shrink-0 ${
-                      project.size === 'large' ? 'md:w-1/2' : 'md:w-2/5'
+                  Mis Productos
+                </motion.a>
+              </Magnetic>
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" className="py-32 bg-surface-low px-6">
+          <div className="max-w-7xl mx-auto">
+            <RevealGroup className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+              <RevealItem className="space-y-4">
+                <span className="text-secondary font-bold text-xs uppercase tracking-widest">
+                  Proyectos y productos
+                </span>
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
+                  Proyectos Destacados
+                </h2>
+              </RevealItem>
+              <RevealItem className="flex flex-wrap gap-2">
+                {['ALL', 'IA', 'WEB DEV', 'LANDINGS'].map((filter) => (
+                  <motion.button
+                    key={filter}
+                    onClick={() => setActiveFilter(filter)}
+                    whileTap={reduceMotion ? undefined : {scale: 0.96}}
+                    className={`px-6 py-2 rounded-md text-xs font-bold transition-all border ${
+                      activeFilter === filter
+                        ? 'bg-surface-high text-secondary border-primary/50'
+                        : 'bg-surface text-on-surface/60 border-transparent hover:text-primary'
                     }`}
                   >
-                    {'youtubeId' in project && project.youtubeId ? (
-                      <iframe
-                        src={`https://www.youtube-nocookie.com/embed/${project.youtubeId}`}
-                        title={project.imageAlt}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-72 md:h-full"
-                      />
-                    ) : 'youtubeId' in project ? (
-                      <div className="w-full h-72 md:h-full bg-surface flex flex-col items-center justify-center gap-4 text-on-surface/20 border-r border-white/5">
-                        <Bot className="w-14 h-14 text-primary/30" />
-                        <span className="text-xs font-bold uppercase tracking-widest">Vídeo demo próximamente</span>
-                      </div>
-                    ) : (
-                      <img
-                        src={(project as {image: string}).image}
-                        alt={
-                          project.imageAlt ??
-                          `${project.title}: ${project.category} de Samuel Martínez`
-                        }
-                        referrerPolicy="no-referrer"
-                        loading="lazy"
-                        width={800}
-                        height={600}
-                        className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-col justify-start p-8 pt-10 self-start w-full">
-                    <span className="text-secondary text-[10px] font-bold uppercase tracking-widest">
-                      {project.category}
-                    </span>
-                    <h3
-                      className={`font-bold mt-3 ${
-                        project.size === 'large' ? 'text-2xl md:text-3xl' : 'text-xl'
+                    {filter}
+                  </motion.button>
+                ))}
+              </RevealItem>
+            </RevealGroup>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+              {filteredProjects.map((project) => (
+                <TiltCard
+                  key={project.id}
+                  className={`${
+                    project.size === 'large' ? 'md:col-span-8' : 'md:col-span-4'
+                  } group`}
+                >
+                  <motion.div
+                    layout
+                    initial={reduceMotion ? false : {opacity: 0, y: 28}}
+                    whileInView={reduceMotion ? undefined : {opacity: 1, y: 0}}
+                    viewport={{once: true, amount: 0.2}}
+                    transition={{duration: 0.6, ease: EASE_OUT}}
+                    className="flex flex-col md:flex-row rounded-2xl bg-surface-high transition-shadow duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] overflow-hidden h-full"
+                  >
+                    <div
+                      className={`overflow-hidden shrink-0 ${
+                        project.size === 'large' ? 'md:w-1/2' : 'md:w-2/5'
                       }`}
                     >
-                      {project.title}
-                    </h3>
-                    {project.description && (
-                      <p className="text-on-surface/60 mt-3 text-sm md:text-base leading-relaxed">
-                        {project.description}
-                      </p>
-                    )}
-                    {project.link && (
-                      <div className="mt-6 space-y-2">
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all group/link"
-                        >
-                          {project.ctaLabel ?? 'Ver Vista Previa'}{' '}
-                          <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
-                        </a>
-                        {project.linkNote && (
-                          <p className="text-on-surface/30 text-[11px] leading-relaxed">
-                            {project.linkNote}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              </TiltCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="services" className="py-32 bg-surface px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <Reveal className="space-y-8">
-              <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter">
-                Soluciones <br /> que <span className="text-secondary">Convierten.</span>
-              </h2>
-              <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
-                Creo webs, tiendas online y chatbots de reservas para negocios locales en Vigo.
-                Cada proyecto tiene un objetivo claro: que tu cliente encuentre tu negocio y actúe.
-              </p>
-            </Reveal>
-            <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
-              {serviceSummaries.map((service) => (
-                <motion.a
-                  key={service.title}
-                  href={service.path}
-                  variants={{
-                    hidden: {opacity: 0, y: 22},
-                    show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
-                  }}
-                  whileHover={reduceMotion ? undefined : {y: -6}}
-                  className="p-10 rounded-2xl bg-surface-low border border-white/5 hover:bg-surface-high transition-colors duration-300 group"
-                >
-                  <div className="text-secondary mb-6 group-hover:text-primary transition-colors">
-                    {service.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                  <p className="text-sm text-on-surface/50 leading-relaxed">{service.desc}</p>
-                  <span className="inline-flex items-center gap-2 mt-6 text-xs font-bold text-primary">
-                    Ver servicio{' '}
-                    <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </motion.a>
+                      {'youtubeId' in project && project.youtubeId ? (
+                        <YouTubeFacade
+                          id={project.youtubeId}
+                          title={project.imageAlt ?? project.title}
+                          className="w-full h-72 md:h-full"
+                        />
+                      ) : 'youtubeId' in project ? (
+                        <div className="w-full h-72 md:h-full bg-surface flex flex-col items-center justify-center gap-4 text-on-surface/60 border-r border-white/5">
+                          <Bot className="w-14 h-14 text-primary/30" />
+                          <span className="text-xs font-bold uppercase tracking-widest">Vídeo demo próximamente</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={(project as {image: string}).image}
+                          alt={
+                            project.imageAlt ??
+                            `${project.title}: ${project.category} de Samuel Martínez`
+                          }
+                          loading="lazy"
+                          width={800}
+                          height={600}
+                          className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col justify-start p-8 pt-10 self-start w-full">
+                      <span className="text-secondary text-[10px] font-bold uppercase tracking-widest">
+                        {project.category}
+                      </span>
+                      <h3
+                        className={`font-bold mt-3 ${
+                          project.size === 'large' ? 'text-2xl md:text-3xl' : 'text-xl'
+                        }`}
+                      >
+                        {project.title}
+                      </h3>
+                      {project.description && (
+                        <p className="text-on-surface/60 mt-3 text-sm md:text-base leading-relaxed">
+                          {project.description}
+                        </p>
+                      )}
+                      {project.link && (
+                        <div className="mt-6 space-y-2">
+                          <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all group/link"
+                          >
+                            {project.ctaLabel ?? 'Ver Vista Previa'}{' '}
+                            <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
+                          </a>
+                          {project.linkNote && (
+                            <p className="text-on-surface/60 text-[11px] leading-relaxed">
+                              {project.linkNote}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                </TiltCard>
               ))}
-            </RevealGroup>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="about" className="py-32 bg-surface-low px-6">
-        <RevealGroup className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
-          <RevealItem className="w-40 h-40 rounded-full overflow-hidden border-4 border-surface-high shadow-2xl">
-            <img
-              src="/profile.webp"
-              alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
-              loading="lazy"
-              width={160}
-              height={160}
-              className="w-full h-full object-cover"
-            />
-          </RevealItem>
-          <RevealItem>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Desarrollador web SEO con mentalidad de negocio
-            </h2>
-          </RevealItem>
-          <RevealItem>
-            <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
-              "Construyo herramientas digitales que resuelven problemas reales: reservas
-              automatizadas, ventas online y presencia en Google para negocios locales en Vigo."
-            </p>
-          </RevealItem>
-        </RevealGroup>
-      </section>
+        <section id="services" className="py-32 bg-surface px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+              <Reveal className="space-y-8">
+                <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter">
+                  Soluciones <br /> que <span className="text-secondary">Convierten.</span>
+                </h2>
+                <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
+                  Creo webs, tiendas online y chatbots de reservas para negocios locales en Vigo.
+                  Cada proyecto tiene un objetivo claro: que tu cliente encuentre tu negocio y actúe.
+                </p>
+              </Reveal>
+              <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
+                {serviceSummaries.map((service) => (
+                  <motion.a
+                    key={service.title}
+                    href={service.path}
+                    variants={{
+                      hidden: {opacity: 0, y: 22},
+                      show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+                    }}
+                    whileHover={reduceMotion ? undefined : {y: -6}}
+                    className="p-10 rounded-2xl bg-surface-low border border-white/5 hover:bg-surface-high transition-colors duration-300 group"
+                  >
+                    <div className="text-secondary mb-6 group-hover:text-primary transition-colors">
+                      {service.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">{service.title}</h3>
+                    <p className="text-sm text-on-surface/50 leading-relaxed">{service.desc}</p>
+                    <span className="inline-flex items-center gap-2 mt-6 text-xs font-bold text-primary">
+                      Ver servicio{' '}
+                      <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </motion.a>
+                ))}
+              </RevealGroup>
+            </div>
+          </div>
+        </section>
 
-      <ContactSection formState={formState} setFormState={setFormState} />
+        <section id="about" className="py-32 bg-surface-low px-6">
+          <RevealGroup className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
+            <RevealItem className="w-40 h-40 rounded-full overflow-hidden border-4 border-surface-high shadow-2xl">
+              <img
+                src="/profile.webp"
+                alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
+                loading="lazy"
+                width={160}
+                height={160}
+                className="w-full h-full object-cover"
+              />
+            </RevealItem>
+            <RevealItem>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
+                Desarrollador web SEO con mentalidad de negocio
+              </h2>
+            </RevealItem>
+            <RevealItem>
+              <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
+                "Construyo herramientas digitales que resuelven problemas reales: reservas
+                automatizadas, ventas online y presencia en Google para negocios locales en Vigo."
+              </p>
+            </RevealItem>
+          </RevealGroup>
+        </section>
+
+        <ContactSection formState={formState} setFormState={setFormState} />
+      </main>
+
       <Footer />
     </div>
   );
@@ -548,9 +520,11 @@ function ServicePage({service}: {service: ServicePageType}) {
   return (
     <main>
       <section className="pt-40 pb-24 px-6 bg-surface">
-        <RevealGroup className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
-          <RevealItem className="space-y-8">
-            <nav className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest text-on-surface/40">
+        {/* Estático a propósito, igual que el hero de la home: está above the fold
+            y no puede depender de IntersectionObserver para pintarse. */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
+          <div className="space-y-8">
+            <nav className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest text-on-surface/60">
               <a href="/" className="hover:text-secondary inline-flex items-center gap-2">
                 <Home className="w-3 h-3" /> Inicio
               </a>
@@ -586,8 +560,8 @@ function ServicePage({service}: {service: ServicePageType}) {
                 Ver proyectos
               </a>
             </div>
-          </RevealItem>
-          <RevealItem className="rounded-2xl bg-surface-low border border-white/5 p-8 md:p-10 space-y-6">
+          </div>
+          <div className="rounded-2xl bg-surface-low border border-white/5 p-8 md:p-10 space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">Enfoque comercial</h2>
             <p className="text-on-surface/60 leading-relaxed">{service.commercialIntent}</p>
             <div className="grid gap-4">
@@ -598,8 +572,8 @@ function ServicePage({service}: {service: ServicePageType}) {
                 </div>
               ))}
             </div>
-          </RevealItem>
-        </RevealGroup>
+          </div>
+        </div>
       </section>
 
       <section className="py-24 px-6 bg-surface-low">
@@ -746,10 +720,14 @@ function ContactSection({
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">
-              <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary">
+              <label
+                htmlFor="nombre"
+                className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary"
+              >
                 Nombre
               </label>
               <input
+                id="nombre"
                 name="nombre"
                 type="text"
                 required
@@ -758,10 +736,14 @@ function ContactSection({
               />
             </div>
             <div className="space-y-3">
-              <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary">
+              <label
+                htmlFor="email"
+                className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary"
+              >
                 Email
               </label>
               <input
+                id="email"
                 name="email"
                 type="email"
                 required
@@ -771,11 +753,15 @@ function ContactSection({
             </div>
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary">
+            <label
+              htmlFor="asunto"
+              className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary"
+            >
               Asunto
             </label>
             <div className="relative">
               <select
+                id="asunto"
                 name="asunto"
                 className="w-full bg-surface-high border border-outline-variant/20 rounded-xl p-5 focus:ring-2 focus:ring-primary/50 text-sm transition-all text-on-surface/60 appearance-none outline-none"
               >
@@ -789,10 +775,14 @@ function ContactSection({
             </div>
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary">
+            <label
+              htmlFor="mensaje"
+              className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary"
+            >
               Mensaje
             </label>
             <textarea
+              id="mensaje"
               name="mensaje"
               rows={4}
               required
@@ -847,17 +837,7 @@ function Footer() {
             <a
               key={service.path}
               href={service.path}
-              className="text-on-surface/40 hover:text-secondary transition-colors"
-            >
-              {service.navLabel}
-            </a>
-          ))}
-          <div className="hidden md:block w-px h-3 bg-white/10 self-center" />
-          {vigoPages.map((service) => (
-            <a
-              key={service.path}
-              href={service.path}
-              className="text-primary/60 hover:text-primary transition-colors"
+              className="text-on-surface/60 hover:text-secondary transition-colors"
             >
               {service.navLabel}
             </a>
@@ -867,7 +847,7 @@ function Footer() {
             href="https://www.linkedin.com/in/samuel-martínez-durán-40a70335b"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-on-surface/40 hover:text-secondary transition-colors"
+            className="text-on-surface/60 hover:text-secondary transition-colors"
           >
             LinkedIn
           </a>
@@ -875,12 +855,12 @@ function Footer() {
             href="https://github.com/Samuelmartinezduran"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-on-surface/40 hover:text-secondary transition-colors"
+            className="text-on-surface/60 hover:text-secondary transition-colors"
           >
             GitHub
           </a>
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface/20">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface/60">
           © 2026 Samuel Martínez. Marketing & Code.
         </p>
       </div>

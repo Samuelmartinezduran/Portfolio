@@ -1,10 +1,22 @@
 import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import {createRoot, hydrateRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root')!;
+
+const tree = (
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 );
+
+// En producción el HTML llega prerenderizado (`scripts/prerender.mjs`) y hay que
+// hidratar para no descartar el markup: el hero ya está pintado y es lo que hace
+// que el LCP no dependa del bundle. En dev el contenedor solo lleva el comentario
+// `<!--app-html-->`, así que `firstElementChild` es null y se monta desde cero.
+if (container.firstElementChild !== null) {
+  hydrateRoot(container, tree);
+} else {
+  createRoot(container).render(tree);
+}
