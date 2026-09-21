@@ -10,9 +10,8 @@
   "theme_color": "#131313",
   "icons": [
     {
-      "src": "/profile.jpg",
-      "sizes": "512x512",
-      "type": "image/jpeg",
+      "src": "/profile.webp",
+      "type": "image/webp",
       "purpose": "any"
     }
   ]

@@ -6,10 +6,12 @@ El enfoque es comercial antes que técnico: cada proyecto se justifica por su ca
 
 ## Servicios
 
-- [Consultor SEO y SEM](https://samuel-martinez-portfolio.vercel.app/servicios/consultor-seo-sem/): posicionamiento local y campañas de pago para captar clientes en Google.
-- [Desarrollo web](https://samuel-martinez-portfolio.vercel.app/servicios/desarrollo-web/): webs rápidas, accesibles y optimizadas para indexación y conversión.
-- [Landing pages y CRO](https://samuel-martinez-portfolio.vercel.app/servicios/landing-pages-cro/): páginas de campaña orientadas a conversión y analítica.
-- [Soluciones con IA](https://samuel-martinez-portfolio.vercel.app/servicios/soluciones-ia/): agentes y chatbots que automatizan reservas y atención al cliente.
+- [Consultor SEO y SEM](https://samuelmartinez.dev/servicios/consultor-seo-sem/): posicionamiento local y campañas de pago para captar clientes en Google.
+- [Desarrollo web](https://samuelmartinez.dev/servicios/desarrollo-web/): webs rápidas, accesibles y optimizadas para indexación y conversión.
+- [Landing pages y CRO](https://samuelmartinez.dev/servicios/landing-pages-cro/): páginas de campaña orientadas a conversión y analítica.
+- [Soluciones con IA](https://samuelmartinez.dev/servicios/soluciones-ia/): agentes y chatbots que automatizan reservas y atención al cliente.
+- [Desarrollo web en Vigo](https://samuelmartinez.dev/desarrollo-web-vigo/): página para pymes de servicios que necesitan captar contactos locales.
+- [SEO local en Vigo](https://samuelmartinez.dev/seo-local-vigo/): estrategia de visibilidad local, Perfil de Empresa de Google y medición.
 
 ## Productos
 
@@ -19,13 +21,13 @@ El enfoque es comercial antes que técnico: cada proyecto se justifica por su ca
 
 ## Páginas
 
-- [Inicio](https://samuel-martinez-portfolio.vercel.app/): presentación, proyectos, servicios y formulario de contacto.
-- [Proyectos](https://samuel-martinez-portfolio.vercel.app/#projects): casos publicados con demos navegables.
-- [Sitemap](https://samuel-martinez-portfolio.vercel.app/sitemap.xml): listado completo de URLs indexables.
+- [Inicio](https://samuelmartinez.dev/): presentación, proyectos, servicios y formulario de contacto.
+- [Proyectos](https://samuelmartinez.dev/#projects): casos publicados con demos navegables.
+- [Sitemap](https://samuelmartinez.dev/sitemap.xml): listado completo de URLs indexables.
 
 ## Contacto
 
-- [Formulario de contacto](https://samuel-martinez-portfolio.vercel.app/#contact): vía principal para pedir propuesta.
+- [Formulario de contacto](https://samuelmartinez.dev/#contact): vía principal para solicitar un diagnóstico web y SEO local.
 - [LinkedIn](https://www.linkedin.com/in/samuel-martínez-durán-40a70335b)
 - [GitHub](https://github.com/Samuelmartinezduran)
 
@@ -33,5 +35,5 @@ El enfoque es comercial antes que técnico: cada proyecto se justifica por su ca
 
 - Idioma principal: español (es-ES). Público objetivo: negocios locales y pymes en Vigo y Galicia.
 - Zona de servicio: Vigo, su comarca y Galicia. También proyectos en remoto para el resto de España.
-- Se permite citar y resumir el contenido de este sitio indicando la fuente como «Samuel Martínez (samuel-martinez-portfolio.vercel.app)».
+- Se permite citar y resumir el contenido de este sitio indicando la fuente como «Samuel Martínez (samuelmartinez.dev)».
 - No se autoriza el uso del contenido para entrenamiento sin atribución.

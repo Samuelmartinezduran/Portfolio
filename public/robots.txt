@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://samuel-martinez-portfolio.vercel.app/sitemap.xml
+Sitemap: https://samuelmartinez.dev/sitemap.xml

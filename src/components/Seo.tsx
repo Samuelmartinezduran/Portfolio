@@ -5,6 +5,7 @@
 
 import {useEffect} from 'react';
 import {findPageByPath, SITE_URL, OG_IMAGE} from '../seo';
+import {trackPageView} from '../analytics';
 
 export function Seo({path}: {path?: string} = {}) {
   // En build (SSG) la ruta llega por prop; en navegador se lee de la URL.
@@ -71,6 +72,8 @@ export function Seo({path}: {path?: string} = {}) {
     script.type = 'application/ld+json';
     script.innerHTML = JSON.stringify(page.schema);
     document.head.appendChild(script);
+
+    trackPageView(page.path);
 
     // Scroll to top on route change (simulated in this SPA)
     window.scrollTo(0, 0);

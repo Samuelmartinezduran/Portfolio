@@ -1,4 +1,4 @@
-export const SITE_URL = 'https://samuel-martinez-portfolio.vercel.app';
+export const SITE_URL = 'https://samuelmartinez.dev';
 export const SITE_NAME = 'Samuel Martínez';
 export const PERSON_ID = `${SITE_URL}/#samuel-martinez`;
 export const BUSINESS_ID = `${SITE_URL}/#desarrollo-web-seo-vigo`;
@@ -33,7 +33,7 @@ export const personSchema = {
   '@type': 'Person',
   '@id': PERSON_ID,
   name: 'Samuel Martínez Durán',
-  jobTitle: 'Desarrollador web SEO y consultor de marketing digital',
+  jobTitle: 'Desarrollador web SEO local y consultor de marketing digital',
   image: PROFILE_IMAGE,
   url: SITE_URL,
   sameAs: [
@@ -79,7 +79,7 @@ const professionalServiceSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   '@id': BUSINESS_ID,
-  name: 'Samuel Martínez | Desarrollo Web SEO y Marketing Digital',
+  name: 'Samuel Martínez | Desarrollo Web SEO Local y Marketing Digital',
   url: SITE_URL,
   image: OG_IMAGE,
   founder: {'@id': PERSON_ID},
@@ -122,8 +122,8 @@ const buildBreadcrumbSchema = (name: string, url: string, isLocal = false) => ({
     {
       '@type': 'ListItem',
       position: 2,
-      name: isLocal ? 'Servicios en Vigo' : 'Servicios',
-      item: isLocal ? `${SITE_URL}/vigo/` : `${SITE_URL}/#services`,
+      name: isLocal ? 'Servicios en Vigo y Galicia' : 'Servicios',
+      item: isLocal ? SITE_URL : `${SITE_URL}/#services`,
     },
     {
       '@type': 'ListItem',
@@ -233,23 +233,23 @@ export const servicePages: ServicePage[] = [
     path: '/servicios/consultor-seo-sem/',
     navLabel: 'SEO/SEM',
     eyebrow: 'Consultoría SEO y SEM',
-    title: 'Consultor SEO SEM en España | Samuel Martínez',
+    title: 'Consultor SEO y SEM en Vigo y Galicia | Samuel Martínez',
     description:
-      'Consultoría SEO y SEM estratégica para captar leads en toda España: auditoría, keywords, campañas y analítica accionable.',
+      'Consultoría SEO y SEM para pymes de Vigo y Galicia: estrategia local, campañas y analítica para captar contactos cualificados.',
     ogTitle: 'Consultor SEO SEM Profesional',
     ogDescription:
       'Optimiza tu visibilidad orgánica y de pago con una estrategia de marketing digital basada en datos.',
     ogType: 'website',
-    h1: 'Consultor SEO SEM especializado en captación de leads',
+    h1: 'Consultor SEO y SEM para pymes de Vigo y Galicia',
     lead:
-      'Ayudo a negocios de toda España a maximizar su inversión digital mediante auditorías profundas, gestión de campañas y analítica avanzada.',
+      'Ayudo a negocios de servicios a encontrar oportunidades locales, priorizar acciones y convertir la visibilidad en contactos medibles.',
     commercialIntent:
-      'Me enfoco en encontrar los canales de tráfico más rentables para tu modelo de negocio, priorizando la conversión sobre el volumen.',
+      'Trabajo SEO local, campañas y analítica como una sola estrategia: atraer búsquedas relevantes en Vigo y saber cuáles generan contactos.',
     outcomes: [
-      'Estrategia de keywords por intención comercial.',
-      'Optimización técnica para buscadores y campañas.',
-      'Configuración avanzada de analítica y medición de conversiones.',
-      'Acompañamiento estratégico para escalar el canal digital.',
+      'Prioridades por intención de búsqueda local y comercial.',
+      'Mejoras técnicas y de contenido para buscadores y campañas.',
+      'Medición de formularios y oportunidades de contacto.',
+      'Plan de acciones claro para avanzar con criterio.',
     ],
     process: [
       'Auditoría y diagnóstico técnico inicial.',
@@ -258,20 +258,21 @@ export const servicePages: ServicePage[] = [
     ],
     faqs: seoSemFaqs,
     related: [
+      '/seo-local-vigo/',
+      '/desarrollo-web-vigo/',
       '/servicios/desarrollo-web/',
       '/servicios/landing-pages-cro/',
-      '/servicios/soluciones-ia/',
     ],
     schema: [
       personSchema,
       {
         ...serviceBase(false),
         '@id': `${SITE_URL}/servicios/consultor-seo-sem/#service`,
-        name: 'Consultoría SEO y SEM Profesional',
+        name: 'Consultoría SEO y SEM para pymes en Vigo y Galicia',
         serviceType: 'Consultoría SEO SEM',
         url: `${SITE_URL}/servicios/consultor-seo-sem/`,
         description:
-          'Estrategia integral de posicionamiento y captación de tráfico pagado para empresas en España.',
+          'Estrategia de posicionamiento y captación para pymes de Vigo y Galicia.',
       },
       buildBreadcrumbSchema('Consultor SEO SEM', `${SITE_URL}/servicios/consultor-seo-sem/`),
       buildFaqSchema(seoSemFaqs),
@@ -282,23 +283,23 @@ export const servicePages: ServicePage[] = [
     path: '/servicios/desarrollo-web/',
     navLabel: 'Desarrollo web',
     eyebrow: 'Desarrollo web SEO',
-    title: 'Desarrollador Web SEO Especializado en Conversión | Samuel Martínez',
+    title: 'Desarrollo Web SEO en Vigo y Galicia | Samuel Martínez',
     description:
-      'Desarrollo web SEO profesional: sitios rápidos, accesibles y optimizados para convertir tráfico en leads en toda España.',
+      'Desarrollo web SEO para pymes de Vigo y Galicia: webs rápidas, claras y preparadas para generar contactos.',
     ogTitle: 'Desarrollo Web SEO Profesional',
     ogDescription:
       'Webs modernas con React preparadas para el marketing digital y el posicionamiento orgánico.',
     ogType: 'website',
-    h1: 'Desarrollador web SEO enfocado en resultados de negocio',
+    h1: 'Desarrollo web SEO para negocios de Vigo y Galicia',
     lead:
-      'Construyo la infraestructura técnica necesaria para que tu empresa destaque en internet, con foco en velocidad, SEO técnico y UX.',
+      'Creo webs rápidas y fáciles de entender para que los negocios de servicios puedan presentar su propuesta, aparecer en Google y recibir contactos.',
     commercialIntent:
-      'No solo diseño webs; construyo activos digitales que funcionan como máquinas de captación de clientes.',
+      'La web se plantea como una herramienta comercial: mensaje claro, estructura para SEO local y una ruta directa hacia el contacto.',
     outcomes: [
-      'Desarrollo front-end de alto rendimiento.',
-      'Estructura técnica optimizada para indexación y ranking.',
-      'Diseño centrado en la conversión y la experiencia de usuario.',
-      'Analítica integrada para tomar decisiones basadas en datos.',
+      'Web rápida, accesible y adaptable a móvil.',
+      'Estructura técnica preparada para indexación.',
+      'Contenido y diseño orientados a solicitudes de contacto.',
+      'Base de analítica para decidir mejoras con datos.',
     ],
     process: [
       'Análisis de requisitos y arquitectura de información.',
@@ -307,9 +308,10 @@ export const servicePages: ServicePage[] = [
     ],
     faqs: webFaqs,
     related: [
+      '/desarrollo-web-vigo/',
+      '/seo-local-vigo/',
       '/servicios/consultor-seo-sem/',
       '/servicios/landing-pages-cro/',
-      '/servicios/soluciones-ia/',
     ],
     schema: [
       personSchema,
@@ -320,7 +322,7 @@ export const servicePages: ServicePage[] = [
         serviceType: 'Desarrollo web front-end',
         url: `${SITE_URL}/servicios/desarrollo-web/`,
         description:
-          'Desarrollo de sitios web rápidos y optimizados para SEO y conversión a nivel nacional.',
+          'Desarrollo de webs rápidas y orientadas a SEO local y conversión para pymes de Vigo y Galicia.',
       },
       buildBreadcrumbSchema('Desarrollo web', `${SITE_URL}/servicios/desarrollo-web/`),
       buildFaqSchema(webFaqs),
@@ -331,18 +333,18 @@ export const servicePages: ServicePage[] = [
     path: '/servicios/landing-pages-cro/',
     navLabel: 'Landing + CRO',
     eyebrow: 'Landing pages y CRO',
-    title: 'Landing Pages y Optimización de Conversión (CRO) | Samuel Martínez',
+    title: 'Landing Pages y CRO en Vigo y Galicia | Samuel Martínez',
     description:
-      'Diseño de landing pages de alta conversión y consultoría CRO para maximizar tus ventas y leads en España.',
+      'Landing pages y CRO para pymes de Vigo y Galicia que quieren transformar campañas y visitas web en contactos.',
     ogTitle: 'Landing Pages y CRO Estratégico',
     ogDescription:
       'Transforma tu tráfico en clientes con páginas optimizadas y análisis de comportamiento.',
     ogType: 'website',
-    h1: 'Landing pages y CRO para maximizar tu retorno de inversión',
+    h1: 'Landing pages y CRO para captar contactos cualificados',
     lead:
-      'Especialista en convertir clics en contactos mediante el diseño de páginas de aterrizaje optimizadas y el análisis continuo de embudos de venta.',
+      'Diseño páginas de campaña claras, rápidas y enfocadas en una sola acción para aprovechar mejor tu inversión en tráfico local o de pago.',
     commercialIntent:
-      'Identifico y elimino los puntos de fuga de tus campañas para aumentar tu tasa de conversión sin aumentar tu presupuesto publicitario.',
+      'El trabajo se centra en entender la oferta, reducir fricción y medir qué mensajes y canales están generando oportunidades reales.',
     outcomes: [
       'Páginas de aterrizaje optimizadas para campañas de Ads.',
       'Análisis de embudos y detección de puntos de fricción.',
@@ -356,9 +358,10 @@ export const servicePages: ServicePage[] = [
     ],
     faqs: croFaqs,
     related: [
+      '/desarrollo-web-vigo/',
       '/servicios/consultor-seo-sem/',
       '/servicios/desarrollo-web/',
-      '/servicios/soluciones-ia/',
+      '/seo-local-vigo/',
     ],
     schema: [
       personSchema,
@@ -369,7 +372,7 @@ export const servicePages: ServicePage[] = [
         serviceType: 'Landing pages CRO',
         url: `${SITE_URL}/servicios/landing-pages-cro/`,
         description:
-          'Diseño y optimización de conversión para campañas de marketing digital en toda España.',
+          'Diseño y optimización de conversión para campañas de pymes en Vigo y Galicia.',
       },
       buildBreadcrumbSchema('Landing pages y CRO', `${SITE_URL}/servicios/landing-pages-cro/`),
       buildFaqSchema(croFaqs),
@@ -380,18 +383,18 @@ export const servicePages: ServicePage[] = [
     path: '/servicios/soluciones-ia/',
     navLabel: 'IA y chatbots',
     eyebrow: 'Soluciones con IA para empresas',
-    title: 'IA Aplicada y Chatbots Inteligentes para Negocios | Samuel Martínez',
+    title: 'Automatización e IA para Pymes en Vigo | Samuel Martínez',
     description:
-      'Integro Inteligencia Artificial en tus procesos: chatbots, automatizaciones y asistentes personalizados para empresas en España.',
+      'Automatización e IA para pymes de Vigo y Galicia: chatbots, asistentes y procesos conectados con tus herramientas.',
     ogTitle: 'IA y Automatización para Empresas',
     ogDescription:
       'Optimiza tu operativa con soluciones basadas en IA y agentes inteligentes.',
     ogType: 'website',
-    h1: 'Soluciones con IA para transformar la eficiencia de tu negocio',
+    h1: 'Automatización e IA práctica para pymes de Vigo y Galicia',
     lead:
-      'Ayudo a empresas de toda España a integrar la IA generativa y la automatización en su día a día para ahorrar tiempo y mejorar la atención al cliente.',
+      'Ayudo a negocios de servicios a aplicar IA en tareas concretas: responder consultas, gestionar reservas y conectar procesos que hoy son manuales.',
     commercialIntent:
-      'Busco implementar la IA allí donde genere un ahorro de costes real o una mejora tangible en la experiencia de tus clientes.',
+      'Antes de elegir tecnología, identifico un proceso útil y defino cómo se medirá su impacto en la atención o la operativa.',
     outcomes: [
       'Agentes de IA personalizados para soporte y ventas.',
       'Automatización de procesos de datos y contenido.',
@@ -405,9 +408,10 @@ export const servicePages: ServicePage[] = [
     ],
     faqs: aiFaqs,
     related: [
+      '/desarrollo-web-vigo/',
       '/servicios/desarrollo-web/',
       '/servicios/landing-pages-cro/',
-      '/servicios/consultor-seo-sem/',
+      '/seo-local-vigo/',
     ],
     schema: [
       personSchema,
@@ -418,13 +422,154 @@ export const servicePages: ServicePage[] = [
         serviceType: 'Soluciones con IA y chatbots',
         url: `${SITE_URL}/servicios/soluciones-ia/`,
         description:
-          'Consultoría e implementación de inteligencia artificial para la mejora de procesos empresariales.',
+          'Consultoría e implementación de automatización e IA para pymes de Vigo y Galicia.',
       },
       buildBreadcrumbSchema('Soluciones con IA', `${SITE_URL}/servicios/soluciones-ia/`),
       buildFaqSchema(aiFaqs),
     ],
   },
 ];
+
+const desarrolloWebVigoFaqs = [
+  {
+    question: '¿Qué incluye una web para un negocio de servicios en Vigo?',
+    answer:
+      'Cada proyecto parte de la oferta y del cliente ideal. La web se estructura para explicar el servicio, facilitar el contacto, cargar rápido y dar una base técnica adecuada para SEO local.',
+  },
+  {
+    question: '¿La web estará preparada para aparecer en Google?',
+    answer:
+      'Sí. Se trabaja la estructura semántica, indexación, metadatos, rendimiento y las páginas necesarias para que Google entienda qué servicio ofreces y dónde lo prestas.',
+  },
+  {
+    question: '¿Puedo añadir reservas o automatizaciones más adelante?',
+    answer:
+      'Sí. La web puede evolucionar con formularios, reservas, integraciones o automatizaciones cuando exista un caso de uso concreto para el negocio.',
+  },
+];
+
+const seoLocalVigoFaqs = [
+  {
+    question: '¿Qué es el SEO local?',
+    answer:
+      'Es el trabajo para que un negocio sea relevante cuando alguien busca un servicio en una zona concreta. Combina la web, el Perfil de Empresa de Google, contenido útil y señales de confianza.',
+  },
+  {
+    question: '¿Necesito un Perfil de Empresa de Google?',
+    answer:
+      'Para captar búsquedas locales es recomendable. Se configura con los datos reales del negocio, sus servicios, zona de atención, imágenes y un enlace directo a la página web adecuada.',
+  },
+  {
+    question: '¿Cuándo se ven resultados?',
+    answer:
+      'Depende del sector, la competencia y la situación inicial. El primer paso es medir indexación, consultas y contactos para priorizar mejoras con datos, sin prometer posiciones concretas.',
+  },
+];
+
+export const localPages: ServicePage[] = [
+  {
+    slug: 'desarrollo-web-vigo',
+    path: '/desarrollo-web-vigo/',
+    navLabel: 'Desarrollo web en Vigo',
+    eyebrow: 'Desarrollo web SEO en Vigo',
+    title: 'Desarrollo Web en Vigo | Webs para captar clientes',
+    description:
+      'Desarrollo web en Vigo para pymes de servicios: webs rápidas, claras y preparadas para SEO local y solicitudes de contacto.',
+    ogTitle: 'Desarrollo web en Vigo para captar clientes',
+    ogDescription:
+      'Webs rápidas y claras para pymes de servicios de Vigo que necesitan convertir visitas en contactos.',
+    ogType: 'website',
+    h1: 'Desarrollo web en Vigo para captar clientes',
+    lead:
+      'Creo webs para pymes de servicios que necesitan explicar bien lo que hacen, llegar a clientes de Vigo y Galicia y convertir visitas en conversaciones.',
+    commercialIntent:
+      'No se trata de publicar una web más: se trata de ordenar tu oferta, hacerla fácil de encontrar y dirigir a cada visita hacia una solicitud de diagnóstico.',
+    outcomes: [
+      'Mensaje y estructura pensados para tu cliente ideal.',
+      'Rendimiento, accesibilidad y base técnica para SEO local.',
+      'Páginas de servicio que responden a búsquedas comerciales.',
+      'Formulario de diagnóstico y medición de contactos.',
+    ],
+    process: [
+      'Diagnóstico de la oferta, el público y las oportunidades de búsqueda local.',
+      'Arquitectura de contenidos, diseño y desarrollo de las páginas prioritarias.',
+      'Publicación, medición de contactos y siguientes mejoras basadas en datos.',
+    ],
+    faqs: desarrolloWebVigoFaqs,
+    related: [
+      '/seo-local-vigo/',
+      '/servicios/desarrollo-web/',
+      '/servicios/consultor-seo-sem/',
+      '/servicios/soluciones-ia/',
+    ],
+    schema: [
+      personSchema,
+      {
+        ...serviceBase(true),
+        '@id': `${SITE_URL}/desarrollo-web-vigo/#service`,
+        name: 'Desarrollo web SEO en Vigo',
+        serviceType: 'Desarrollo web para pymes de servicios',
+        url: `${SITE_URL}/desarrollo-web-vigo/`,
+        description:
+          'Desarrollo de webs rápidas y preparadas para SEO local y captación de contactos en Vigo y Galicia.',
+      },
+      buildBreadcrumbSchema('Desarrollo web en Vigo', `${SITE_URL}/desarrollo-web-vigo/`, true),
+      buildFaqSchema(desarrolloWebVigoFaqs),
+    ],
+  },
+  {
+    slug: 'seo-local-vigo',
+    path: '/seo-local-vigo/',
+    navLabel: 'SEO local en Vigo',
+    eyebrow: 'SEO local para pymes',
+    title: 'SEO Local en Vigo | Visibilidad y contactos para pymes',
+    description:
+      'SEO local en Vigo para pymes de servicios: estrategia web, Perfil de Empresa de Google y medición para captar contactos relevantes.',
+    ogTitle: 'SEO local en Vigo para pymes de servicios',
+    ogDescription:
+      'Mejora la visibilidad local de tu negocio con una web clara, Perfil de Empresa de Google y medición de contactos.',
+    ogType: 'website',
+    h1: 'SEO local en Vigo para que te encuentren tus próximos clientes',
+    lead:
+      'Trabajo la web y el Perfil de Empresa de Google para que tu negocio de servicios responda mejor a las búsquedas locales y tenga una ruta clara hacia el contacto.',
+    commercialIntent:
+      'El objetivo no es acumular visitas sin contexto: es identificar las búsquedas que encajan con tus servicios y mejorar la información que ayuda a un cliente a elegirte.',
+    outcomes: [
+      'Diagnóstico de presencia local, web y búsquedas relevantes.',
+      'Páginas de servicio con intención comercial y contexto geográfico real.',
+      'Configuración y mejora del Perfil de Empresa de Google.',
+      'Medición de consultas, visibilidad y formularios enviados.',
+    ],
+    process: [
+      'Revisión de la oferta, competencia local y estado de indexación.',
+      'Priorización de mejoras en contenido, estructura técnica y perfil local.',
+      'Seguimiento de consultas y contactos para iterar con datos.',
+    ],
+    faqs: seoLocalVigoFaqs,
+    related: [
+      '/desarrollo-web-vigo/',
+      '/servicios/consultor-seo-sem/',
+      '/servicios/desarrollo-web/',
+      '/servicios/landing-pages-cro/',
+    ],
+    schema: [
+      personSchema,
+      {
+        ...serviceBase(true),
+        '@id': `${SITE_URL}/seo-local-vigo/#service`,
+        name: 'SEO local en Vigo',
+        serviceType: 'Consultoría SEO local',
+        url: `${SITE_URL}/seo-local-vigo/`,
+        description:
+          'Estrategia SEO local para pymes de servicios de Vigo y Galicia.',
+      },
+      buildBreadcrumbSchema('SEO local en Vigo', `${SITE_URL}/seo-local-vigo/`, true),
+      buildFaqSchema(seoLocalVigoFaqs),
+    ],
+  },
+];
+
+export const allServicePages = [...servicePages, ...localPages];
 
 export const homePage: PageSeo = {
   path: '/',
@@ -441,7 +586,7 @@ export const homePage: PageSeo = {
       offers: {
         '@type': 'OfferCatalog',
         name: 'Servicios de marketing digital y desarrollo web',
-        itemListElement: [...servicePages].map((service) => ({
+        itemListElement: allServicePages.map((service) => ({
           '@type': 'Offer',
           itemOffered: {'@id': `${SITE_URL}${service.path}#service`},
         })),
@@ -451,7 +596,7 @@ export const homePage: PageSeo = {
   ],
 };
 
-export const pages = [homePage, ...servicePages];
+export const pages = [homePage, ...allServicePages];
 
 export const normalizePath = (path: string) => {
   let cleanPath = path.split('?')[0].split('#')[0];
@@ -468,4 +613,4 @@ export const findPageByPath = (path: string) =>
   pages.find((page) => page.path === normalizePath(path)) ?? homePage;
 
 export const findServiceByPath = (path: string) =>
-  servicePages.find((page) => page.path === normalizePath(path));
+  allServicePages.find((page) => page.path === normalizePath(path));

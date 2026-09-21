@@ -14,12 +14,15 @@ import {
   Home,
 } from 'lucide-react';
 import type {CSSProperties, ReactNode} from 'react';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
+  allServicePages,
   findServiceByPath,
+  localPages,
   servicePages,
   type ServicePage as ServicePageType,
 } from './seo';
+import {trackEvent} from './analytics';
 import {Reveal, RevealGroup, RevealItem} from './components/animations/Reveal';
 import {Magnetic} from './components/animations/Magnetic';
 import {ParallaxBlob} from './components/animations/ParallaxBlob';
@@ -64,25 +67,25 @@ const serviceSummaries = [
     ...servicePages[0],
     icon: serviceIconBySlug['consultor-seo-sem'],
     title: 'Web + SEO Local',
-    desc: 'Tu negocio visible en Google cuando alguien en Vigo busca lo que ofreces. Sin tecnicismos.',
+    desc: 'Una web clara para que tus clientes de Vigo encuentren tu negocio y sepan cómo contactar contigo.',
   },
   {
     ...servicePages[1],
     icon: serviceIconBySlug['desarrollo-web'],
-    title: 'Tienda Online Gestionable',
-    desc: 'Tienda online con panel de gestión para que tu cliente actualice productos sin tocar código. Pagos con Stripe incluidos.',
+    title: 'Web para pymes de servicios',
+    desc: 'Una web rápida, clara y preparada para convertir visitas locales en solicitudes de diagnóstico.',
   },
   {
     ...servicePages[2],
     icon: serviceIconBySlug['landing-pages-cro'],
     title: 'Landing Page',
-    desc: 'Una página clara y rápida para que tus campañas o tu SEO local conviertan visitas en llamadas.',
+    desc: 'Una página clara y rápida para que campañas y SEO local conviertan visitas en contactos.',
   },
   {
     ...servicePages[3],
     icon: serviceIconBySlug['soluciones-ia'],
-    title: 'Reservas con IA',
-    desc: 'Chatbot que gestiona reservas 24 h para tu restaurante o bar. Los clientes reservan solos, tú gestionas desde el móvil.',
+    title: 'Automatización con IA',
+    desc: 'Automatizaciones útiles para responder consultas, gestionar reservas y reducir tareas manuales.',
   },
 ];
 
@@ -514,7 +517,7 @@ function Navigation() {
 function ServicePage({service}: {service: ServicePageType}) {
   const reduceMotion = useReducedMotion();
   const relatedServices = service.related
-    .map((path) => servicePages.find((item) => item.path === path))
+    .map((path) => allServicePages.find((item) => item.path === path))
     .filter(Boolean) as ServicePageType[];
 
   return (
@@ -683,13 +686,23 @@ function ContactSection({
   formState: 'idle' | 'sending' | 'ok' | 'error' | 'ratelimit';
   setFormState: (state: 'idle' | 'sending' | 'ok' | 'error' | 'ratelimit') => void;
 }) {
+  const formStarted = useRef(false);
+
+  const handleFormStart = () => {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    trackEvent('form_start', {form_name: 'diagnostico_web_seo_local'});
+  };
+
   return (
     <section id="contact" className="py-32 bg-surface px-6 relative overflow-hidden">
       <RevealGroup className="max-w-3xl mx-auto">
         <RevealItem className="mb-16 text-center space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">¿Hablamos sobre tu negocio?</h2>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+            Solicita un diagnóstico web y SEO local
+          </h2>
           <p className="text-on-surface/50 text-lg">
-            Cuéntame qué necesitas y te preparo una propuesta sin compromiso en 24 h.
+            Cuéntame qué hace tu negocio y qué quieres mejorar. Revisaré el punto de partida y te responderé con los siguientes pasos.
           </p>
         </RevealItem>
         <motion.form
@@ -698,6 +711,7 @@ function ContactSection({
             show: {opacity: 1, y: 0, transition: {duration: 0.65, ease: EASE_OUT}},
           }}
           className="space-y-8 bg-surface-low p-8 md:p-16 rounded-3xl shadow-2xl relative z-10 border border-white/5"
+          onFocusCapture={handleFormStart}
           onSubmit={async (e) => {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(e.currentTarget));
@@ -711,7 +725,15 @@ function ContactSection({
               if (res.status === 429) {
                 setFormState('ratelimit');
               } else {
-                setFormState(res.ok ? 'ok' : 'error');
+                if (res.ok) {
+                  trackEvent('generate_lead', {
+                    form_name: 'diagnostico_web_seo_local',
+                    lead_type: String(data.asunto ?? 'Web + SEO local'),
+                  });
+                  setFormState('ok');
+                } else {
+                  setFormState('error');
+                }
               }
             } catch {
               setFormState('error');
@@ -765,10 +787,11 @@ function ContactSection({
                 name="asunto"
                 className="w-full bg-surface-high border border-outline-variant/20 rounded-xl p-5 focus:ring-2 focus:ring-primary/50 text-sm transition-all text-on-surface/60 appearance-none outline-none"
               >
-                <option>Sistema de Reservas para mi negocio</option>
-                <option>Tienda Online</option>
-                <option>Web + SEO</option>
+                <option>Web + SEO local</option>
+                <option>Desarrollo web</option>
+                <option>SEO local</option>
                 <option>Landing Page</option>
+                <option>Automatización con IA</option>
                 <option>Otro</option>
               </select>
               <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface/40 pointer-events-none" />
@@ -813,7 +836,7 @@ function ContactSection({
               disabled={formState === 'sending' || formState === 'ok' || formState === 'ratelimit'}
               className="w-full py-5 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-black rounded-full shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:pointer-events-none px-10"
             >
-              {formState === 'sending' ? 'ENVIANDO...' : 'ENVIAR PROPUESTA'}
+              {formState === 'sending' ? 'ENVIANDO...' : 'SOLICITAR DIAGNÓSTICO'}
               {formState !== 'sending' && (
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               )}
@@ -834,6 +857,15 @@ function Footer() {
         </a>
         <div className="flex flex-wrap justify-center gap-6 text-[10px] font-bold uppercase tracking-[0.2em]">
           {servicePages.map((service) => (
+            <a
+              key={service.path}
+              href={service.path}
+              className="text-on-surface/60 hover:text-secondary transition-colors"
+            >
+              {service.navLabel}
+            </a>
+          ))}
+          {localPages.map((service) => (
             <a
               key={service.path}
               href={service.path}

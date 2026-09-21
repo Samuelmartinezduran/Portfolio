@@ -57,6 +57,8 @@ export default defineConfig({
         webDev: path.resolve(__dirname, 'servicios/desarrollo-web/index.html'),
         landingCro: path.resolve(__dirname, 'servicios/landing-pages-cro/index.html'),
         aiSolutions: path.resolve(__dirname, 'servicios/soluciones-ia/index.html'),
+        desarrolloWebVigo: path.resolve(__dirname, 'desarrollo-web-vigo/index.html'),
+        seoLocalVigo: path.resolve(__dirname, 'seo-local-vigo/index.html'),
       },
     },
   },
