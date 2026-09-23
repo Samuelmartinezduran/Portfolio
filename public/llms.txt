@@ -1,8 +1,8 @@
-# Samuel Martínez — Desarrollo Web SEO en Vigo
+# Samuel Martínez — Desarrollo web y SEO local en Vigo
 
-> Desarrollador web freelance y consultor SEO en Vigo (Galicia, España). Construye webs, tiendas online, landing pages y agentes de IA para negocios locales que necesitan captar clientes y medir resultados.
+> Desarrollo web y SEO local para negocios de Vigo. Samuel Martínez crea webs, tiendas online y sistemas de reservas que explican la oferta de cada negocio y facilitan el contacto.
 
-El enfoque es comercial antes que técnico: cada proyecto se justifica por su capacidad de generar contactos medibles, no por la tecnología empleada.
+Los proyectos muestran usos concretos: presentar servicios, vender online, atender consultas y organizar reservas.
 
 ## Servicios
 
@@ -15,19 +15,19 @@ El enfoque es comercial antes que técnico: cada proyecto se justifica por su ca
 
 ## Productos
 
-- Sistema de reservas para hostelería: chatbot que atiende 24 h y panel privado de gestión, sin comisiones por reserva.
+- Reservas online para restaurantes y bares: los clientes reservan desde la web y el negocio gestiona las reservas en un panel privado.
 - Tienda online gestionable: catálogo editable desde un panel, sin tocar código, con pagos mediante Stripe.
-- Agente de IA para citas por WhatsApp, conectado a Google Calendar.
+- Citas por WhatsApp con IA: responde consultas y anota las citas en Google Calendar.
 
 ## Páginas
 
 - [Inicio](https://samuelmartinez.dev/): presentación, proyectos, servicios y formulario de contacto.
-- [Proyectos](https://samuelmartinez.dev/#projects): casos publicados con demos navegables.
+- [Proyectos](https://samuelmartinez.dev/#projects): trabajos y demostraciones de webs, aplicaciones y automatizaciones.
 - [Sitemap](https://samuelmartinez.dev/sitemap.xml): listado completo de URLs indexables.
 
 ## Contacto
 
-- [Formulario de contacto](https://samuelmartinez.dev/#contact): vía principal para solicitar un diagnóstico web y SEO local.
+- [Formulario de contacto](https://samuelmartinez.dev/#contact): vía para contar qué necesita un negocio y concretar los siguientes pasos.
 - [LinkedIn](https://www.linkedin.com/in/samuel-martínez-durán-40a70335b)
 - [GitHub](https://github.com/Samuelmartinezduran)
 
