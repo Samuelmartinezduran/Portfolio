@@ -573,12 +573,12 @@ export const allServicePages = [...servicePages, ...localPages];
 
 export const homePage: PageSeo = {
   path: '/',
-  title: 'Desarrollador Web SEO y Marketing Digital en Vigo',
+  title: 'Desarrollo web y SEO local para negocios de Vigo | Samuel Martínez',
   description:
-    'Desarrollo web, SEO, SEM, soluciones con IA y marketing digital en Vigo y España para captar leads con webs rápidas, landing pages, CRO y analítica.',
-  ogTitle: 'Desarrollador web SEO y marketing digital en Vigo',
+    'Webs, tiendas online y sistemas de reservas para negocios de Vigo. Desarrollo web y SEO local para explicar tu oferta y facilitar el contacto.',
+  ogTitle: 'Desarrollo web y SEO local en Vigo | Samuel Martínez',
   ogDescription:
-    'Desarrollo web, SEO, SEM, landing pages, IA y CRO para negocios que necesitan captar leads medibles.',
+    'Webs, tiendas online y automatizaciones que ayudan a tus clientes a encontrarte, entender tu oferta y contactar contigo.',
   ogType: 'website',
   schema: [
     {

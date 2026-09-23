@@ -12,3 +12,8 @@
 - **Decision:** Añadir páginas indexables de desarrollo web y SEO local en Vigo, conectadas con los servicios existentes.
 - **Reason:** Cubren intenciones comerciales locales distintas sin convertir las páginas nacionales en duplicados geográficos.
 - **Source:** User instruction
+
+## Mensaje principal del portfolio
+- **Decision:** Presentar desarrollo web y SEO local para negocios de Vigo como oferta principal, y explicar los proyectos mediante usos concretos y lenguaje sencillo.
+- **Reason:** El usuario pidió mejorar el atractivo de los textos y aprobó esta propuesta tras revisarla.
+- **Source:** User instruction

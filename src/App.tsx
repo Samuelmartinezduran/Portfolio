@@ -67,30 +67,30 @@ const serviceSummaries = [
     ...servicePages[0],
     icon: serviceIconBySlug['consultor-seo-sem'],
     title: 'Web + SEO Local',
-    desc: 'Una web clara para que tus clientes de Vigo encuentren tu negocio y sepan cómo contactar contigo.',
+    desc: 'Mejora tu presencia en Google y ayuda a tus clientes de Vigo a encontrar lo que ofreces.',
   },
   {
     ...servicePages[1],
     icon: serviceIconBySlug['desarrollo-web'],
     title: 'Web para pymes de servicios',
-    desc: 'Una web rápida, clara y preparada para convertir visitas locales en solicitudes de diagnóstico.',
+    desc: 'Explica tus servicios con claridad y facilita que quien te visita pueda escribirte.',
   },
   {
     ...servicePages[2],
     icon: serviceIconBySlug['landing-pages-cro'],
-    title: 'Landing Page',
-    desc: 'Una página clara y rápida para que campañas y SEO local conviertan visitas en contactos.',
+    title: 'Página de campaña',
+    desc: 'Presenta una oferta concreta y guía al visitante hacia el contacto o la compra.',
   },
   {
     ...servicePages[3],
     icon: serviceIconBySlug['soluciones-ia'],
     title: 'Automatización con IA',
-    desc: 'Automatizaciones útiles para responder consultas, gestionar reservas y reducir tareas manuales.',
+    desc: 'Responde consultas, organiza reservas y dedica menos tiempo a tareas repetitivas.',
   },
 ];
 
 export default function App({path}: {path?: string} = {}) {
-  const [activeFilter, setActiveFilter] = useState('ALL');
+  const [activeFilter, setActiveFilter] = useState('Todos');
   const [formState, setFormState] = useState<'idle' | 'sending' | 'ok' | 'error' | 'ratelimit'>('idle');
   const reduceMotion = useReducedMotion();
   // En build (SSG) la ruta llega por prop; en navegador se lee de la URL.
@@ -112,79 +112,79 @@ export default function App({path}: {path?: string} = {}) {
   const projects = [
     {
       id: 0,
-      title: 'Sistema de Reservas para Hostelería',
-      category: 'Producto IA',
+      title: 'Reservas online para restaurantes y bares',
+      category: 'Automatización',
       description:
-        'Chatbot que gestiona reservas 24 h para tu restaurante o bar. Los clientes reservan conversando desde tu web y tú lo controlas desde un panel privado. Sin comisiones, sin intermediarios.',
+        'Tus clientes pueden reservar desde la web a cualquier hora. Tú consultas y gestionas las reservas desde un panel privado.',
       youtubeId: null as string | null, // ← pega aquí el ID del vídeo de YouTube cuando lo tengas
       imageAlt: 'Demo del sistema de reservas con chatbot IA para hostelería',
       size: 'large',
-      tags: ['IA', 'WEB DEV'],
+      tags: ['IA', 'Webs y apps'],
       link: '/#contact',
-      ctaLabel: 'Solicitar Demo',
+      ctaLabel: 'Pedir demostración',
       linkNote: 'Instalación personalizada para tu negocio · desde 300 €',
     },
     {
       id: 4,
-      title: 'Agente IA de Citas por WhatsApp',
-      category: 'Producto IA',
+      title: 'Citas por WhatsApp con IA',
+      category: 'Automatización',
       description:
-        'Recepcionista virtual que atiende WhatsApp 24 h, responde a tus clientes y agenda las citas directamente en tu Google Calendar. Tú lo gestionas sin estar pendiente del móvil.',
+        'Responde consultas por WhatsApp y anota las citas en Google Calendar, aunque no puedas atender el móvil en ese momento.',
       youtubeId: 'UHxZyXY4cXU' as string | null,
       imageAlt: 'Demo del agente de IA que gestiona citas por WhatsApp y Google Calendar',
       size: 'large',
       tags: ['IA'],
       link: '/#contact',
-      ctaLabel: 'Solicitar Demo',
+      ctaLabel: 'Pedir demostración',
       linkNote: 'Agente conectado a tu WhatsApp y Google Calendar · instalación personalizada.',
     },
     {
       id: 1,
       title: 'Bubble Tea España',
-      category: 'Landing Page',
+      category: 'Diseño web',
       description:
-        'Landing editorial para una guía de autor sobre bubble tea en España, con ciudades destacadas, jerarquía visual premium y CTAs orientados a exploración y ranking.',
+        'Página de inicio para una guía sobre bubble tea en España. Destaca las ciudades y facilita que el visitante explore el contenido.',
       image: '/bubble-tea-espana.webp',
       imageAlt: 'Landing page premium para Bubble Tea España con diseño editorial',
       size: 'large',
-      tags: ['LANDINGS'],
+      tags: ['Diseño web'],
       link: 'https://bubble-tea-ebon.vercel.app/',
-      ctaLabel: 'Ver Landing',
+      ctaLabel: 'Ver página',
       linkNote:
-        'Referencia publicada en Vercel para Bubble Tea España, integrada como muestra de diseño editorial y conversión.',
+        'Proyecto publicado como muestra de diseño y organización de contenidos.',
     },
     {
       id: 2,
-      title: 'Price Tracker con Alertas en Tiempo Real',
-      category: 'Web Development',
+      title: 'Seguimiento de precios con alertas',
+      category: 'Aplicación web',
       description:
-        'Aplicación web que monitorea precios de productos y notifica al usuario cuando alcanzan el umbral deseado.',
+        'Permite seguir productos, consultar cómo cambia su precio y recibir una alerta cuando llega al importe elegido.',
       image: '/price-tracker-dashboard.webp',
       imageAlt:
         'Dashboard de Price Tracker con historial de precios, alertas activas y seguimiento de productos',
       size: 'large',
-      tags: ['WEB DEV'],
+      tags: ['Webs y apps'],
       link: 'https://atmospheric-analyst-price-tracker.vercel.app/',
-      linkNote: 'Vista previa — el backend requiere descarga desde GitHub para funcionar.',
+      linkNote: 'Vista de la interfaz; las alertas requieren ejecutar el servidor del proyecto.',
     },
     {
       id: 3,
-      title: 'Tienda Online Gestionable',
-      category: 'Producto E-commerce',
+      title: 'Tienda online fácil de gestionar',
+      category: 'Tienda online',
       description:
-        'Tienda online completa con panel de administración para gestionar productos sin tocar código. Pagos con Stripe integrados. Tu cliente actualiza el catálogo desde el móvil.',
+        'Tienda con pagos integrados y un panel para actualizar productos sin tocar código, también desde el móvil.',
       image: '/e-commerce.webp',
       imageAlt: 'Captura de pantalla de la plataforma e-commerce desarrollada con React',
       size: 'large',
-      tags: ['WEB DEV', 'LANDINGS'],
+      tags: ['Webs y apps', 'Diseño web'],
       link: 'https://e-commerce-sigma-ochre-81.vercel.app/es',
-      ctaLabel: 'Ver Demo',
+      ctaLabel: 'Ver demostración',
       linkNote: 'Instalación personalizada para tu negocio · desde 400 €',
     },
   ];
 
   const filteredProjects =
-    activeFilter === 'ALL' ? projects : projects.filter((p) => p.tags.includes(activeFilter));
+    activeFilter === 'Todos' ? projects : projects.filter((p) => p.tags.includes(activeFilter));
 
   return (
     <div className="min-h-screen selection:bg-primary selection:text-white">
@@ -199,13 +199,13 @@ export default function App({path}: {path?: string} = {}) {
               se reservan para lo que está bajo el pliegue (Reveal/whileInView). */}
           <div className="max-w-5xl mx-auto text-center space-y-8">
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]">
-              Desarrollador Web SEO <br />
-              y Marketing Digital en{' '}
+              Desarrollo web y SEO local <br />
+              para negocios de{' '}
               <span className="text-editorial-gradient">Vigo</span>
             </h1>
             <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light">
-              Webs, tiendas online y sistemas de reservas para negocios en Vigo. Rápidos,
-              gestionables y listos para captar clientes desde el primer día.
+              Creo webs, tiendas online y sistemas de reservas que explican bien tu oferta
+              y facilitan que tus clientes te encuentren y se pongan en contacto contigo.
             </p>
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
               <Magnetic>
@@ -216,7 +216,7 @@ export default function App({path}: {path?: string} = {}) {
                   whileTap={reduceMotion ? undefined : {scale: 0.98}}
                   className="w-full md:w-auto px-10 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.4)] transition-all text-center block"
                 >
-                  Ver Proyectos
+                  Ver proyectos
                 </motion.a>
               </Magnetic>
               <Magnetic>
@@ -227,7 +227,7 @@ export default function App({path}: {path?: string} = {}) {
                   whileTap={reduceMotion ? undefined : {scale: 0.98}}
                   className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center block"
                 >
-                  Mis Productos
+                  Explorar servicios
                 </motion.a>
               </Magnetic>
             </div>
@@ -239,14 +239,14 @@ export default function App({path}: {path?: string} = {}) {
             <RevealGroup className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
               <RevealItem className="space-y-4">
                 <span className="text-secondary font-bold text-xs uppercase tracking-widest">
-                  Proyectos y productos
+                  Trabajos y demostraciones
                 </span>
                 <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-                  Proyectos Destacados
+                  Proyectos destacados
                 </h2>
               </RevealItem>
               <RevealItem className="flex flex-wrap gap-2">
-                {['ALL', 'IA', 'WEB DEV', 'LANDINGS'].map((filter) => (
+                {['Todos', 'IA', 'Webs y apps', 'Diseño web'].map((filter) => (
                   <motion.button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
@@ -293,7 +293,7 @@ export default function App({path}: {path?: string} = {}) {
                       ) : 'youtubeId' in project ? (
                         <div className="w-full h-72 md:h-full bg-surface flex flex-col items-center justify-center gap-4 text-on-surface/60 border-r border-white/5">
                           <Bot className="w-14 h-14 text-primary/30" />
-                          <span className="text-xs font-bold uppercase tracking-widest">Vídeo demo próximamente</span>
+                          <span className="text-xs font-bold uppercase tracking-widest">Demostración en vídeo próximamente</span>
                         </div>
                       ) : (
                         <img
@@ -333,7 +333,7 @@ export default function App({path}: {path?: string} = {}) {
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all group/link"
                           >
-                            {project.ctaLabel ?? 'Ver Vista Previa'}{' '}
+                            {project.ctaLabel ?? 'Ver vista previa'}{' '}
                             <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
                           </a>
                           {project.linkNote && (
@@ -356,11 +356,12 @@ export default function App({path}: {path?: string} = {}) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <Reveal className="space-y-8">
                 <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter">
-                  Soluciones <br /> que <span className="text-secondary">Convierten.</span>
+                  De la primera visita <br /> al <span className="text-secondary">contacto.</span>
                 </h2>
                 <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
-                  Creo webs, tiendas online y chatbots de reservas para negocios locales en Vigo.
-                  Cada proyecto tiene un objetivo claro: que tu cliente encuentre tu negocio y actúe.
+                  Desarrollo webs y automatizaciones para negocios de Vigo. Cada proyecto
+                  responde a una necesidad concreta: explicar un servicio, facilitar una compra
+                  o atender una reserva.
                 </p>
               </Reveal>
               <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
@@ -405,13 +406,14 @@ export default function App({path}: {path?: string} = {}) {
             </RevealItem>
             <RevealItem>
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                Desarrollador web SEO con mentalidad de negocio
+                Soy Samuel Martínez
               </h2>
             </RevealItem>
             <RevealItem>
-              <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed italic font-light">
-                "Construyo herramientas digitales que resuelven problemas reales: reservas
-                automatizadas, ventas online y presencia en Google para negocios locales en Vigo."
+              <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed font-light">
+                Diseño y desarrollo webs, tiendas online y sistemas de reservas para negocios
+                de Vigo. Combino desarrollo web y SEO local para explicar bien cada oferta y facilitar
+                el siguiente paso a quien visita la página.
               </p>
             </RevealItem>
           </RevealGroup>
@@ -554,7 +556,7 @@ function ServicePage({service}: {service: ServicePageType}) {
                 href="/#contact"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.35)] transition-all"
               >
-                Pedir propuesta <ArrowRight className="w-4 h-4" />
+                Cuéntame tu proyecto <ArrowRight className="w-4 h-4" />
               </a>
               <a
                 href="/#projects"
@@ -565,7 +567,7 @@ function ServicePage({service}: {service: ServicePageType}) {
             </div>
           </div>
           <div className="rounded-2xl bg-surface-low border border-white/5 p-8 md:p-10 space-y-6">
-            <h2 className="text-2xl font-bold tracking-tight">Enfoque comercial</h2>
+            <h2 className="text-2xl font-bold tracking-tight">Qué trabajaremos</h2>
             <p className="text-on-surface/60 leading-relaxed">{service.commercialIntent}</p>
             <div className="grid gap-4">
               {service.outcomes.map((outcome) => (
@@ -586,7 +588,7 @@ function ServicePage({service}: {service: ServicePageType}) {
               Proceso
             </span>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
-              De diagnóstico a ejecución medible
+              Así avanzamos con tu proyecto
             </h2>
           </Reveal>
           <RevealGroup className="space-y-5" delay={0.1}>
@@ -669,7 +671,7 @@ function ServicePage({service}: {service: ServicePageType}) {
               whileHover={reduceMotion ? undefined : {x: 4}}
               className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 transition-colors group"
             >
-              <span>Hablar del proyecto</span>
+              <span>Cuéntame tu proyecto</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </motion.a>
           </RevealGroup>
@@ -699,10 +701,11 @@ function ContactSection({
       <RevealGroup className="max-w-3xl mx-auto">
         <RevealItem className="mb-16 text-center space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Solicita un diagnóstico web y SEO local
+            Cuéntame qué necesita tu negocio
           </h2>
           <p className="text-on-surface/50 text-lg">
-            Cuéntame qué hace tu negocio y qué quieres mejorar. Revisaré el punto de partida y te responderé con los siguientes pasos.
+            Dime qué haces y qué te gustaría mejorar. Leeré tu consulta y te responderé
+            para concretar los siguientes pasos.
           </p>
         </RevealItem>
         <motion.form
@@ -753,7 +756,7 @@ function ContactSection({
                 name="nombre"
                 type="text"
                 required
-                placeholder="John Doe"
+                placeholder="Tu nombre"
                 className="w-full bg-surface-high border border-outline-variant/20 rounded-xl p-5 focus:ring-2 focus:ring-primary/50 text-sm transition-all placeholder:text-neutral-600 outline-none"
               />
             </div>
@@ -762,14 +765,14 @@ function ContactSection({
                 htmlFor="email"
                 className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary"
               >
-                Email
+                Correo electrónico
               </label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 required
-                placeholder="john@company.com"
+                placeholder="tu@empresa.com"
                 className="w-full bg-surface-high border border-outline-variant/20 rounded-xl p-5 focus:ring-2 focus:ring-primary/50 text-sm transition-all placeholder:text-neutral-600 outline-none"
               />
             </div>
@@ -779,7 +782,7 @@ function ContactSection({
               htmlFor="asunto"
               className="text-[10px] uppercase font-bold tracking-[0.2em] text-secondary"
             >
-              Asunto
+              ¿En qué puedo ayudarte?
             </label>
             <div className="relative">
               <select
@@ -790,7 +793,7 @@ function ContactSection({
                 <option>Web + SEO local</option>
                 <option>Desarrollo web</option>
                 <option>SEO local</option>
-                <option>Landing Page</option>
+                <option>Página de campaña</option>
                 <option>Automatización con IA</option>
                 <option>Otro</option>
               </select>
@@ -809,7 +812,7 @@ function ContactSection({
               name="mensaje"
               rows={4}
               required
-              placeholder="Cuéntame sobre tu proyecto..."
+              placeholder="Cuéntame qué necesitas y para qué tipo de negocio..."
               className="w-full bg-surface-high border border-outline-variant/20 rounded-xl p-5 focus:ring-2 focus:ring-primary/50 text-sm transition-all placeholder:text-neutral-600 outline-none resize-none"
             />
           </div>
@@ -836,7 +839,7 @@ function ContactSection({
               disabled={formState === 'sending' || formState === 'ok' || formState === 'ratelimit'}
               className="w-full py-5 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-black rounded-full shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:pointer-events-none px-10"
             >
-              {formState === 'sending' ? 'ENVIANDO...' : 'SOLICITAR DIAGNÓSTICO'}
+              {formState === 'sending' ? 'ENVIANDO...' : 'ENVIAR CONSULTA'}
               {formState !== 'sending' && (
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               )}
@@ -893,7 +896,7 @@ function Footer() {
           </a>
         </div>
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface/60">
-          © 2026 Samuel Martínez. Marketing & Code.
+          © 2026 Samuel Martínez. Desarrollo web y SEO local.
         </p>
       </div>
     </footer>
