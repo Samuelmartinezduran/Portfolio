@@ -17,3 +17,13 @@
 - **Decision:** Presentar desarrollo web y SEO local para negocios de Vigo como oferta principal, y explicar los proyectos mediante usos concretos y lenguaje sencillo.
 - **Reason:** El usuario pidió mejorar el atractivo de los textos y aprobó esta propuesta tras revisarla.
 - **Source:** User instruction
+
+## Presentación de los proyectos
+- **Decision:** Identificar los cinco trabajos publicados como proyectos propios o demostraciones y mostrar el estado de cada uno.
+- **Reason:** El usuario confirmó que aún no hay clientes; las fichas deben explicar qué se puede comprobar sin atribuir encargos ni resultados.
+- **Source:** User instruction
+
+## Dirección visual del portfolio
+- **Decision:** Conservar la paleta oscura e Inter, y simplificar botones y tarjetas retirando degradados, brillos, inclinación y movimiento magnético decorativo.
+- **Reason:** Dar prioridad a las capturas y al contenido propio para reducir la apariencia de plantilla.
+- **Source:** User instruction

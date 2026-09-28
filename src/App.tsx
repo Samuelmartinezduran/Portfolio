@@ -24,9 +24,6 @@ import {
 } from './seo';
 import {trackEvent} from './analytics';
 import {Reveal, RevealGroup, RevealItem} from './components/animations/Reveal';
-import {Magnetic} from './components/animations/Magnetic';
-import {ParallaxBlob} from './components/animations/ParallaxBlob';
-import {TiltCard} from './components/animations/TiltCard';
 import {ScrollProgress} from './components/animations/ScrollProgress';
 import {Seo} from './components/Seo';
 import {YouTubeFacade} from './components/YouTubeFacade';
@@ -67,25 +64,25 @@ const serviceSummaries = [
     ...servicePages[0],
     icon: serviceIconBySlug['consultor-seo-sem'],
     title: 'Web + SEO Local',
-    desc: 'Mejora tu presencia en Google y ayuda a tus clientes de Vigo a encontrar lo que ofreces.',
+    desc: 'Reviso qué busca la gente en Vigo y preparo páginas que respondan a esas búsquedas.',
   },
   {
     ...servicePages[1],
     icon: serviceIconBySlug['desarrollo-web'],
     title: 'Web para pymes de servicios',
-    desc: 'Explica tus servicios con claridad y facilita que quien te visita pueda escribirte.',
+    desc: 'Ordeno tu oferta en una web que se entiende y se puede usar bien desde el móvil.',
   },
   {
     ...servicePages[2],
     icon: serviceIconBySlug['landing-pages-cro'],
     title: 'Página de campaña',
-    desc: 'Presenta una oferta concreta y guía al visitante hacia el contacto o la compra.',
+    desc: 'Una página para una oferta concreta, con un siguiente paso visible y medible.',
   },
   {
     ...servicePages[3],
     icon: serviceIconBySlug['soluciones-ia'],
     title: 'Automatización con IA',
-    desc: 'Responde consultas, organiza reservas y dedica menos tiempo a tareas repetitivas.',
+    desc: 'Pruebo un proceso concreto, como atender consultas o registrar citas, antes de ampliarlo.',
   },
 ];
 
@@ -111,75 +108,74 @@ export default function App({path}: {path?: string} = {}) {
 
   const projects = [
     {
-      id: 0,
-      title: 'Reservas online para restaurantes y bares',
-      category: 'Automatización',
-      description:
-        'Tus clientes pueden reservar desde la web a cualquier hora. Tú consultas y gestionas las reservas desde un panel privado.',
-      youtubeId: null as string | null, // ← pega aquí el ID del vídeo de YouTube cuando lo tengas
-      imageAlt: 'Demo del sistema de reservas con chatbot IA para hostelería',
-      size: 'large',
-      tags: ['IA', 'Webs y apps'],
-      link: '/#contact',
-      ctaLabel: 'Pedir demostración',
-      linkNote: 'Instalación personalizada para tu negocio · desde 300 €',
-    },
-    {
       id: 4,
       title: 'Citas por WhatsApp con IA',
       category: 'Automatización',
-      description:
-        'Responde consultas por WhatsApp y anota las citas en Google Calendar, aunque no puedas atender el móvil en ese momento.',
+      description: 'Una demo de atención y citas desde una conversación de WhatsApp.',
+      detail: 'El vídeo enseña cómo se responden consultas y se anota una cita en Google Calendar.',
+      status: 'Demo · vídeo disponible',
       youtubeId: 'UHxZyXY4cXU' as string | null,
       imageAlt: 'Demo del agente de IA que gestiona citas por WhatsApp y Google Calendar',
-      size: 'large',
       tags: ['IA'],
       link: '/#contact',
       ctaLabel: 'Pedir demostración',
-      linkNote: 'Agente conectado a tu WhatsApp y Google Calendar · instalación personalizada.',
+      linkNote: 'Puedes ver el vídeo aquí o pedirme que te enseñe el flujo.',
     },
     {
       id: 1,
       title: 'Bubble Tea España',
       category: 'Diseño web',
-      description:
-        'Página de inicio para una guía sobre bubble tea en España. Destaca las ciudades y facilita que el visitante explore el contenido.',
+      description: 'Una portada para explorar una guía sobre bubble tea por ciudades.',
+      detail: 'Puedes abrir la página publicada y recorrer la navegación y los contenidos.',
+      status: 'Proyecto propio · página publicada',
       image: '/bubble-tea-espana.webp',
-      imageAlt: 'Landing page premium para Bubble Tea España con diseño editorial',
-      size: 'large',
+      imageAlt: 'Captura de la página de Bubble Tea España con navegación por ciudades',
       tags: ['Diseño web'],
       link: 'https://bubble-tea-ebon.vercel.app/',
       ctaLabel: 'Ver página',
-      linkNote:
-        'Proyecto publicado como muestra de diseño y organización de contenidos.',
+      linkNote: 'Página publicada como proyecto propio.',
     },
     {
       id: 2,
       title: 'Seguimiento de precios con alertas',
       category: 'Aplicación web',
-      description:
-        'Permite seguir productos, consultar cómo cambia su precio y recibir una alerta cuando llega al importe elegido.',
+      description: 'Una interfaz para seguir productos y consultar sus cambios de precio.',
+      detail: 'Puedes recorrer el panel; las alertas necesitan el servidor del proyecto en marcha.',
+      status: 'Proyecto propio · vista de interfaz',
       image: '/price-tracker-dashboard.webp',
       imageAlt:
         'Dashboard de Price Tracker con historial de precios, alertas activas y seguimiento de productos',
-      size: 'large',
       tags: ['Webs y apps'],
       link: 'https://atmospheric-analyst-price-tracker.vercel.app/',
-      linkNote: 'Vista de la interfaz; las alertas requieren ejecutar el servidor del proyecto.',
+      linkNote: 'La vista publicada permite explorar la interfaz; las alertas no están activas allí.',
     },
     {
       id: 3,
       title: 'Tienda online fácil de gestionar',
       category: 'Tienda online',
-      description:
-        'Tienda con pagos integrados y un panel para actualizar productos sin tocar código, también desde el móvil.',
+      description: 'Una demo de tienda con catálogo, pagos y edición de productos.',
+      detail: 'Puedes recorrer la tienda publicada y ver cómo se presenta el catálogo en móvil.',
+      status: 'Demo · tienda publicada',
       image: '/e-commerce.webp',
       imageAlt: 'Captura de pantalla de la plataforma e-commerce desarrollada con React',
-      size: 'large',
       tags: ['Webs y apps', 'Diseño web'],
       link: 'https://e-commerce-sigma-ochre-81.vercel.app/es',
       ctaLabel: 'Ver demostración',
-      linkNote: 'Instalación personalizada para tu negocio · desde 400 €',
+      linkNote: 'Demostración publicada; una tienda real se definiría según cada negocio.',
+    },
+    {
+      id: 0,
+      title: 'Reservas online para restaurantes y bares',
+      category: 'Automatización',
+      description: 'Una demo que conecta las reservas de la web con un panel para el local.',
+      detail: 'Aún no hay una vista pública. Puedes pedirme que te enseñe el flujo de reserva y gestión.',
+      status: 'Demo · vídeo pendiente',
+      youtubeId: null as string | null, // ← pega aquí el ID del vídeo de YouTube cuando lo tengas
+      imageAlt: 'Demo del sistema de reservas con chatbot IA para hostelería',
+      tags: ['IA', 'Webs y apps'],
+      link: '/#contact',
+      ctaLabel: 'Pedir demostración',
+      linkNote: 'El vídeo aún no está disponible. Puedes pedirme una demostración.',
     },
   ];
 
@@ -197,53 +193,45 @@ export default function App({path}: {path?: string} = {}) {
           {/* Above the fold va estático a propósito: cualquier entrada en opacity:0
               retrasa el LCP hasta después de hidratar. Las animaciones de entrada
               se reservan para lo que está bajo el pliegue (Reveal/whileInView). */}
-          <div className="max-w-5xl mx-auto text-center space-y-8">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.9]">
+          <div className="max-w-6xl mx-auto text-center space-y-8">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.95]">
               Desarrollo web y SEO local <br />
-              para negocios de{' '}
-              <span className="text-editorial-gradient">Vigo</span>
+              para negocios de Vigo
             </h1>
             <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light">
-              Creo webs, tiendas online y sistemas de reservas que explican bien tu oferta
-              y facilitan que tus clientes te encuentren y se pongan en contacto contigo.
+              Empiezo por lo que necesita entender quien llega a tu web. Después construyo
+              la página, la tienda o el sistema de reservas que le ayude a dar el siguiente paso.
             </p>
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
-              <Magnetic>
-                <motion.a
+                <a
                   href="#projects"
                   onClick={(e) => scrollTo(e, 'projects')}
-                  whileHover={reduceMotion ? undefined : {y: -2}}
-                  whileTap={reduceMotion ? undefined : {scale: 0.98}}
-                  className="w-full md:w-auto px-10 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.4)] transition-all text-center block"
+                  className="w-full md:w-auto px-10 py-4 bg-primary text-surface font-bold rounded-full hover:bg-primary-soft transition-colors text-center block"
                 >
                   Ver proyectos
-                </motion.a>
-              </Magnetic>
-              <Magnetic>
-                <motion.a
+                </a>
+                <a
                   href="#services"
                   onClick={(e) => scrollTo(e, 'services')}
-                  whileHover={reduceMotion ? undefined : {y: -2}}
-                  whileTap={reduceMotion ? undefined : {scale: 0.98}}
                   className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center block"
                 >
                   Explorar servicios
-                </motion.a>
-              </Magnetic>
+                </a>
             </div>
           </div>
         </section>
 
         <section id="projects" className="py-32 bg-surface-low px-6">
           <div className="max-w-7xl mx-auto">
-            <RevealGroup className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+            <RevealGroup className="space-y-8 mb-12">
               <RevealItem className="space-y-4">
-                <span className="text-secondary font-bold text-xs uppercase tracking-widest">
-                  Trabajos y demostraciones
-                </span>
-                <h2 className="text-4xl md:text-6xl font-bold tracking-tight">
-                  Proyectos destacados
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                  Proyectos propios y demostraciones
                 </h2>
+                <p className="max-w-2xl text-on-surface/70 leading-relaxed">
+                  Son proyectos que he construido para mostrar soluciones concretas. Aquí puedes
+                  ver qué hace cada uno y qué parte está disponible para probar.
+                </p>
               </RevealItem>
               <RevealItem className="flex flex-wrap gap-2">
                 {['Todos', 'IA', 'Webs y apps', 'Diseño web'].map((filter) => (
@@ -263,38 +251,24 @@ export default function App({path}: {path?: string} = {}) {
               </RevealItem>
             </RevealGroup>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
               {filteredProjects.map((project) => (
-                <TiltCard
+                <article
                   key={project.id}
-                  className={`${
-                    project.size === 'large' ? 'md:col-span-8' : 'md:col-span-4'
-                  } group`}
+                  className={`flex flex-col bg-surface-high rounded-xl overflow-hidden ${
+                    'youtubeId' in project && project.youtubeId === null
+                      ? 'md:col-span-2'
+                      : ''
+                  }`}
                 >
-                  <motion.div
-                    layout
-                    initial={reduceMotion ? false : {opacity: 0, y: 28}}
-                    whileInView={reduceMotion ? undefined : {opacity: 1, y: 0}}
-                    viewport={{once: true, amount: 0.2}}
-                    transition={{duration: 0.6, ease: EASE_OUT}}
-                    className="flex flex-col md:flex-row rounded-2xl bg-surface-high transition-shadow duration-300 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] overflow-hidden h-full"
-                  >
-                    <div
-                      className={`overflow-hidden shrink-0 ${
-                        project.size === 'large' ? 'md:w-1/2' : 'md:w-2/5'
-                      }`}
-                    >
+                  {!('youtubeId' in project && project.youtubeId === null) && (
+                    <div className="h-64 lg:h-72 bg-surface overflow-hidden">
                       {'youtubeId' in project && project.youtubeId ? (
                         <YouTubeFacade
                           id={project.youtubeId}
                           title={project.imageAlt ?? project.title}
-                          className="w-full h-72 md:h-full"
+                          className="w-full h-full"
                         />
-                      ) : 'youtubeId' in project ? (
-                        <div className="w-full h-72 md:h-full bg-surface flex flex-col items-center justify-center gap-4 text-on-surface/60 border-r border-white/5">
-                          <Bot className="w-14 h-14 text-primary/30" />
-                          <span className="text-xs font-bold uppercase tracking-widest">Demostración en vídeo próximamente</span>
-                        </div>
                       ) : (
                         <img
                           src={(project as {image: string}).image}
@@ -305,47 +279,40 @@ export default function App({path}: {path?: string} = {}) {
                           loading="lazy"
                           width={800}
                           height={600}
-                          className="w-full h-72 md:h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 opacity-50 group-hover:opacity-100"
+                          className="w-full h-full object-cover"
                         />
                       )}
                     </div>
-                    <div className="flex flex-col justify-start p-8 pt-10 self-start w-full">
-                      <span className="text-secondary text-[10px] font-bold uppercase tracking-widest">
-                        {project.category}
+                  )}
+                  <div className={`flex flex-1 flex-col p-8 ${
+                    'youtubeId' in project && project.youtubeId === null ? 'max-w-3xl' : ''
+                  }`}>
+                      <span className="text-secondary text-sm font-semibold">
+                        {project.category} · {project.status}
                       </span>
-                      <h3
-                        className={`font-bold mt-3 ${
-                          project.size === 'large' ? 'text-2xl md:text-3xl' : 'text-xl'
-                        }`}
-                      >
-                        {project.title}
-                      </h3>
-                      {project.description && (
-                        <p className="text-on-surface/60 mt-3 text-sm md:text-base leading-relaxed">
-                          {project.description}
-                        </p>
-                      )}
+                      <h3 className="font-bold mt-4 text-2xl md:text-3xl">{project.title}</h3>
+                      <p className="text-on-surface/80 mt-5 leading-relaxed">{project.description}</p>
+                      <p className="text-on-surface/70 mt-3 text-sm leading-relaxed">{project.detail}</p>
                       {project.link && (
-                        <div className="mt-6 space-y-2">
+                        <div className="mt-auto pt-8 space-y-3">
                           <a
                             href={project.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-primary/40 text-primary text-xs font-bold hover:bg-primary/10 transition-all group/link"
+                            target={project.link.startsWith('http') ? '_blank' : undefined}
+                            rel={project.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                            className="inline-flex items-center gap-2 text-primary-soft font-semibold hover:text-primary transition-colors"
                           >
                             {project.ctaLabel ?? 'Ver vista previa'}{' '}
-                            <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
+                            <ArrowRight className="w-4 h-4" />
                           </a>
                           {project.linkNote && (
-                            <p className="text-on-surface/60 text-[11px] leading-relaxed">
+                            <p className="text-on-surface/60 text-xs leading-relaxed">
                               {project.linkNote}
                             </p>
                           )}
                         </div>
                       )}
-                    </div>
-                  </motion.div>
-                </TiltCard>
+                  </div>
+                </article>
               ))}
             </div>
           </div>
@@ -356,12 +323,12 @@ export default function App({path}: {path?: string} = {}) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <Reveal className="space-y-8">
                 <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter">
-                  De la primera visita <br /> al <span className="text-secondary">contacto.</span>
+                  De la primera visita <br /> al contacto.
                 </h2>
                 <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
-                  Desarrollo webs y automatizaciones para negocios de Vigo. Cada proyecto
-                  responde a una necesidad concreta: explicar un servicio, facilitar una compra
-                  o atender una reserva.
+                  Trabajo desde una pregunta sencilla: ¿qué tiene que poder hacer alguien al llegar
+                  a tu página? A partir de ahí ordeno el contenido, construyo la web y preparo
+                  una forma clara de contactar, comprar o reservar.
                 </p>
               </Reveal>
               <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
@@ -373,8 +340,7 @@ export default function App({path}: {path?: string} = {}) {
                       hidden: {opacity: 0, y: 22},
                       show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
                     }}
-                    whileHover={reduceMotion ? undefined : {y: -6}}
-                    className="p-10 rounded-2xl bg-surface-low border border-white/5 hover:bg-surface-high transition-colors duration-300 group"
+                    className="p-8 rounded-xl bg-surface-low hover:bg-surface-high transition-colors duration-300 group"
                   >
                     <div className="text-secondary mb-6 group-hover:text-primary transition-colors">
                       {service.icon}
@@ -393,27 +359,28 @@ export default function App({path}: {path?: string} = {}) {
         </section>
 
         <section id="about" className="py-32 bg-surface-low px-6">
-          <RevealGroup className="max-w-4xl mx-auto flex flex-col items-center text-center space-y-8">
-            <RevealItem className="w-40 h-40 rounded-full overflow-hidden border-4 border-surface-high shadow-2xl">
+          <RevealGroup className="max-w-6xl mx-auto grid md:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] gap-10 md:gap-20 items-center">
+            <RevealItem className="w-full max-w-sm overflow-hidden rounded-xl">
               <img
                 src="/profile.webp"
                 alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
                 loading="lazy"
-                width={160}
-                height={160}
-                className="w-full h-full object-cover"
+                width={4608}
+                height={3072}
+                className="w-full h-auto object-cover"
               />
             </RevealItem>
-            <RevealItem>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-                Soy Samuel Martínez
-              </h2>
-            </RevealItem>
-            <RevealItem>
-              <p className="text-xl md:text-2xl text-on-surface/80 leading-relaxed font-light">
-                Diseño y desarrollo webs, tiendas online y sistemas de reservas para negocios
-                de Vigo. Combino desarrollo web y SEO local para explicar bien cada oferta y facilitar
-                el siguiente paso a quien visita la página.
+            <RevealItem className="space-y-6">
+              <span className="text-secondary text-sm font-semibold">Sobre mí</span>
+              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Soy Samuel Martínez</h2>
+              <p className="text-lg md:text-xl text-on-surface/80 leading-relaxed">
+                Desarrollo webs, tiendas online y sistemas de reservas, con el SEO local presente
+                desde la estructura de la página. Me interesa que cada pantalla explique algo útil
+                y que quien la visita sepa qué puede hacer después.
+              </p>
+              <p className="text-on-surface/70 leading-relaxed">
+                En esta web enseño proyectos propios y demos para que puedas ver mi trabajo antes
+                de contarme qué necesita tu negocio.
               </p>
             </RevealItem>
           </RevealGroup>
@@ -507,7 +474,7 @@ function Navigation() {
         <a
           href="/#contact"
           onClick={(e) => scrollTo(e, 'contact')}
-          className="bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white px-5 py-2 rounded-full font-bold text-xs hover:shadow-[0_0_20px_rgba(255,95,31,0.3)] transition-all active:scale-95 shrink-0"
+          className="bg-primary text-surface px-5 py-2 rounded-full font-bold text-xs hover:bg-primary-soft transition-colors shrink-0"
         >
           Contacto
         </a>
@@ -517,7 +484,6 @@ function Navigation() {
 }
 
 function ServicePage({service}: {service: ServicePageType}) {
-  const reduceMotion = useReducedMotion();
   const relatedServices = service.related
     .map((path) => allServicePages.find((item) => item.path === path))
     .filter(Boolean) as ServicePageType[];
@@ -554,7 +520,7 @@ function ServicePage({service}: {service: ServicePageType}) {
             <div className="flex flex-col sm:flex-row gap-4">
               <a
                 href="/#contact"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-bold rounded-full hover:shadow-[0_0_30px_rgba(255,95,31,0.35)] transition-all"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary text-surface font-bold rounded-full hover:bg-primary-soft transition-colors"
               >
                 Cuéntame tu proyecto <ArrowRight className="w-4 h-4" />
               </a>
@@ -566,7 +532,7 @@ function ServicePage({service}: {service: ServicePageType}) {
               </a>
             </div>
           </div>
-          <div className="rounded-2xl bg-surface-low border border-white/5 p-8 md:p-10 space-y-6">
+          <div className="rounded-xl bg-surface-low p-8 md:p-10 space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">Qué trabajaremos</h2>
             <p className="text-on-surface/60 leading-relaxed">{service.commercialIntent}</p>
             <div className="grid gap-4">
@@ -599,8 +565,7 @@ function ServicePage({service}: {service: ServicePageType}) {
                   hidden: {opacity: 0, y: 22},
                   show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
                 }}
-                whileHover={reduceMotion ? undefined : {x: 4}}
-                className="flex gap-5 p-6 rounded-2xl bg-surface border border-white/5"
+                className="flex gap-5 p-6 rounded-xl bg-surface"
               >
                 <span className="text-secondary font-black text-xl">{index + 1}</span>
                 <p className="text-on-surface/70 leading-relaxed">{step}</p>
@@ -626,7 +591,7 @@ function ServicePage({service}: {service: ServicePageType}) {
                   hidden: {opacity: 0, y: 22},
                   show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
                 }}
-                className="p-7 rounded-2xl bg-surface-low border border-white/5"
+                className="p-7 rounded-xl bg-surface-low"
               >
                 <h3 className="text-lg font-bold mb-3">{faq.question}</h3>
                 <p className="text-on-surface/60 leading-relaxed">{faq.answer}</p>
@@ -643,7 +608,7 @@ function ServicePage({service}: {service: ServicePageType}) {
               Servicios relacionados
             </span>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
-              Completa la estrategia
+              También puedes explorar
             </h2>
           </Reveal>
           <RevealGroup className="grid gap-4 min-w-[280px]" delay={0.08}>
@@ -655,8 +620,7 @@ function ServicePage({service}: {service: ServicePageType}) {
                   hidden: {opacity: 0, y: 18},
                   show: {opacity: 1, y: 0, transition: {duration: 0.55, ease: EASE_OUT}},
                 }}
-                whileHover={reduceMotion ? undefined : {x: 4}}
-                className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-surface border border-white/5 hover:border-primary/40 transition-colors group"
+                className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-xl bg-surface hover:bg-surface-high transition-colors group"
               >
                 <span className="font-bold">{related.navLabel}</span>
                 <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
@@ -668,8 +632,7 @@ function ServicePage({service}: {service: ServicePageType}) {
                 hidden: {opacity: 0, y: 18},
                 show: {opacity: 1, y: 0, transition: {duration: 0.55, ease: EASE_OUT}},
               }}
-              whileHover={reduceMotion ? undefined : {x: 4}}
-              className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-2xl bg-primary text-white font-bold hover:bg-primary/90 transition-colors group"
+              className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-xl bg-primary text-surface font-bold hover:bg-primary-soft transition-colors group"
             >
               <span>Cuéntame tu proyecto</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -713,7 +676,7 @@ function ContactSection({
             hidden: {opacity: 0, y: 24},
             show: {opacity: 1, y: 0, transition: {duration: 0.65, ease: EASE_OUT}},
           }}
-          className="space-y-8 bg-surface-low p-8 md:p-16 rounded-3xl shadow-2xl relative z-10 border border-white/5"
+          className="space-y-8 bg-surface-low p-8 md:p-16 rounded-xl relative z-10"
           onFocusCapture={handleFormStart}
           onSubmit={async (e) => {
             e.preventDefault();
@@ -833,18 +796,16 @@ function ContactSection({
             </p>
           )}
 
-          <Magnetic>
             <button
               type="submit"
               disabled={formState === 'sending' || formState === 'ok' || formState === 'ratelimit'}
-              className="w-full py-5 bg-[linear-gradient(135deg,#ff5f1f,#832700)] text-white font-black rounded-full shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group disabled:opacity-50 disabled:pointer-events-none px-10"
+              className="w-full py-5 bg-primary text-surface font-black rounded-full hover:bg-primary-soft transition-colors flex items-center justify-center gap-3 group disabled:opacity-50 disabled:pointer-events-none px-10"
             >
               {formState === 'sending' ? 'ENVIANDO...' : 'ENVIAR CONSULTA'}
               {formState !== 'sending' && (
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               )}
             </button>
-          </Magnetic>
         </motion.form>
       </RevealGroup>
     </section>

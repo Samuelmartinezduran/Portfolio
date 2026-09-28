@@ -26,14 +26,8 @@
   }
 }
 
-.text-editorial-gradient {
-  background: linear-gradient(135deg, #a3cddb 0%, #ff5f1f 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .glass-nav {
-  @apply bg-neutral-900/60 backdrop-blur-md border border-white/10 shadow-2xl shadow-black/40;
+  @apply bg-surface-high/95 border border-white/10;
 }
 
 .hero-gradient-blur {

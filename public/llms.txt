@@ -1,28 +1,30 @@
 # Samuel Martínez — Desarrollo web y SEO local en Vigo
 
-> Desarrollo web y SEO local para negocios de Vigo. Samuel Martínez crea webs, tiendas online y sistemas de reservas que explican la oferta de cada negocio y facilitan el contacto.
+> Desarrollo web y SEO local para negocios de Vigo. Samuel Martínez diseña y desarrolla webs, tiendas online y sistemas de reservas.
 
-Los proyectos muestran usos concretos: presentar servicios, vender online, atender consultas y organizar reservas.
+Los cinco proyectos mostrados son propios o demostraciones; no se presentan como encargos de clientes ni incluyen resultados comerciales medidos.
 
 ## Servicios
 
-- [Consultor SEO y SEM](https://samuelmartinez.dev/servicios/consultor-seo-sem/): posicionamiento local y campañas de pago para captar clientes en Google.
-- [Desarrollo web](https://samuelmartinez.dev/servicios/desarrollo-web/): webs rápidas, accesibles y optimizadas para indexación y conversión.
-- [Landing pages y CRO](https://samuelmartinez.dev/servicios/landing-pages-cro/): páginas de campaña orientadas a conversión y analítica.
-- [Soluciones con IA](https://samuelmartinez.dev/servicios/soluciones-ia/): agentes y chatbots que automatizan reservas y atención al cliente.
-- [Desarrollo web en Vigo](https://samuelmartinez.dev/desarrollo-web-vigo/): página para pymes de servicios que necesitan captar contactos locales.
-- [SEO local en Vigo](https://samuelmartinez.dev/seo-local-vigo/): estrategia de visibilidad local, Perfil de Empresa de Google y medición.
+- [SEO y SEM](https://samuelmartinez.dev/servicios/consultor-seo-sem/): revisión de búsquedas, páginas de destino y medición de consultas.
+- [Desarrollo web](https://samuelmartinez.dev/servicios/desarrollo-web/): páginas que ordenan servicios y facilitan el contacto.
+- [Landing pages y CRO](https://samuelmartinez.dev/servicios/landing-pages-cro/): páginas para ofertas concretas con seguimiento de formularios.
+- [Soluciones con IA](https://samuelmartinez.dev/servicios/soluciones-ia/): pruebas de flujos para consultas, reservas y citas.
+- [Desarrollo web en Vigo](https://samuelmartinez.dev/desarrollo-web-vigo/): webs para negocios de servicios de Vigo.
+- [SEO local en Vigo](https://samuelmartinez.dev/seo-local-vigo/): revisión de web, búsquedas y Perfil de Empresa de Google.
 
-## Productos
+## Proyectos propios y demostraciones
 
-- Reservas online para restaurantes y bares: los clientes reservan desde la web y el negocio gestiona las reservas en un panel privado.
-- Tienda online gestionable: catálogo editable desde un panel, sin tocar código, con pagos mediante Stripe.
-- Citas por WhatsApp con IA: responde consultas y anota las citas en Google Calendar.
+- Reservas online para restaurantes y bares: demo de formulario y panel; vídeo pendiente.
+- Citas por WhatsApp con IA: demo en vídeo de consultas y citas en Google Calendar.
+- Bubble Tea España: página publicada para explorar una guía por ciudades.
+- Seguimiento de precios: vista publicada de la interfaz; las alertas necesitan el servidor del proyecto.
+- Tienda online: demo publicada de catálogo, pagos y edición de productos.
 
 ## Páginas
 
 - [Inicio](https://samuelmartinez.dev/): presentación, proyectos, servicios y formulario de contacto.
-- [Proyectos](https://samuelmartinez.dev/#projects): trabajos y demostraciones de webs, aplicaciones y automatizaciones.
+- [Proyectos](https://samuelmartinez.dev/#projects): proyectos propios y demostraciones de webs, aplicaciones y automatizaciones.
 - [Sitemap](https://samuelmartinez.dev/sitemap.xml): listado completo de URLs indexables.
 
 ## Contacto
