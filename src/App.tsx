@@ -4,11 +4,8 @@
  */
 
 import {motion, useReducedMotion} from 'motion/react';
+import {HeroCollage} from './components/HeroCollage';
 import {
-  Search,
-  Code,
-  TrendingUp,
-  Bot,
   ChevronDown,
   ArrowRight,
   Home,
@@ -32,7 +29,7 @@ function scrollTo(e: React.MouseEvent<HTMLAnchorElement>, id: string) {
   const el = document.getElementById(id);
   if (el) {
     e.preventDefault();
-    el.scrollIntoView({behavior: 'smooth'});
+    el.scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
   }
 }
 
@@ -52,35 +49,24 @@ function getScrollProgress(): number {
   return Math.min(scrollTop / NAV_SCROLL_RANGE, 1);
 }
 
-const serviceIconBySlug = {
-  'consultor-seo-sem': <Search className="w-8 h-8" />,
-  'desarrollo-web': <Code className="w-8 h-8" />,
-  'landing-pages-cro': <TrendingUp className="w-8 h-8" />,
-  'soluciones-ia': <Bot className="w-8 h-8" />,
-};
-
 const serviceSummaries = [
   {
     ...servicePages[0],
-    icon: serviceIconBySlug['consultor-seo-sem'],
     title: 'Web + SEO Local',
     desc: 'Reviso qué busca la gente en Vigo y preparo páginas que respondan a esas búsquedas.',
   },
   {
     ...servicePages[1],
-    icon: serviceIconBySlug['desarrollo-web'],
     title: 'Web para pymes de servicios',
     desc: 'Ordeno tu oferta en una web que se entiende y se puede usar bien desde el móvil.',
   },
   {
     ...servicePages[2],
-    icon: serviceIconBySlug['landing-pages-cro'],
     title: 'Página de campaña',
     desc: 'Una página para una oferta concreta, con un siguiente paso visible y medible.',
   },
   {
     ...servicePages[3],
-    icon: serviceIconBySlug['soluciones-ia'],
     title: 'Automatización con IA',
     desc: 'Pruebo un proceso concreto, como atender consultas o registrar citas, antes de ampliarlo.',
   },
@@ -108,20 +94,6 @@ export default function App({path}: {path?: string} = {}) {
 
   const projects = [
     {
-      id: 4,
-      title: 'Citas por WhatsApp con IA',
-      category: 'Automatización',
-      description: 'Una demo de atención y citas desde una conversación de WhatsApp.',
-      detail: 'El vídeo enseña cómo se responden consultas y se anota una cita en Google Calendar.',
-      status: 'Demo · vídeo disponible',
-      youtubeId: 'UHxZyXY4cXU' as string | null,
-      imageAlt: 'Demo del agente de IA que gestiona citas por WhatsApp y Google Calendar',
-      tags: ['IA'],
-      link: '/#contact',
-      ctaLabel: 'Pedir demostración',
-      linkNote: 'Puedes ver el vídeo aquí o pedirme que te enseñe el flujo.',
-    },
-    {
       id: 1,
       title: 'Bubble Tea España',
       category: 'Diseño web',
@@ -134,6 +106,20 @@ export default function App({path}: {path?: string} = {}) {
       link: 'https://bubble-tea-ebon.vercel.app/',
       ctaLabel: 'Ver página',
       linkNote: 'Página publicada como proyecto propio.',
+    },
+    {
+      id: 4,
+      title: 'Citas por WhatsApp con IA',
+      category: 'Automatización',
+      description: 'Una demo de atención y citas desde una conversación de WhatsApp.',
+      detail: 'El vídeo enseña cómo se responden consultas y se anota una cita en Google Calendar.',
+      status: 'Demo · vídeo disponible',
+      youtubeId: 'UHxZyXY4cXU' as string | null,
+      imageAlt: 'Demo del agente de IA que gestiona citas por WhatsApp y Google Calendar',
+      tags: ['IA'],
+      link: '/#contact',
+      ctaLabel: 'Pedir demostración',
+      linkNote: 'Puedes ver el vídeo aquí o pedirme que te enseñe el flujo.',
     },
     {
       id: 2,
@@ -189,45 +175,26 @@ export default function App({path}: {path?: string} = {}) {
       <Navigation />
 
       <main>
-        <section className="relative isolate min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden pt-20">
-          {/* Above the fold va estático a propósito: cualquier entrada en opacity:0
-              retrasa el LCP hasta después de hidratar. Las animaciones de entrada
-              se reservan para lo que está bajo el pliegue (Reveal/whileInView). */}
-          <div className="max-w-6xl mx-auto text-center space-y-8">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.95]">
-              Desarrollo web y SEO local <br />
-              para negocios de Vigo
-            </h1>
-            <p className="max-w-2xl mx-auto text-lg md:text-xl text-on-surface/70 leading-relaxed font-light">
-              Empiezo por lo que necesita entender quien llega a tu web. Después construyo
-              la página, la tienda o el sistema de reservas que le ayude a dar el siguiente paso.
-            </p>
-            <div className="flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
-                <a
-                  href="#projects"
-                  onClick={(e) => scrollTo(e, 'projects')}
-                  className="w-full md:w-auto px-10 py-4 bg-primary text-surface font-bold rounded-full hover:bg-primary-soft transition-colors text-center block"
-                >
-                  Ver proyectos
-                </a>
-                <a
-                  href="#services"
-                  onClick={(e) => scrollTo(e, 'services')}
-                  className="w-full md:w-auto px-10 py-4 border border-outline-variant/30 rounded-full hover:bg-surface-high transition-colors font-medium text-center block"
-                >
-                  Explorar servicios
-                </a>
+        <section className="hero section-shell">
+          <div className="hero-copy">
+            <p className="eyebrow"><span className="signal-dot" /> Samuel Martínez · Vigo, Galicia</p>
+            <h1>Desarrollo web<br />y <span className="text-primary">SEO local</span><br /><span className="hero-location">para negocios de Vigo.</span></h1>
+            <p className="hero-lead">Empiezo por lo que necesita entender quien llega a tu web. Después construyo la página, la tienda o el sistema de reservas que le ayude a dar el siguiente paso.</p>
+            <div className="hero-actions">
+              <a href="#projects" onClick={(e) => scrollTo(e, 'projects')} className="action-button action-primary">Ver proyectos <ArrowRight aria-hidden="true" /></a>
+              <a href="#contact" onClick={(e) => scrollTo(e, 'contact')} className="action-link">Cuéntame tu proyecto <ArrowRight aria-hidden="true" /></a>
             </div>
+            <div className="hero-disciplines"><span>Diseño & desarrollo</span><span>SEO local</span><span>Automatización</span></div>
           </div>
+          <HeroCollage />
         </section>
 
-        <section id="projects" className="py-32 bg-surface-low px-6">
+        <section id="projects" className="section-space bg-surface-low px-6">
           <div className="max-w-7xl mx-auto">
             <RevealGroup className="space-y-8 mb-12">
               <RevealItem className="space-y-4">
-                <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-                  Proyectos propios y demostraciones
-                </h2>
+                <p className="section-kicker"><span>01 / Trabajo seleccionado</span><span>Ideas que puedes explorar ↗</span></p>
+                <h2 className="section-title">Proyectos propios.<br /><span className="text-secondary">Soluciones en marcha.</span></h2>
                 <p className="max-w-2xl text-on-surface/70 leading-relaxed">
                   Son proyectos que he construido para mostrar soluciones concretas. Aquí puedes
                   ver qué hace cada uno y qué parte está disponible para probar.
@@ -238,6 +205,7 @@ export default function App({path}: {path?: string} = {}) {
                   <motion.button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
+                    aria-pressed={activeFilter === filter}
                     whileTap={reduceMotion ? undefined : {scale: 0.96}}
                     className={`px-6 py-2 rounded-md text-xs font-bold transition-all border ${
                       activeFilter === filter
@@ -251,18 +219,20 @@ export default function App({path}: {path?: string} = {}) {
               </RevealItem>
             </RevealGroup>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {filteredProjects.map((project) => (
-                <article
+            <div className="project-grid">
+              {filteredProjects.map((project, index) => (
+                <motion.article
+                  data-reveal-item
                   key={project.id}
-                  className={`flex flex-col bg-surface-high rounded-xl overflow-hidden ${
-                    'youtubeId' in project && project.youtubeId === null
-                      ? 'md:col-span-2'
-                      : ''
-                  }`}
+                  layout={reduceMotion ? false : 'position'}
+                  initial={false}
+                  whileInView={reduceMotion ? undefined : {opacity: [0.6, 1], y: [20, 0]}}
+                  viewport={{once: true, amount: 0.12}}
+                  transition={{duration: reduceMotion ? 0 : 0.5, delay: Math.min(index * 0.04, 0.12), layout: {duration: 0.3}}}
+                  className={`project-card group ${project.id === 1 || (activeFilter === 'Todos' && project.id === 3) ? 'project-featured' : ''} ${project.id === 3 ? 'project-landscape' : ''} ${'youtubeId' in project && project.youtubeId === null ? 'project-compact' : ''}`}
                 >
                   {!('youtubeId' in project && project.youtubeId === null) && (
-                    <div className="h-64 lg:h-72 bg-surface overflow-hidden">
+                    <div className="project-media bg-surface overflow-hidden">
                       {'youtubeId' in project && project.youtubeId ? (
                         <YouTubeFacade
                           id={project.youtubeId}
@@ -279,14 +249,13 @@ export default function App({path}: {path?: string} = {}) {
                           loading="lazy"
                           width={800}
                           height={600}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover project-image"
                         />
                       )}
                     </div>
                   )}
-                  <div className={`flex flex-1 flex-col p-8 ${
-                    'youtubeId' in project && project.youtubeId === null ? 'max-w-3xl' : ''
-                  }`}>
+                  <div className="project-copy">
+                      <span className="project-number" aria-hidden="true">{String(index + 1).padStart(2, '0')} /</span>
                       <span className="text-secondary text-sm font-semibold">
                         {project.category} · {project.status}
                       </span>
@@ -312,67 +281,48 @@ export default function App({path}: {path?: string} = {}) {
                         </div>
                       )}
                   </div>
-                </article>
+                </motion.article>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="services" className="py-32 bg-surface px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <Reveal className="space-y-8">
-                <h2 className="text-5xl md:text-7xl font-black leading-[0.9] tracking-tighter">
-                  De la primera visita <br /> al contacto.
-                </h2>
-                <p className="text-lg md:text-xl text-on-surface/60 leading-relaxed max-w-md">
-                  Trabajo desde una pregunta sencilla: ¿qué tiene que poder hacer alguien al llegar
-                  a tu página? A partir de ahí ordeno el contenido, construyo la web y preparo
-                  una forma clara de contactar, comprar o reservar.
-                </p>
-              </Reveal>
-              <RevealGroup className="grid grid-cols-1 md:grid-cols-2 gap-6" delay={0.1}>
-                {serviceSummaries.map((service) => (
-                  <motion.a
-                    key={service.title}
-                    href={service.path}
-                    variants={{
-                      hidden: {opacity: 0, y: 22},
-                      show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
-                    }}
-                    className="p-8 rounded-xl bg-surface-low hover:bg-surface-high transition-colors duration-300 group"
-                  >
-                    <div className="text-secondary mb-6 group-hover:text-primary transition-colors">
-                      {service.icon}
-                    </div>
-                    <h3 className="text-xl font-bold mb-3">{service.title}</h3>
-                    <p className="text-sm text-on-surface/50 leading-relaxed">{service.desc}</p>
-                    <span className="inline-flex items-center gap-2 mt-6 text-xs font-bold text-primary">
-                      Ver servicio{' '}
-                      <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </motion.a>
-                ))}
-              </RevealGroup>
+        <section id="services" className="section-space bg-surface px-6">
+          <div className="section-shell editorial-layout">
+            <Reveal className="editorial-heading">
+              <p className="eyebrow">02 / Lo que construimos</p>
+              <h2 className="section-title">De la primera visita<br /><span className="text-primary">al contacto.</span></h2>
+              <p className="section-lead">Trabajo desde una pregunta sencilla: ¿qué tiene que poder hacer alguien al llegar a tu página? A partir de ahí ordeno el contenido, construyo la web y preparo una forma clara de contactar, comprar o reservar.</p>
+            </Reveal>
+            <div className="service-list">
+              {serviceSummaries.map((service, index) => (
+                <Reveal key={service.path} delay={index * 0.06}>
+                  <a href={service.path} className="service-row">
+                    <span className="row-number">{String(index + 1).padStart(2, '0')}</span>
+                    <div><h3>{service.title}</h3><p>{service.desc}</p></div>
+                    <ArrowRight aria-hidden="true" className="row-arrow" />
+                  </a>
+                </Reveal>
+              ))}
             </div>
           </div>
         </section>
 
-        <section id="about" className="py-32 bg-surface-low px-6">
-          <RevealGroup className="max-w-6xl mx-auto grid md:grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] gap-10 md:gap-20 items-center">
-            <RevealItem className="w-full max-w-sm overflow-hidden rounded-xl">
+        <section id="about" className="section-space bg-surface-low px-6">
+          <RevealGroup className="section-shell about-layout">
+            <RevealItem className="portrait-frame">
               <img
                 src="/profile.webp"
                 alt="Retrato de Samuel Martínez, desarrollador web SEO y consultor de marketing digital en Vigo"
                 loading="lazy"
                 width={4608}
                 height={3072}
-                className="w-full h-auto object-cover"
+                className="portrait-image"
               />
             </RevealItem>
             <RevealItem className="space-y-6">
-              <span className="text-secondary text-sm font-semibold">Sobre mí</span>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Soy Samuel Martínez</h2>
+              <p className="eyebrow">03 / Detrás de cada pantalla</p>
+              <h2 className="section-title">Soy Samuel.<br /><span className="text-secondary">Construyo con intención.</span></h2>
               <p className="text-lg md:text-xl text-on-surface/80 leading-relaxed">
                 Desarrollo webs, tiendas online y sistemas de reservas, con el SEO local presente
                 desde la estructura de la página. Me interesa que cada pantalla explique algo útil
@@ -484,16 +434,17 @@ function Navigation() {
 }
 
 function ServicePage({service}: {service: ServicePageType}) {
+  const reduceMotion = useReducedMotion();
   const relatedServices = service.related
     .map((path) => allServicePages.find((item) => item.path === path))
     .filter(Boolean) as ServicePageType[];
 
   return (
     <main>
-      <section className="pt-40 pb-24 px-6 bg-surface">
+      <section className="service-hero px-6 bg-surface">
         {/* Estático a propósito, igual que el hero de la home: está above the fold
             y no puede depender de IntersectionObserver para pintarse. */}
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-16 items-center">
+        <div className="section-shell service-hero-layout">
           <div className="space-y-8">
             <nav className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-widest text-on-surface/60">
               <a href="/" className="hover:text-secondary inline-flex items-center gap-2">
@@ -532,7 +483,7 @@ function ServicePage({service}: {service: ServicePageType}) {
               </a>
             </div>
           </div>
-          <div className="rounded-xl bg-surface-low p-8 md:p-10 space-y-6">
+          <div className="outcomes-panel space-y-6">
             <h2 className="text-2xl font-bold tracking-tight">Qué trabajaremos</h2>
             <p className="text-on-surface/60 leading-relaxed">{service.commercialIntent}</p>
             <div className="grid gap-4">
@@ -547,7 +498,7 @@ function ServicePage({service}: {service: ServicePageType}) {
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-surface-low">
+      <section className="section-space px-6 bg-surface-low">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
           <Reveal className="space-y-6">
             <span className="text-secondary font-bold text-xs uppercase tracking-widest">
@@ -560,14 +511,15 @@ function ServicePage({service}: {service: ServicePageType}) {
           <RevealGroup className="space-y-5" delay={0.1}>
             {service.process.map((step, index) => (
               <motion.div
+                data-reveal-item
                 key={step}
                 variants={{
-                  hidden: {opacity: 0, y: 22},
-                  show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+                  hidden: {},
+                  show: {opacity: reduceMotion ? 1 : [0.6, 1], y: reduceMotion ? 0 : [20, 0], transition: {duration: 0.6, ease: EASE_OUT}},
                 }}
-                className="flex gap-5 p-6 rounded-xl bg-surface"
+                className="process-row"
               >
-                <span className="text-secondary font-black text-xl">{index + 1}</span>
+                <span className="text-secondary font-black text-xl">{String(index + 1).padStart(2, '0')}</span>
                 <p className="text-on-surface/70 leading-relaxed">{step}</p>
               </motion.div>
             ))}
@@ -575,9 +527,9 @@ function ServicePage({service}: {service: ServicePageType}) {
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-surface">
+      <section className="section-space px-6 bg-surface">
         <div className="max-w-5xl mx-auto space-y-10">
-          <Reveal className="space-y-4 text-center">
+          <Reveal className="space-y-4">
             <span className="text-secondary font-bold text-xs uppercase tracking-widest">FAQ</span>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
               Preguntas frecuentes
@@ -586,12 +538,13 @@ function ServicePage({service}: {service: ServicePageType}) {
           <RevealGroup className="grid gap-5" delay={0.08}>
             {service.faqs.map((faq) => (
               <motion.article
+                data-reveal-item
                 key={faq.question}
                 variants={{
-                  hidden: {opacity: 0, y: 22},
-                  show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+                  hidden: {},
+                  show: {opacity: reduceMotion ? 1 : [0.6, 1], y: reduceMotion ? 0 : [20, 0], transition: {duration: 0.6, ease: EASE_OUT}},
                 }}
-                className="p-7 rounded-xl bg-surface-low"
+                className="faq-row"
               >
                 <h3 className="text-lg font-bold mb-3">{faq.question}</h3>
                 <p className="text-on-surface/60 leading-relaxed">{faq.answer}</p>
@@ -601,7 +554,7 @@ function ServicePage({service}: {service: ServicePageType}) {
         </div>
       </section>
 
-      <section className="py-24 px-6 bg-surface-low">
+      <section className="section-space px-6 bg-surface-low">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-10">
           <Reveal className="space-y-4 max-w-xl">
             <span className="text-secondary font-bold text-xs uppercase tracking-widest">
@@ -614,23 +567,25 @@ function ServicePage({service}: {service: ServicePageType}) {
           <RevealGroup className="grid gap-4 min-w-[280px]" delay={0.08}>
             {relatedServices.map((related) => (
               <motion.a
+                data-reveal-item
                 key={related.path}
                 href={related.path}
                 variants={{
-                  hidden: {opacity: 0, y: 18},
-                  show: {opacity: 1, y: 0, transition: {duration: 0.55, ease: EASE_OUT}},
+                  hidden: {},
+                  show: {opacity: reduceMotion ? 1 : [0.6, 1], y: reduceMotion ? 0 : [20, 0], transition: {duration: 0.55, ease: EASE_OUT}},
                 }}
-                className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-xl bg-surface hover:bg-surface-high transition-colors group"
+                className="related-link group"
               >
                 <span className="font-bold">{related.navLabel}</span>
                 <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
               </motion.a>
             ))}
             <motion.a
+              data-reveal-item
               href="/#contact"
               variants={{
-                hidden: {opacity: 0, y: 18},
-                show: {opacity: 1, y: 0, transition: {duration: 0.55, ease: EASE_OUT}},
+                hidden: {},
+                show: {opacity: reduceMotion ? 1 : [0.6, 1], y: reduceMotion ? 0 : [20, 0], transition: {duration: 0.55, ease: EASE_OUT}},
               }}
               className="inline-flex items-center justify-between gap-8 px-6 py-4 rounded-xl bg-primary text-surface font-bold hover:bg-primary-soft transition-colors group"
             >
@@ -651,6 +606,7 @@ function ContactSection({
   formState: 'idle' | 'sending' | 'ok' | 'error' | 'ratelimit';
   setFormState: (state: 'idle' | 'sending' | 'ok' | 'error' | 'ratelimit') => void;
 }) {
+  const reduceMotion = useReducedMotion();
   const formStarted = useRef(false);
 
   const handleFormStart = () => {
@@ -660,23 +616,24 @@ function ContactSection({
   };
 
   return (
-    <section id="contact" className="py-32 bg-surface px-6 relative overflow-hidden">
-      <RevealGroup className="max-w-3xl mx-auto">
-        <RevealItem className="mb-16 text-center space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-            Cuéntame qué necesita tu negocio
-          </h2>
+    <section id="contact" className="section-space bg-surface px-6 relative overflow-hidden">
+      <RevealGroup className="section-shell contact-layout">
+        <RevealItem className="contact-heading space-y-6">
+          <p className="eyebrow">04 / Tu siguiente proyecto</p>
+          <span className="contact-mark" aria-hidden="true">↗</span>
+          <h2 className="section-title">Cuéntame qué<br /><span className="text-primary">necesita tu negocio.</span></h2>
           <p className="text-on-surface/50 text-lg">
             Dime qué haces y qué te gustaría mejorar. Leeré tu consulta y te responderé
             para concretar los siguientes pasos.
           </p>
         </RevealItem>
         <motion.form
+          data-reveal-item
           variants={{
-            hidden: {opacity: 0, y: 24},
-            show: {opacity: 1, y: 0, transition: {duration: 0.65, ease: EASE_OUT}},
+            hidden: {},
+            show: {opacity: reduceMotion ? 1 : [0.6, 1], y: reduceMotion ? 0 : [20, 0], transition: {duration: 0.65, ease: EASE_OUT}},
           }}
-          className="space-y-8 bg-surface-low p-8 md:p-16 rounded-xl relative z-10"
+          className="contact-form space-y-6 relative z-10"
           onFocusCapture={handleFormStart}
           onSubmit={async (e) => {
             e.preventDefault();
@@ -781,17 +738,17 @@ function ContactSection({
           </div>
 
           {formState === 'ok' && (
-            <p className="text-center text-sm font-bold text-secondary">
+            <p role="status" className="text-center text-sm font-bold text-secondary">
               ¡Mensaje enviado! Te responderé pronto.
             </p>
           )}
           {formState === 'error' && (
-            <p className="text-center text-sm font-bold text-primary">
+            <p role="alert" className="text-center text-sm font-bold text-primary">
               Algo salió mal. Inténtalo de nuevo.
             </p>
           )}
           {formState === 'ratelimit' && (
-            <p className="text-center text-sm font-bold text-primary">
+            <p role="alert" className="text-center text-sm font-bold text-primary">
               Demasiados intentos. Espera unos minutos.
             </p>
           )}

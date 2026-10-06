@@ -27,3 +27,19 @@
 - **Decision:** Conservar la paleta oscura e Inter, y simplificar botones y tarjetas retirando degradados, brillos, inclinación y movimiento magnético decorativo.
 - **Reason:** Dar prioridad a las capturas y al contenido propio para reducir la apariencia de plantilla.
 - **Source:** User instruction
+
+
+## Reforma editorial de estudio creativo
+- **Decision:** Rediseñar la home y las seis páginas de servicios y locales con composiciones asimétricas, numeración, marcos y capturas reales, conservando Inter y la paleta existente.
+- **Reason:** El usuario pidió reducir huecos y aportar personalidad, y eligió una estética de estudio creativo para toda la web. Esta decisión sustituye la dirección visual anterior en lo relativo a composición y movimiento decorativo.
+- **Source:** User instruction
+
+## Movimiento visible y equilibrado
+- **Decision:** Usar Motion y CSS existentes para entradas escalonadas, filtros, interacciones, motivo animado y parallax limitado en escritorio; mantener HTML inicial visible y una versión estática con movimiento reducido.
+- **Reason:** Aportar animación reconocible sin bloquear la lectura, la navegación ni la carga inicial, siguiendo el plan aprobado.
+- **Source:** User instruction
+
+## Distribución de proyectos publicados
+- **Decision:** Destacar Bubble Tea y presentar la tienda como segundo bloque ancho en el filtro Todos; mostrar la demo sin vídeo en una ficha compacta.
+- **Reason:** Las cinco fichas requieren una distribución sin una columna vacía antes de la demostración pendiente, conservando su información y enlaces.
+- **Source:** Agent assumption

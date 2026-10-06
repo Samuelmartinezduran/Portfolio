@@ -14,10 +14,18 @@ La web presenta el trabajo de Samuel Martínez a negocios de servicios de Vigo. 
 ## Identidad visual
 
 - Mantener Inter, fondo oscuro, naranja `#ff5f1f`, azul claro `#a3cddb` y texto `#e5e2e1`.
-- Dar prioridad al contenido y a capturas en color desde el inicio. Las fichas de proyectos usan una imagen amplia y un texto que explica su función y estado.
-- Usar botones de color plano, tarjetas con capas tonales y radios moderados. Evitar degradados, brillos y sombras decorativas.
-- Reservar la animación para orientar o dar respuesta a una interacción. No usar inclinación de tarjetas ni movimiento magnético decorativo.
-- Mantener contraste legible, foco visible y el comportamiento de movimiento reducido.
+- Usar una dirección de estudio creativo: titulares contundentes, composiciones asimétricas, numeración editorial, líneas finas y marcos geométricos.
+- Mostrar capturas reales en la portada y destacar Bubble Tea en los proyectos. Conservar estados y límites de cada demostración.
+- Alternar capturas, filas de servicios, retrato y texto. Evitar una sucesión de tarjetas uniformes y espacios reservados sin contenido.
+- Separar secciones entre 64 y 96 px en escritorio y entre 40 y 56 px en móvil; la portada se ajusta a su contenido.
+- Mantener contraste legible, foco visible y respuestas equivalentes a hover para el teclado.
+
+## Movimiento
+
+- Usar CSS y Motion sin nuevas dependencias. El texto y las acciones deben ser visibles desde el HTML prerenderizado.
+- Animar lentamente el motivo geométrico de portada y aplicar un parallax limitado al collage solo en escritorio con puntero preciso.
+- Entradas de 16–24 px durante 450–650 ms, una sola vez; transiciones de posición al filtrar proyectos y pequeños movimientos de imágenes y flechas al interactuar.
+- Con movimiento reducido, eliminar ciclos, parallax y desplazamientos; conservar todo el contenido visible. Mantener scroll nativo y simplificar la composición en móvil.
 
 ## Estructura
 

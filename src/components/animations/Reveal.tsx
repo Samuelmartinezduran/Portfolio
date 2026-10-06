@@ -12,7 +12,7 @@ export function Reveal({
   children,
   className,
   delay = 0,
-  y = 28,
+  y = 20,
 }: {
   children: ReactNode;
   className?: string;
@@ -23,8 +23,9 @@ export function Reveal({
 
   return (
     <motion.div
-      initial={reduceMotion ? false : {opacity: 0, y}}
-      whileInView={reduceMotion ? undefined : {opacity: 1, y: 0}}
+      data-reveal
+      initial={false}
+      whileInView={reduceMotion ? undefined : {opacity: [0.6, 1], y: [y, 0]}}
       viewport={{once: true, amount: 0.24, margin: '0px 0px -80px 0px'}}
       transition={{duration: 0.65, ease: EASE_OUT, delay}}
       className={className}
@@ -51,7 +52,8 @@ export function RevealGroup({
   // preferencia, así que devolver un <div> aquí rompería la hidratación.
   return (
     <motion.div
-      initial={reduceMotion ? false : 'hidden'}
+      data-reveal
+      initial={false}
       whileInView={reduceMotion ? undefined : 'show'}
       viewport={{once: true, amount: 0.24, margin: '0px 0px -80px 0px'}}
       variants={{
@@ -71,11 +73,14 @@ export function RevealGroup({
 }
 
 export function RevealItem({children, className}: {children: ReactNode; className?: string}) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
+      data-reveal-item
       variants={{
-        hidden: {opacity: 0, y: 22},
-        show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: EASE_OUT}},
+        hidden: {},
+        show: {opacity: reduceMotion ? 1 : [0.6, 1], y: reduceMotion ? 0 : [20, 0], transition: {duration: 0.6, ease: EASE_OUT}},
       }}
       className={className}
     >

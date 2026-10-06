@@ -50,10 +50,10 @@ export function YouTubeFacade({
         loading="lazy"
         width={480}
         height={360}
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 group-focus-within:scale-105"
       />
       <span className="absolute inset-0 flex items-center justify-center bg-black/25">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-[0_0_30px_rgba(255,95,31,0.45)] transition-transform duration-300 group-hover:scale-110">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-[0_0_30px_rgba(255,95,31,0.45)] transition-transform duration-300 group-hover:scale-110 group-focus-within:scale-110">
           <Play className="h-7 w-7 translate-x-0.5 fill-white text-white" />
         </span>
       </span>
