@@ -1,0 +1,19 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base titulo="Página no encontrada · Samuel Martínez Durán" descripcion="Esta página no existe." indexable={false}>
+  <section class="seccion">
+    <div class="contenedor">
+      <p class="rotulo"><b>404</b> · Página no encontrada</p>
+      <h1 class="titulo-seccion">Esta página no existe o se ha movido.</h1>
+      <p class="volver"><a class="enlace-flecha" href="/">Volver al inicio</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .volver {
+    margin-top: 2rem;
+  }
+</style>

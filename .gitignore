@@ -11,3 +11,4 @@ coverage/
 CLAUDE.md
 claude-seo
 .vercel
+.astro/

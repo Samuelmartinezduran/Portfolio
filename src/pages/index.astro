@@ -1,0 +1,647 @@
+---
+import Base from "../layouts/Base.astro";
+import {
+  cifras,
+  cursos,
+  experiencia,
+  ficha,
+  formacion,
+  habilidades,
+  llamada,
+  otrosProyectos,
+  persona,
+  proyectos,
+} from "../data/perfil";
+
+---
+
+<Base
+  titulo="Samuel Martínez Durán · Desarrollador web en Vigo (Python, TypeScript e IA)"
+  descripcion="Desarrollador web en Vigo. Python, TypeScript e IA: una aplicación de escritorio publicada, un agente de voz que gestiona reservas y un framework para evaluar agentes LLM, todos con pruebas automatizadas."
+>
+  <!-- Portada -->
+  <section class="portada" aria-labelledby="portada-titulo">
+    <div class="contenedor rejilla portada__rejilla">
+      <div class="portada__texto">
+        <p class="rotulo"><b>■</b> {persona.puesto} · {persona.ciudad}</p>
+        <h1 id="portada-titulo" class="portada__titulo">
+          Software que se puede comprobar<span class="punto">.</span>
+        </h1>
+        <p class="portada__entrada">
+          Soy {persona.nombreCorto}. Hago webs y landings en una agencia de marketing y, por mi cuenta,
+          software completo con sus pruebas: una aplicación de escritorio publicada, un agente de voz que
+          gestiona reservas y un framework para evaluar agentes de IA.
+        </p>
+        <p class="portada__acciones">
+          <a class="boton" href="#proyectos">Ver los proyectos</a>
+          <a class="enlace-flecha" href={persona.cv}>Descargar el CV (PDF)</a>
+        </p>
+      </div>
+
+      <dl class="portada__ficha">
+        {
+          ficha.map(({ dato, valor }) => (
+            <div>
+              <dt class="rotulo">{dato}</dt>
+              <dd>{valor}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div class="contenedor">
+      <dl class="cifras" aria-label="Cifras de los proyectos">
+        {
+          cifras.map(({ valor, texto }) => (
+            <div>
+              <dt class="cifras__valor cifra">{valor}</dt>
+              <dd>{texto}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Proyectos -->
+  <section id="proyectos" class="seccion oscura" aria-labelledby="proyectos-titulo">
+    <div class="contenedor">
+      <p class="rotulo"><b>01</b> · Proyectos</p>
+      <h2 id="proyectos-titulo" class="titulo-seccion">Tres proyectos con código, cifras y pruebas.</h2>
+
+      {
+        proyectos.map((p) => (
+          <article class="proyecto rejilla" id={p.id} aria-labelledby={`${p.id}-titulo`}>
+            <div class="proyecto__texto">
+              <p class="rotulo">{p.etiqueta}</p>
+              <h3 id={`${p.id}-titulo`} class="proyecto__nombre">
+                {p.nombre}
+              </h3>
+              <p class="proyecto__resumen">{p.resumen}</p>
+              {p.detalle.map((parrafo) => (
+                <p class="proyecto__detalle">{parrafo}</p>
+              ))}
+              <ul class="proyecto__stack mono" aria-label="Tecnologías">
+                {p.stack.map((t) => (
+                  <li>{t}</li>
+                ))}
+              </ul>
+              <dl class="proyecto__datos">
+                {p.datos.map(({ valor, texto }) => (
+                  <div>
+                    <dt class="cifra">{valor}</dt>
+                    <dd>{texto}</dd>
+                  </div>
+                ))}
+              </dl>
+              {p.enlaces.length > 0 ? (
+                <p class="proyecto__enlaces">
+                  {p.enlaces.map(({ texto, url }) => (
+                    <a class="enlace-flecha" href={url}>
+                      {texto}
+                    </a>
+                  ))}
+                </p>
+              ) : (
+                <p class="proyecto__nota">Repositorio privado: lo enseño en una entrevista.</p>
+              )}
+            </div>
+
+            {p.imagen ? (
+              <figure class="proyecto__figura">
+                <img
+                  src={p.imagen.src}
+                  width={p.imagen.ancho}
+                  height={p.imagen.alto}
+                  alt={p.imagen.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>{p.imagen.pie}</figcaption>
+              </figure>
+            ) : (
+              <figure class="proyecto__figura">
+                <ol class="llamada" aria-label="Ejemplo de una llamada">
+                  {llamada.map(({ quien, texto }) =>
+                    quien === "herramienta" ? (
+                      <li class="llamada__herramienta mono">{texto}</li>
+                    ) : (
+                      <li class="llamada__turno">
+                        <span class="rotulo">{quien}</span>
+                        <span>{texto}</span>
+                      </li>
+                    ),
+                  )}
+                </ol>
+                <figcaption>
+                  Una reserva del guion de la demo, con las herramientas que llama el agente.
+                </figcaption>
+              </figure>
+            )}
+          </article>
+        ))
+      }
+
+      <div class="otros">
+        <h3 class="rotulo">También he hecho</h3>
+        <ul class="otros__lista">
+          {
+            otrosProyectos.map((o) => (
+              <li class="otros__fila">
+                <p class="otros__nombre">{o.nombre}</p>
+                <p class="otros__texto">
+                  {o.texto} <span class="otros__stack">{o.stack}</span>
+                </p>
+                <a class="enlace-flecha otros__enlace" href={o.enlace.url}>
+                  {o.enlace.texto}
+                  <span class="solo-lector">: {o.nombre}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experiencia y formación -->
+  <section id="experiencia" class="seccion" aria-labelledby="experiencia-titulo">
+    <div class="contenedor">
+      <p class="rotulo"><b>02</b> · Experiencia</p>
+      <h2 id="experiencia-titulo" class="titulo-seccion">Dónde he trabajado y qué sé usar.</h2>
+
+      <ol class="lineas">
+        {
+          experiencia.map((e) => (
+            <li class="linea rejilla">
+              <p class="linea__fechas rotulo cifra">{e.fechas}</p>
+              <div class="linea__cuerpo">
+                <h3 class="linea__puesto">
+                  {e.puesto} <span>· {e.empresa}</span>
+                </h3>
+                <ul class="linea__puntos">
+                  {e.puntos.map((punto) => (
+                    <li>{punto}</li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <h3 class="subrotulo rotulo">Formación</h3>
+      <ol class="lineas">
+        {
+          formacion.map((f) => (
+            <li class="linea rejilla">
+              <p class="linea__fechas rotulo cifra">{f.fechas}</p>
+              <p class="linea__cuerpo">
+                <span class="linea__puesto">{f.titulo}</span> <span class="linea__centro">· {f.centro}</span>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="cursos">{cursos}</p>
+
+      <h3 class="subrotulo rotulo">Habilidades</h3>
+      <dl class="habilidades">
+        {
+          habilidades.map(({ grupo, lista }) => (
+            <div class="linea rejilla">
+              <dt class="linea__fechas rotulo">{grupo}</dt>
+              <dd class="linea__cuerpo">{lista}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto" class="seccion oscura contacto" aria-labelledby="contacto-titulo">
+    <div class="contenedor rejilla">
+      <div class="contacto__texto">
+        <p class="rotulo"><b>03</b> · Contacto</p>
+        <h2 id="contacto-titulo" class="titulo-seccion">
+          Busco un puesto de desarrollador desde enero de 2027.
+        </h2>
+        <p class="contacto__entrada">
+          Si tu equipo necesita a alguien que construya, pruebe y documente, escríbeme. Te enseño cualquiera de
+          estos proyectos funcionando.
+        </p>
+      </div>
+      <ul class="contacto__lista">
+        <li>
+          <span class="rotulo">Correo</span>
+          <a class="contacto__correo" href={`mailto:${persona.correo}`}>{persona.correo}</a>
+        </li>
+        <li>
+          <span class="rotulo">LinkedIn</span>
+          <a href={persona.linkedin}>{persona.nombre}</a>
+        </li>
+        <li>
+          <span class="rotulo">GitHub</span>
+          <a href={persona.github}>github.com/Samuelmartinezduran</a>
+        </li>
+        <li>
+          <span class="rotulo">CV</span>
+          <a href={persona.cv}>Descargar en PDF</a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Portada */
+  .portada {
+    padding-block: clamp(3.5rem, 8vw, 7rem) 0;
+  }
+
+  .portada__rejilla {
+    row-gap: 3rem;
+    align-items: end;
+  }
+
+  .portada__titulo {
+    margin-top: 1.5rem;
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    max-width: 12ch;
+  }
+
+  .punto {
+    color: var(--acento);
+  }
+
+  .portada__entrada {
+    margin-top: 2rem;
+    max-width: 38rem;
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--texto-2);
+  }
+
+  .portada__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .portada__ficha {
+    display: grid;
+    gap: 1.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--grafito);
+  }
+
+  .portada__ficha dd {
+    margin-top: 0.25rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  @media (min-width: 60rem) {
+    .portada__texto {
+      grid-column: 1 / span 8;
+    }
+
+    .portada__ficha {
+      grid-column: 10 / span 3;
+    }
+  }
+
+  .cifras {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+    margin-top: clamp(3.5rem, 7vw, 6rem);
+    border-top: 1px solid var(--borde);
+  }
+
+  .cifras > div {
+    padding: 1.5rem 1.5rem 2rem 0;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .cifras__valor {
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .cifras dd {
+    margin-top: 0.5rem;
+    max-width: 16rem;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--texto-2);
+  }
+
+  /* Proyectos */
+  .proyecto {
+    row-gap: 2rem;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .proyecto__nombre {
+    margin-top: 0.75rem;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .proyecto__resumen {
+    margin-top: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.55;
+  }
+
+  .proyecto__detalle {
+    margin-top: 1rem;
+    color: var(--texto-2-oscuro);
+    font-size: 1rem;
+  }
+
+  .proyecto__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: 1.5rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .proyecto__datos {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .proyecto__datos > div {
+    padding-top: 1rem;
+  }
+
+  .proyecto__datos dt {
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .proyecto__datos dd {
+    font-size: 0.875rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .proyecto__enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-top: 1.75rem;
+  }
+
+  .proyecto__nota {
+    margin-top: 1.75rem;
+    font-size: 0.9375rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .proyecto__figura img {
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+  }
+
+  .proyecto__figura figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  @media (min-width: 60rem) {
+    .proyecto__texto {
+      grid-column: 1 / span 5;
+    }
+
+    .proyecto__figura {
+      grid-column: 7 / span 6;
+      align-self: start;
+    }
+  }
+
+  .llamada {
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--grafito-2);
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+  }
+
+  .llamada__turno {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    line-height: 1.5;
+  }
+
+  .llamada__turno .rotulo {
+    padding-top: 0.15rem;
+  }
+
+  .llamada__herramienta {
+    margin-left: 7.5rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--acento);
+    color: var(--texto-2-oscuro);
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 30rem) {
+    .llamada__turno {
+      grid-template-columns: 1fr;
+      gap: 0.125rem;
+    }
+
+    .llamada__herramienta {
+      margin-left: 0;
+    }
+  }
+
+  .otros {
+    margin-top: clamp(4rem, 8vw, 6rem);
+  }
+
+  .otros__lista {
+    margin-top: 1rem;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .otros__fila {
+    display: grid;
+    gap: 0.25rem 2rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .otros__nombre {
+    font-weight: 600;
+  }
+
+  .otros__texto {
+    color: var(--texto-2-oscuro);
+    font-size: 1rem;
+  }
+
+  .otros__stack {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+  }
+
+  @media (min-width: 60rem) {
+    .otros__fila {
+      grid-template-columns: 4fr 7fr 2fr;
+      align-items: baseline;
+    }
+
+    .otros__enlace {
+      justify-self: end;
+    }
+  }
+
+  /* Experiencia, formación y habilidades */
+  .lineas,
+  .habilidades {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--borde);
+  }
+
+  .linea {
+    row-gap: 0.5rem;
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .linea__fechas {
+    padding-top: 0.2rem;
+  }
+
+  .linea__puesto {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .linea__puesto span,
+  .linea__centro {
+    font-weight: 400;
+    color: var(--texto-2);
+  }
+
+  .linea__puntos {
+    margin-top: 0.75rem;
+    display: grid;
+    gap: 0.375rem;
+    max-width: 44rem;
+  }
+
+  .linea__puntos li {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+
+  .linea__puntos li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.8em;
+    width: 0.5rem;
+    height: 1px;
+    background: var(--acento);
+  }
+
+  @media (min-width: 48rem) {
+    .linea__fechas {
+      grid-column: 1 / span 3;
+    }
+
+    .linea__cuerpo {
+      grid-column: 4 / span 9;
+    }
+  }
+
+  .subrotulo {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .subrotulo + .lineas,
+  .subrotulo + .habilidades {
+    margin-top: 1rem;
+  }
+
+  .cursos {
+    margin-top: 1.25rem;
+    max-width: 44rem;
+    font-size: 0.9375rem;
+    color: var(--texto-2);
+  }
+
+  /* Contacto */
+  .contacto .rejilla {
+    row-gap: 3rem;
+  }
+
+  .contacto .titulo-seccion {
+    max-width: 16ch;
+  }
+
+  .contacto__entrada {
+    margin-top: 1.5rem;
+    max-width: 34rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .contacto__lista {
+    display: grid;
+    align-content: start;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .contacto__lista li {
+    display: grid;
+    gap: 0.25rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .contacto__lista a {
+    overflow-wrap: anywhere;
+  }
+
+  .contacto__correo {
+    font-size: 1.125rem;
+    font-weight: 500;
+  }
+
+  @media (min-width: 60rem) {
+    .contacto__texto {
+      grid-column: 1 / span 6;
+    }
+
+    .contacto__lista {
+      grid-column: 8 / span 5;
+      margin-top: 2.5rem;
+    }
+  }
+</style>

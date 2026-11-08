@@ -43,3 +43,43 @@
 - **Decision:** Destacar Bubble Tea y presentar la tienda como segundo bloque ancho en el filtro Todos; mostrar la demo sin vídeo en una ficha compacta.
 - **Reason:** Las cinco fichas requieren una distribución sin una columna vacía antes de la demostración pendiente, conservando su información y enlaces.
 - **Source:** Agent assumption
+
+## Portfolio para buscar empleo
+- **Decision:** La web deja de presentar servicios de desarrollo web y SEO local para negocios de Vigo y pasa a ser un portfolio para buscar empleo de desarrollador desde enero de 2027. Contenido: Deep Prep, el asistente telefónico de reservas y agenteval como proyectos principales; el resto en una lista; experiencia, formación, habilidades y contacto, todo tomado del CV. Sustituye a «Enfoque SEO local», «Arquitectura de páginas locales», «Mensaje principal del portfolio», «Presentación de los proyectos» y «Distribución de proyectos publicados».
+- **Reason:** El usuario busca trabajo en enero de 2027, al acabar sus prácticas, y la oferta de servicios se solapaba con Veldria, que no debe aparecer.
+- **Source:** User instruction (08/11/2026)
+
+## Astro en lugar de Vite con prerender propio
+- **Decision:** La web pasa de React 19 + Vite con un prerender propio (`scripts/prerender.mjs`, cinco entradas HTML) a Astro 7 en modo estático, sin React ni JavaScript en el navegador. Se eliminan Tailwind, Motion, lucide-react, Express y Resend.
+- **Reason:** El usuario pidió cambiar de framework. Astro genera el HTML de cada página sin pasos manuales (antes, añadir una ruta exigía tocar tres sitios y olvidar uno daba 404 sin error) y es lo que ya usa en sus otros proyectos.
+- **Source:** User instruction (cambiar el framework); Agent assumption (Astro)
+
+## Sin formulario de contacto
+- **Decision:** El contacto es un enlace de correo, LinkedIn, GitHub y el CV en PDF. Se eliminan `api/contact.ts` y el servidor Express con Resend.
+- **Reason:** Quien selecciona personal escribe por correo o LinkedIn; el formulario añadía una función en servidor y una clave de API que mantener.
+- **Source:** Agent assumption
+
+## Sin Google Analytics
+- **Decision:** Se elimina la carga de GA4.
+- **Reason:** En producción no tenía ID configurado (`VITE_GA_MEASUREMENT_ID` vacío), así que no medía nada. Si hace falta medir, añadirlo de nuevo con una variable `PUBLIC_` de Astro.
+- **Source:** Agent assumption
+
+## Sin foto
+- **Decision:** No hay retrato en la página, en el favicon ni en los datos estructurados. El favicon es una «S» en grafito con una línea naranja.
+- **Reason:** El usuario pidió retirar su foto, al menos por ahora.
+- **Source:** User instruction (08/11/2026)
+
+## Reglas visuales de Veldria con acento naranja
+- **Decision:** Se aplica el sistema de Veldria (Inter y Geist Mono, grafito y blanco, retícula de 8 px, líneas finas, esquinas de 0 a 4 px, sin degradados ni sombras) con el naranja `#FF5F1F` como único acento y una variante tinta `#C2410C` para texto y botones sobre blanco. Sustituye a «Dirección visual del portfolio», «Reforma editorial de estudio creativo» y «Movimiento visible y equilibrado». Detalle en `DESIGN.md`.
+- **Reason:** El usuario eligió las reglas de Veldria y conservar su naranja para que la web sea suya y no parezca de Veldria.
+- **Source:** User instruction (08/11/2026)
+
+## Redirecciones de las páginas de servicios
+- **Decision:** `/servicios/*`, `/desarrollo-web-vigo/` y `/seo-local-vigo/` redirigen con 301 a la portada (`vercel.json`).
+- **Reason:** Estaban indexadas; una redirección conserva las visitas y evita 404 mientras Google las retira.
+- **Source:** Agent assumption
+
+## CV en la web
+- **Decision:** La web enlaza el CV en PDF (`public/cv/`), que incluye el teléfono.
+- **Reason:** Es lo primero que pide quien selecciona. El teléfono no aparece en la página, solo en el PDF.
+- **Source:** Agent assumption, pendiente de confirmar por el usuario

@@ -2,33 +2,34 @@
 
 ## Objetivo
 
-La web presenta el trabajo de Samuel Martínez a negocios de servicios de Vigo. El contenido debe explicar qué se ofrece y dejar ver los proyectos tal como están, sin atribuirles clientes ni resultados medidos.
+La web presenta a Samuel Martínez como desarrollador a quien contrata o selecciona: qué ha construido, con
+qué, cómo se comprueba y cómo contactar. No vende servicios ni menciona Veldria.
 
 ## Voz
 
-- Primera persona, frases directas y ejemplos concretos.
-- Explicar qué se puede ver, probar o solicitar. No prometer posiciones, ventas ni conversiones.
-- Distinguir proyectos propios y demostraciones de cualquier futuro encargo real.
-- Evitar adjetivos como «premium», «estratégico» o «profesional» cuando no aporten información.
+- Primera persona, frases cortas y datos que se pueden comprobar (pruebas, cobertura, latencia, enlaces al
+  código).
+- Decir el estado real de cada proyecto: publicada, beta, demo. Lo que no está probado se dice.
+- Sin adjetivos de relleno («apasionado», «innovador», «premium»).
 
-## Identidad visual
+## Sistema visual
 
-- Mantener Inter, fondo oscuro, naranja `#ff5f1f`, azul claro `#a3cddb` y texto `#e5e2e1`.
-- Usar una dirección de estudio creativo: titulares contundentes, composiciones asimétricas, numeración editorial, líneas finas y marcos geométricos.
-- Mostrar capturas reales en la portada y destacar Bubble Tea en los proyectos. Conservar estados y límites de cada demostración.
-- Alternar capturas, filas de servicios, retrato y texto. Evitar una sucesión de tarjetas uniformes y espacios reservados sin contenido.
-- Separar secciones entre 64 y 96 px en escritorio y entre 40 y 56 px en móvil; la portada se ajusta a su contenido.
-- Mantener contraste legible, foco visible y respuestas equivalentes a hover para el teclado.
+Son las reglas de Veldria (`~/Documents/Veldria/Corporativismo/04_Sistema/manual-identidad.md`), con un
+acento propio.
 
-## Movimiento
+| Pieza | Regla |
+|---|---|
+| Tipografía | Inter (400, 500, 600) para todo; Geist Mono 400 solo en rótulos, tecnologías y nombres de funciones. |
+| Colores | Grafito `#111318` y blanco `#F8FAFC`, alternando secciones. Bordes `#DDE2EB` en claro y `#2C303A` en oscuro. |
+| Acento | Naranja `#FF5F1F` en gráficos, texto grande y sobre grafito. Sobre blanco, para texto y botones, naranja tinta `#C2410C` (4,9:1). Pocas apariciones por pantalla. |
+| Texto secundario | `#5B6270` sobre blanco (5,9:1) y `#A3A9B6` sobre grafito (7,9:1). |
+| Composición | Retícula de 12 columnas y múltiplos de 8 px; filas separadas por líneas finas en lugar de tarjetas. |
+| Superficies | Planas y opacas. Esquinas de 2 px. Sin degradados, sombras, cristal, manchas ni texto con degradado. |
+| Movimiento | Ninguno salvo la flecha de los enlaces; respeta `prefers-reduced-motion`. |
+| Imágenes | Capturas reales con borde de 1 px y pie que dice qué se ve. Sin foto de Samuel. |
 
-- Usar CSS y Motion sin nuevas dependencias. El texto y las acciones deben ser visibles desde el HTML prerenderizado.
-- Animar lentamente el motivo geométrico de portada y aplicar un parallax limitado al collage solo en escritorio con puntero preciso.
-- Entradas de 16–24 px durante 450–650 ms, una sola vez; transiciones de posición al filtrar proyectos y pequeños movimientos de imágenes y flechas al interactuar.
-- Con movimiento reducido, eliminar ciclos, parallax y desplazamientos; conservar todo el contenido visible. Mantener scroll nativo y simplificar la composición en móvil.
+## Comprobar antes de publicar
 
-## Estructura
-
-- Home: oferta principal, proyectos propios y demostraciones, servicios, presentación personal y contacto.
-- Servicios: explicar el problema concreto, qué se revisaría o construiría, pasos específicos y preguntas útiles.
-- Conservar las URL actuales y usar metadatos coherentes con el texto visible.
+1. `npm run verify` sin errores.
+2. Capturas a 1280 y 390 px de ancho: nada desborda y las cifras se leen.
+3. Cada cifra de `src/data/perfil.ts` coincide con su repositorio y con el CV.

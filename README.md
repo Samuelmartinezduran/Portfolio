@@ -1,51 +1,41 @@
-#  Portfolio
+# samuelmartinez.dev
 
-Portfolio personal de Samuel Martínez. Desarrollado con React 19, TypeScript, Vite y Tailwind CSS 4.
+Portfolio de Samuel Martínez Durán para buscar empleo como desarrollador. Una sola página estática hecha con
+Astro, sin JavaScript en el navegador. Se publica en Vercel desde la rama `main`.
 
-## Stack
+## Desarrollo
 
-- **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS 4
-- **Backend:** Express + TypeScript (API de contacto)
-- **Email:** Resend
+Requiere Node.js 22.12 o superior.
 
-## Desarrollo local
-
-**Requisitos:** Node.js 18+
-
-1. Instala dependencias:
-   ```bash
-   npm install
-   ```
-
-2. Crea el archivo `.env` en la raíz basándote en `.env.example`:
-   ```bash
-   RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
-   CONTACT_EMAIL=tu@email.com
-   VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX
-   ```
-
-3. Arranca frontend y backend en paralelo:
-   ```bash
-   npm run dev
-   ```
-   - Frontend: `http://localhost:3000`
-   - API: `http://localhost:3001`
-
-## Scripts
-
-```bash
-npm run dev          # Frontend + backend en paralelo
-npm run dev:client   # Solo frontend (puerto 3000)
-npm run dev:server   # Solo backend (puerto 3001)
-npm run build        # Build de producción
-npm run preview      # Preview del build
-npm run lint         # Type check
-npm run clean        # Elimina dist/
+```sh
+npm ci
+npm run dev      # http://localhost:4321
+npm run verify   # astro check + astro build
+npm run preview  # sirve dist/ después de compilar
 ```
 
-## SEO y analítica
+## Dónde está cada cosa
 
-- La URL canónica es `https://samuelmartinez.dev`.
-- Tras desplegar, envía `https://samuelmartinez.dev/sitemap.xml` en Google Search Console.
-- Para activar GA4, crea una propiedad, copia su ID de medición (`G-...`) en `VITE_GA_MEASUREMENT_ID` dentro de Vercel y vuelve a desplegar. Se registran las páginas vistas, el inicio del formulario y los diagnósticos enviados.
-- Crea y verifica un Perfil de Empresa de Google con los datos reales del negocio; enlaza su web a `https://samuelmartinez.dev/desarrollo-web-vigo/` y añade servicios, zona de cobertura, proyectos e imágenes verificables.
+| Qué | Dónde |
+|---|---|
+| Textos, proyectos, experiencia y cifras | `src/data/perfil.ts` (sale del CV; si cambia uno, cambiar el otro) |
+| La página | `src/pages/index.astro` |
+| Cabecera, pie, metadatos y datos estructurados | `src/layouts/Base.astro` |
+| Colores, tipografía y piezas comunes | `src/styles/global.css` (reglas en `DESIGN.md`) |
+| `llms.txt` y `sitemap.xml` | `src/pages/llms.txt.ts` y `src/pages/sitemap.xml.ts`, generados con los mismos datos |
+| Capturas de los proyectos | `public/proyectos/` (WebP) |
+| CV en PDF | `public/cv/CV_Samuel_Martinez_Duran.pdf`, copia del de `~/Documents/CV` en el Mac |
+| Imagen para redes | `public/og.png` (1200 × 630) |
+| Redirecciones de las páginas antiguas y caché | `vercel.json` |
+
+Las fuentes (Inter y Geist Mono) vienen de Fontsource y se sirven desde la propia web.
+
+## Publicar
+
+Vercel compila cada push. `main` va a producción en samuelmartinez.dev; cualquier otra rama genera una
+vista previa. En el proyecto de Vercel el preset debe ser **Astro** (lo fija `vercel.json`). Ya no hacen
+falta las variables `RESEND_API_KEY`, `CONTACT_EMAIL` ni `VITE_GA_MEASUREMENT_ID`: se pueden borrar.
+
+## Decisiones
+
+Las no triviales están en `ADR.md`.
