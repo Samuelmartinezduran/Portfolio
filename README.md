@@ -47,9 +47,9 @@ falta las variables `RESEND_API_KEY`, `CONTACT_EMAIL` ni `VITE_GA_MEASUREMENT_ID
 
 ## Analítica
 
-- **Vercel Web Analytics** cuenta visitas sin cookies. Hay que activarlo una vez en el panel de Vercel
-  (proyecto → Analytics → Enable); a partir del siguiente despliegue empieza a recoger datos. En local no se
-  carga.
+- **Vercel Web Analytics** cuenta visitas sin cookies. Está activado en el proyecto de Vercel (comprobado el
+  08/11/2026: el script se sirve desde una ruta propia del despliegue). Los datos se ven en el panel de
+  Vercel → Analytics, separados por entorno. En local no se carga.
 - **Google Analytics 4** solo se carga en producción y después de que la persona acepte el aviso de cookies.
   Para activarlo, pon el ID de medición (`G-…`) en `GA_ID_PRODUCCION` de `src/lib/analitica.ts`. Mantén la
   retención de datos de la propiedad en 2 meses, que es lo que dice `/privacidad/`. Si cambia lo que se
