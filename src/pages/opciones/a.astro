@@ -1,0 +1,1110 @@
+---
+// Opción A · Proyectos vivos: cada proyecto se ve funcionando (vídeo, llamada que se escribe sola,
+// evaluación que se ejecuta). Oscura, con secciones claras para dar ritmo.
+import Lienzo from "../../layouts/Lienzo.astro";
+import {
+  cifras,
+  deepPrepMedios,
+  experiencia,
+  formacion,
+  habilidades,
+  llamada,
+  otrosProyectos,
+  persona,
+  proyectos,
+} from "../../data/perfil";
+
+const [deepPrep, asistente, agenteval] = proyectos;
+const momentos = ["Antes de la partida", "Durante la partida", "Después de la partida"];
+const agenda = [
+  { hora: "20:00", quien: "Marta · 2 personas", origen: "Web" },
+  { hora: "21:30", quien: "Luis · 6 personas", origen: "Personal" },
+];
+const evaluacion = [
+  { nombre: "tool accuracy", valor: 100 },
+  { nombre: "response quality", valor: 67 },
+  { nombre: "safety", valor: 100 },
+];
+---
+
+<Lienzo titulo="Samuel Martínez Durán" opcion="A">
+  <div class="a">
+    <header class="cab contenedor">
+      <a class="cab__nombre" href="#inicio">{persona.nombre}</a>
+      <nav aria-label="Principal">
+        <a href="#proyectos">Proyectos</a>
+        <a href="#experiencia">Experiencia</a>
+        <a href="#contacto">Contacto</a>
+        <a class="cab__cv" href={persona.cv}>CV</a>
+      </nav>
+    </header>
+
+    <!-- Portada -->
+    <section id="inicio" class="portada contenedor">
+      <div class="portada__texto">
+        <p class="rotulo"><b>●</b> {persona.puesto} · {persona.ciudad} · disponible desde enero de 2027</p>
+        <h1>Software que se puede comprobar<span class="naranja">.</span></h1>
+        <p class="portada__entrada">
+          Soy {persona.nombreCorto}. Hago webs en una agencia de marketing y, por mi cuenta, producto completo:
+          una app de escritorio con usuarios, un agente de voz que coge reservas y un framework para evaluar
+          agentes de IA. Todo con pruebas.
+        </p>
+        <p class="portada__acciones">
+          <a class="boton-naranja" href="#proyectos">Ver los proyectos</a>
+          <a class="enlace-flecha" href={persona.cv}>CV en PDF</a>
+        </p>
+      </div>
+      <figure class="portada__video" data-revela>
+        <div class="ventana">
+          <div class="ventana__barra mono"><span></span><span></span><span></span> deep-prep · modo demo</div>
+          <video
+            src={deepPrepMedios.video.src}
+            poster={deepPrepMedios.video.poster}
+            width={deepPrepMedios.video.ancho}
+            height={deepPrepMedios.video.alto}
+            autoplay
+            muted
+            loop
+            playsinline
+            aria-label="Grabación de Deep Prep pasando de la selección de campeón a la partida y a la revisión"
+          ></video>
+        </div>
+        <figcaption class="mono">Grabación de la app real, con datos de demostración.</figcaption>
+      </figure>
+    </section>
+
+    <div class="contenedor">
+      <dl class="cifras">
+        {
+          cifras.map(({ valor, texto }) => (
+            <div data-revela>
+              <dt class="cifra" data-cuenta={valor}>{valor}</dt>
+              <dd>{texto}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <!-- 01 Deep Prep -->
+    <section id="proyectos" class="proyecto contenedor" aria-labelledby="dp-titulo">
+      <div class="proyecto__cab">
+        <p class="indice">01</p>
+        <div>
+          <p class="rotulo">{deepPrep.etiqueta}</p>
+          <h2 id="dp-titulo">{deepPrep.nombre}</h2>
+        </div>
+        <p class="proyecto__resumen">{deepPrep.resumen}</p>
+      </div>
+      <ol class="momentos">
+        {
+          deepPrepMedios.capturas.map((c, i) => (
+            <li data-revela style={`--retardo: ${i * 120}ms`}>
+              <p class="rotulo">
+                <b>{String(i + 1).padStart(2, "0")}</b> {momentos[i]}
+              </p>
+              <img src={c.src} width={c.ancho} height={c.alto} alt={c.pie} loading="lazy" decoding="async" />
+              <p class="momentos__pie">{c.pie}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="proyecto__pie">
+        {deepPrep.detalle.map((d) => <p>{d}</p>)}
+        <ul class="stack mono">{deepPrep.stack.map((s) => <li>{s}</li>)}</ul>
+        <a class="enlace-flecha" href={deepPrep.enlaces[0].url}>Código en GitHub</a>
+      </div>
+    </section>
+
+    <!-- 02 Asistente -->
+    <section class="claro" aria-labelledby="as-titulo">
+      <div class="proyecto contenedor">
+        <div class="proyecto__cab">
+          <p class="indice">02</p>
+          <div>
+            <p class="rotulo">{asistente.etiqueta}</p>
+            <h2 id="as-titulo">{asistente.nombre}</h2>
+          </div>
+          <p class="proyecto__resumen">{asistente.resumen}</p>
+        </div>
+
+        <div class="demo-llamada" data-llamada>
+          <div class="telefono">
+            <p class="telefono__estado mono"><span class="punto-vivo"></span> Llamada en curso · Restaurante Demo</p>
+            <ol class="turnos">
+              {
+                llamada.map(({ quien, texto }) =>
+                  quien === "herramienta" ? (
+                    <li class="turno turno--herramienta mono">
+                      <span class="turno__icono" aria-hidden="true">▸</span>
+                      {texto}
+                    </li>
+                  ) : quien === "Agenda" ? null : (
+                    <li class={`turno turno--${quien === "Cliente" ? "cliente" : "asistente"}`}>
+                      <span class="rotulo">{quien}</span>
+                      {texto}
+                    </li>
+                  ),
+                )
+              }
+            </ol>
+          </div>
+          <div class="agenda">
+            <p class="rotulo">Agenda del personal · pasado mañana</p>
+            <ul>
+              {
+                agenda.map((r) => (
+                  <li>
+                    <span class="mono">{r.hora}</span> {r.quien} <em>{r.origen}</em>
+                  </li>
+                ))
+              }
+              <li class="agenda__nueva">
+                <span class="mono">21:00</span> Ana · 4 personas <em>IA · Teléfono</em>
+              </li>
+            </ul>
+            <p class="agenda__nota">Aparece sola, sin recargar (Supabase Realtime). Datos de demostración.</p>
+          </div>
+        </div>
+
+        <div class="proyecto__pie">
+          {asistente.detalle.map((d) => <p>{d}</p>)}
+          <dl class="datos">
+            {asistente.datos.map(({ valor, texto }) => (
+              <div>
+                <dt class="cifra">{valor}</dt>
+                <dd>{texto}</dd>
+              </div>
+            ))}
+          </dl>
+          <ul class="stack mono">{asistente.stack.map((s) => <li>{s}</li>)}</ul>
+          <p class="nota">Repositorio privado: lo enseño en una entrevista.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 agenteval -->
+    <section class="proyecto contenedor" aria-labelledby="ae-titulo">
+      <div class="proyecto__cab">
+        <p class="indice">03</p>
+        <div>
+          <p class="rotulo">{agenteval.etiqueta}</p>
+          <h2 id="ae-titulo">{agenteval.nombre}</h2>
+        </div>
+        <p class="proyecto__resumen">{agenteval.resumen}</p>
+      </div>
+      <div class="evaluacion" data-evaluacion>
+        <div class="terminal">
+          <p class="mono terminal__linea"><span class="naranja">$</span> agenteval run suites/weather-agent.yaml --fail-under 80</p>
+          <ul class="barras">
+            {
+              evaluacion.map((e) => (
+                <li style={`--valor: ${e.valor}`}>
+                  <span class="mono">{e.nombre}</span>
+                  <span class="barra">
+                    <span />
+                  </span>
+                  <span class="mono cifra">{e.valor}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="mono terminal__total">
+            score <strong class="cifra" data-cuenta="87">87</strong> / 100 <span class="ok">✓ pasa el umbral de 80</span>
+          </p>
+        </div>
+        <figure>
+          <img
+            src="/proyectos/agenteval-detalle.webp"
+            width="1500"
+            height="1268"
+            alt="Detalle de una ejecución en el dashboard de agenteval, con la puntuación por dimensión y el razonamiento del juez"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="mono">El mismo resultado en el dashboard, con el razonamiento del juez.</figcaption>
+        </figure>
+      </div>
+      <div class="proyecto__pie">
+        {agenteval.detalle.map((d) => <p>{d}</p>)}
+        <ul class="stack mono">{agenteval.stack.map((s) => <li>{s}</li>)}</ul>
+        <a class="enlace-flecha" href={agenteval.enlaces[0].url}>Código en GitHub</a>
+      </div>
+    </section>
+
+    <!-- Otros -->
+    <section class="otros contenedor" aria-labelledby="otros-titulo">
+      <h2 id="otros-titulo" class="rotulo">También he hecho</h2>
+      <ul>
+        {
+          otrosProyectos.map((o, i) => (
+            <li data-revela style={`--retardo: ${i * 80}ms`}>
+              <a href={o.enlace.url} class="otros__tarjeta">
+                <img src={o.imagen} alt="" loading="lazy" decoding="async" />
+                <span class="otros__nombre">{o.nombre}</span>
+                <span class="otros__texto">{o.texto}</span>
+                <span class="mono otros__stack">{o.stack}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Experiencia -->
+    <section id="experiencia" class="claro">
+      <div class="contenedor experiencia">
+        <div>
+          <h2 class="rotulo">Experiencia</h2>
+          {
+            experiencia.map((e) => (
+              <article class="puesto">
+                <p class="mono gris">{e.fechas}</p>
+                <h3>
+                  {e.puesto} <span>· {e.empresa}</span>
+                </h3>
+                <ul>{e.puntos.map((p) => <li>{p}</li>)}</ul>
+              </article>
+            ))
+          }
+        </div>
+        <div>
+          <h2 class="rotulo">Formación</h2>
+          <ul class="formacion">
+            {
+              formacion.map((f) => (
+                <li>
+                  <span class="mono gris">{f.fechas}</span>
+                  {f.titulo}
+                  <span class="gris">{f.centro}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <h2 class="rotulo">Herramientas</h2>
+          <dl class="herramientas">
+            {
+              habilidades.map((h) => (
+                <div>
+                  <dt class="mono gris">{h.grupo}</dt>
+                  <dd>{h.lista}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="contacto contenedor">
+      <p class="rotulo">Contacto</p>
+      <h2>¿Te enseño cualquiera de estos proyectos funcionando?</h2>
+      <a class="contacto__correo" href={`mailto:${persona.correo}`}>{persona.correo}</a>
+      <p class="contacto__enlaces">
+        <a href={persona.linkedin}>LinkedIn</a>
+        <a href={persona.github}>GitHub</a>
+        <a href={persona.cv}>CV en PDF</a>
+      </p>
+      <p class="pie mono">© 2026 {persona.nombre} · Hecha con Astro</p>
+    </section>
+  </div>
+</Lienzo>
+
+<script>
+  const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Entradas al hacer scroll.
+  const revelar = new IntersectionObserver(
+    (entradas) => {
+      for (const e of entradas) {
+        if (!e.isIntersecting) continue;
+        e.target.classList.add("visible");
+        revelar.unobserve(e.target);
+      }
+    },
+    { threshold: 0.15 },
+  );
+  document.querySelectorAll("[data-revela]").forEach((el) => revelar.observe(el));
+
+  // Cifras que cuentan hasta su valor ("73,8 %", "169 ms", "208").
+  function contar(el: HTMLElement) {
+    const texto = el.dataset.cuenta ?? "";
+    const m = texto.match(/^([\d.,]+)(.*)$/);
+    if (!m || quieto) return;
+    const final = parseFloat(m[1].replace(",", "."));
+    const decimales = m[1].includes(",") ? 1 : 0;
+    const inicio = performance.now();
+    const paso = (t: number) => {
+      const p = Math.min(1, (t - inicio) / 1200);
+      const v = final * (1 - Math.pow(1 - p, 3));
+      el.textContent = v.toFixed(decimales).replace(".", ",") + m[2];
+      if (p < 1) requestAnimationFrame(paso);
+    };
+    requestAnimationFrame(paso);
+  }
+  const contador = new IntersectionObserver((entradas) => {
+    for (const e of entradas) {
+      if (!e.isIntersecting) continue;
+      contar(e.target as HTMLElement);
+      contador.unobserve(e.target);
+    }
+  });
+  document.querySelectorAll<HTMLElement>("[data-cuenta]").forEach((el) => contador.observe(el));
+
+  // La llamada se escribe turno a turno y la reserva entra en la agenda al final.
+  const llamada = document.querySelector<HTMLElement>("[data-llamada]");
+  if (llamada) {
+    const turnos = [...llamada.querySelectorAll<HTMLElement>(".turno")];
+    const nueva = llamada.querySelector<HTMLElement>(".agenda__nueva");
+    const reproducir = () => {
+      llamada.classList.add("en-marcha");
+      turnos.forEach((t, i) => setTimeout(() => t.classList.add("dicho"), quieto ? 0 : i * 900));
+      setTimeout(() => nueva?.classList.add("dicho"), quieto ? 0 : turnos.length * 900 + 300);
+    };
+    new IntersectionObserver(
+      (entradas, obs) => {
+        if (entradas.some((e) => e.isIntersecting)) {
+          reproducir();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    ).observe(llamada);
+  }
+
+  // La evaluación llena sus barras al entrar.
+  const evaluacion = document.querySelector("[data-evaluacion]");
+  if (evaluacion) {
+    new IntersectionObserver(
+      (entradas, obs) => {
+        if (entradas.some((e) => e.isIntersecting)) {
+          evaluacion.classList.add("en-marcha");
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    ).observe(evaluacion);
+  }
+</script>
+
+<style>
+  .a {
+    background: var(--grafito);
+    color: var(--blanco);
+    --texto-2: var(--texto-2-oscuro);
+  }
+
+  .a :global(a) {
+    text-decoration-color: var(--acento);
+  }
+
+  .naranja {
+    color: var(--acento);
+  }
+
+  .gris {
+    color: var(--texto-2);
+  }
+
+  .rotulo b {
+    color: var(--acento);
+    font-weight: 400;
+  }
+
+  /* Cabecera */
+  .cab {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 4.5rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .cab__nombre {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .cab nav {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: center;
+    font-size: 0.9375rem;
+  }
+
+  .cab nav a {
+    text-decoration: none;
+  }
+
+  .cab__cv {
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--blanco);
+    border-radius: var(--radio);
+  }
+
+  @media (max-width: 40rem) {
+    .cab nav a:not(.cab__cv) {
+      display: none;
+    }
+  }
+
+  /* Portada */
+  .portada {
+    display: grid;
+    gap: 3rem;
+    padding-block: clamp(3rem, 7vw, 6rem) clamp(2rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .portada h1 {
+    margin-top: 1.5rem;
+    font-size: clamp(3rem, 7.5vw, 6.5rem);
+    font-weight: 600;
+    line-height: 0.96;
+    letter-spacing: -0.045em;
+  }
+
+  .portada__entrada {
+    margin-top: 2rem;
+    max-width: 34rem;
+    font-size: 1.125rem;
+    color: var(--texto-2);
+  }
+
+  .portada__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: center;
+    margin-top: 2.5rem;
+  }
+
+  .boton-naranja {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--acento);
+    color: var(--grafito);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--radio);
+  }
+
+  .boton-naranja:hover {
+    background: #ff7a45;
+  }
+
+  .ventana {
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+    background: #0b0d11;
+    overflow: hidden;
+  }
+
+  .ventana__barra {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 0.875rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    font-size: 0.75rem;
+    color: var(--texto-2);
+  }
+
+  .ventana__barra span {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--borde-oscuro);
+  }
+
+  .ventana__barra span:last-of-type {
+    margin-right: 0.5rem;
+  }
+
+  .ventana video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .portada__video figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 64rem) {
+    .portada {
+      grid-template-columns: 5fr 7fr;
+    }
+  }
+
+  /* Cifras */
+  .cifras {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+    border-top: 1px solid var(--borde-oscuro);
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .cifras > div {
+    padding: 1.5rem 1.5rem 1.75rem 0;
+  }
+
+  .cifras dt {
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--acento);
+  }
+
+  .cifras dd {
+    margin-top: 0.75rem;
+    max-width: 15rem;
+    font-size: 0.9375rem;
+    color: var(--texto-2);
+  }
+
+  /* Proyectos */
+  .proyecto {
+    padding-block: clamp(5rem, 10vw, 9rem);
+  }
+
+  .proyecto__cab {
+    display: grid;
+    gap: 1.5rem 2rem;
+    align-items: end;
+  }
+
+  .indice {
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 600;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+    color: var(--acento);
+  }
+
+  .proyecto__cab h2 {
+    margin-top: 0.5rem;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .proyecto__resumen {
+    font-size: 1.125rem;
+    max-width: 32rem;
+  }
+
+  @media (min-width: 64rem) {
+    .proyecto__cab {
+      grid-template-columns: auto 1fr 28rem;
+    }
+  }
+
+  .proyecto__pie {
+    display: grid;
+    gap: 1rem;
+    max-width: 44rem;
+    margin-top: 3rem;
+    color: var(--texto-2);
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+  }
+
+  .nota {
+    font-size: 0.9375rem;
+  }
+
+  .momentos {
+    display: grid;
+    gap: 2rem 1.5rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .momentos img {
+    margin-top: 0.75rem;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    object-position: left top;
+    width: 100%;
+  }
+
+  .momentos__pie {
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--texto-2);
+  }
+
+  @media (min-width: 52rem) {
+    .momentos {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Secciones claras */
+  .claro {
+    background: var(--blanco);
+    color: var(--grafito);
+    --texto-2: #5b6270;
+  }
+
+  .claro .rotulo {
+    color: var(--texto-2);
+  }
+
+  .claro .indice {
+    color: var(--acento-tinta);
+  }
+
+  /* Llamada */
+  .demo-llamada {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .demo-llamada {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+
+  .telefono {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--grafito);
+    color: var(--blanco);
+    border-radius: var(--radio);
+    min-height: 26rem;
+  }
+
+  .telefono__estado {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--texto-2-oscuro);
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .punto-vivo {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #22c55e;
+  }
+
+  .turnos {
+    display: grid;
+    gap: 0.875rem;
+    margin-top: 1.25rem;
+  }
+
+  .turno {
+    display: grid;
+    gap: 0.25rem;
+    max-width: 30rem;
+  }
+
+  .turno .rotulo {
+    color: var(--texto-2-oscuro);
+    font-size: 0.6875rem;
+  }
+
+  .turno--asistente {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .turno--asistente .rotulo {
+    color: var(--acento);
+  }
+
+  .turno--herramienta {
+    display: block;
+    justify-self: center;
+    font-size: 0.8125rem;
+    color: var(--texto-2-oscuro);
+    padding: 0.375rem 0.75rem;
+    border: 1px dashed var(--borde-oscuro);
+    border-radius: var(--radio);
+  }
+
+  .turno__icono {
+    color: var(--acento);
+    margin-right: 0.25rem;
+  }
+
+  :global(.js) .turno,
+  :global(.js) .agenda__nueva {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  :global(.js) .turno.dicho,
+  :global(.js) .agenda__nueva.dicho {
+    opacity: 1;
+    transform: none;
+  }
+
+  .agenda {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+  }
+
+  .agenda ul {
+    margin-top: 1rem;
+    border-top: 1px solid var(--borde);
+  }
+
+  .agenda li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding-block: 0.875rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .agenda em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: 0.8125rem;
+    color: var(--texto-2);
+  }
+
+  .agenda__nueva {
+    background: #fff4ee;
+    margin-inline: -0.5rem;
+    padding-inline: 0.5rem;
+  }
+
+  .agenda__nueva em {
+    color: var(--acento-tinta);
+    font-weight: 500;
+  }
+
+  .agenda__nota {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--texto-2);
+  }
+
+  .datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 3rem;
+    margin-block: 0.5rem;
+    color: var(--grafito);
+  }
+
+  .datos dt {
+    font-size: 2rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+
+  .datos dd {
+    font-size: 0.875rem;
+    color: var(--texto-2);
+  }
+
+  /* agenteval */
+  .evaluacion {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .evaluacion {
+      grid-template-columns: 6fr 6fr;
+    }
+  }
+
+  .terminal {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: #0b0d11;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+  }
+
+  .terminal__linea {
+    color: var(--blanco);
+  }
+
+  .barras {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .barras li {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr 2.5rem;
+    gap: 1rem;
+    align-items: center;
+    font-size: 0.8125rem;
+    color: var(--texto-2);
+  }
+
+  .barra {
+    height: 0.5rem;
+    background: var(--grafito-2);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+
+  .barra span {
+    display: block;
+    height: 100%;
+    width: calc(var(--valor) * 1%);
+    background: var(--acento);
+  }
+
+  :global(.js) .barra span {
+    width: 0;
+    transition: width 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  :global(.js) .en-marcha .barra span {
+    width: calc(var(--valor) * 1%);
+  }
+
+  .terminal__total {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--borde-oscuro);
+    color: var(--texto-2);
+  }
+
+  .terminal__total strong {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--blanco);
+  }
+
+  .ok {
+    margin-left: 0.75rem;
+    color: #4ade80;
+  }
+
+  .evaluacion figure img {
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+  }
+
+  .evaluacion figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--texto-2);
+  }
+
+  @media (max-width: 30rem) {
+    .barras li {
+      grid-template-columns: 1fr 2.5rem;
+    }
+
+    .barras li .barra {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+  }
+
+  /* Otros */
+  .otros {
+    padding-bottom: clamp(5rem, 10vw, 8rem);
+  }
+
+  .otros ul {
+    display: grid;
+    gap: 2rem 1.5rem;
+    margin-top: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .otros__tarjeta {
+    display: grid;
+    gap: 0.375rem;
+    text-decoration: none;
+  }
+
+  .otros__tarjeta img {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: var(--radio);
+    margin-bottom: 0.5rem;
+    transition: border-color 200ms;
+  }
+
+  .otros__tarjeta:hover img {
+    border-color: var(--acento);
+  }
+
+  .otros__nombre {
+    font-weight: 600;
+  }
+
+  .otros__tarjeta:hover .otros__nombre {
+    text-decoration: underline;
+    text-decoration-color: var(--acento);
+  }
+
+  .otros__texto {
+    font-size: 0.9375rem;
+    color: var(--texto-2);
+  }
+
+  .otros__stack {
+    font-size: 0.75rem;
+    color: var(--texto-2);
+  }
+
+  /* Experiencia */
+  .experiencia {
+    display: grid;
+    gap: 3rem 4rem;
+    padding-block: clamp(5rem, 9vw, 8rem);
+  }
+
+  @media (min-width: 64rem) {
+    .experiencia {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .puesto {
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .puesto h3 {
+    margin-top: 0.25rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .puesto h3 span {
+    font-weight: 400;
+    color: var(--texto-2);
+  }
+
+  .puesto ul {
+    display: grid;
+    gap: 0.375rem;
+    margin-top: 0.75rem;
+  }
+
+  .puesto li::before {
+    content: "— ";
+    color: var(--acento-tinta);
+  }
+
+  .formacion {
+    margin-block: 1rem 3rem;
+  }
+
+  .formacion li {
+    display: grid;
+    padding-block: 0.875rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .herramientas > div {
+    display: grid;
+    padding-block: 0.75rem;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .experiencia .rotulo {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--grafito);
+  }
+
+  /* Contacto */
+  .contacto {
+    padding-block: clamp(5rem, 10vw, 9rem) 6rem;
+  }
+
+  .contacto h2 {
+    margin-top: 1.5rem;
+    max-width: 18ch;
+    font-size: clamp(2.25rem, 5vw, 4rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+
+  .contacto__correo {
+    display: inline-block;
+    margin-top: 2.5rem;
+    font-size: clamp(1.25rem, 3.4vw, 2.5rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+    color: var(--acento);
+    text-decoration: none;
+    border-bottom: 2px solid var(--acento);
+  }
+
+  .contacto__enlaces {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .pie {
+    margin-top: 5rem;
+    font-size: 0.75rem;
+    color: var(--texto-2);
+  }
+
+  /* Entradas */
+  :global(.js) [data-revela] {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 600ms cubic-bezier(0.22, 1, 0.36, 1) var(--retardo, 0ms),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1) var(--retardo, 0ms);
+  }
+
+  :global(.js) [data-revela].visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) [data-revela],
+    :global(.js) .turno,
+    :global(.js) .agenda__nueva {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
+    :global(.js) .barra span {
+      width: calc(var(--valor) * 1%);
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+// Contenido del <head> común a todas las páginas: metadatos, Open Graph y datos estructurados.
+import "../styles/global.css";
+import { persona } from "../data/perfil";
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  /** Sin canonical, sin datos estructurados y con noindex (404 y páginas de prueba). */
+  indexable?: boolean;
+}
+
+const { titulo, descripcion, indexable = true } = Astro.props;
+const sitio = Astro.site!;
+const canonica = new URL(Astro.url.pathname, sitio).href;
+const imagen = new URL("/og.png", sitio).href;
+
+// Datos estructurados de la persona. Sin foto: la retiró el 08/11/2026 (ADR «Sin foto»).
+const esquema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": new URL("/#samuel", sitio).href,
+      name: persona.nombre,
+      jobTitle: persona.puesto,
+      url: sitio.href,
+      email: `mailto:${persona.correo}`,
+      address: { "@type": "PostalAddress", addressLocality: persona.ciudad, addressCountry: "ES" },
+      sameAs: [persona.github, persona.linkedin],
+      knowsAbout: ["Python", "TypeScript", "Desarrollo web", "Agentes de IA", "PostgreSQL", "Astro"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": new URL("/#web", sitio).href,
+      url: sitio.href,
+      name: persona.nombre,
+      inLanguage: "es-ES",
+      author: { "@id": new URL("/#samuel", sitio).href },
+    },
+  ],
+};
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{titulo}</title>
+<meta name="description" content={descripcion} />
+<meta name="author" content={persona.nombre} />
+{indexable ? <link rel="canonical" href={canonica} /> : <meta name="robots" content="noindex" />}
+<meta name="theme-color" content="#111318" />
+<meta name="google-site-verification" content="ULBMkq3C7Th-rGcKFbSXl418OZaEJ_9wEAvckRCcCRM" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="es_ES" />
+<meta property="og:url" content={canonica} />
+<meta property="og:title" content={titulo} />
+<meta property="og:description" content={descripcion} />
+<meta property="og:image" content={imagen} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+
+{indexable && <script type="application/ld+json" set:html={JSON.stringify(esquema)} />}

@@ -130,6 +130,7 @@ export const otrosProyectos = [
     texto: "Gestiona citas en lenguaje natural y las apunta en Google Calendar.",
     stack: "WhatsApp Cloud API · Google Calendar · function calling",
     enlace: { texto: "Ver la demo", url: "https://www.youtube.com/watch?v=UHxZyXY4cXU" },
+    imagen: "/proyectos/whatsapp-demo.webp",
   },
   {
     nombre: "Seguimiento de precios",
@@ -139,18 +140,21 @@ export const otrosProyectos = [
       texto: "Código",
       url: "https://github.com/Samuelmartinezduran/atmospheric-analyst---price-tracker",
     },
+    imagen: "/proyectos/price-tracker-dashboard.webp",
   },
   {
     nombre: "Tienda online",
     texto: "Catálogo, carrito, pagos y un panel para editar productos sin tocar código.",
     stack: "TypeScript · Stripe · Vercel",
     enlace: { texto: "Ver la demo", url: "https://e-commerce-sigma-ochre-81.vercel.app/es" },
+    imagen: "/proyectos/e-commerce.webp",
   },
   {
     nombre: "Bubble Tea España",
     texto: "Guía editorial de bubble tea por ciudades.",
     stack: "React · TypeScript · Vercel",
     enlace: { texto: "Ver la web", url: "https://bubble-tea-ebon.vercel.app/" },
+    imagen: "/proyectos/bubble-tea-espana.webp",
   },
 ];
 
@@ -191,4 +195,33 @@ export const habilidades = [
   { grupo: "IA", lista: "API de Anthropic y de OpenAI, function calling, MCP, Ollama, Retell" },
   { grupo: "Herramientas", lista: "Git, GitHub Actions, Docker, n8n, Vercel, Cloudflare" },
   { grupo: "Sistemas y diseño", lista: "Linux, redes y hardware · Photoshop, Illustrator, Premiere Pro" },
+];
+
+// Imágenes de Deep Prep para las vistas con galería. El vídeo sale de docs/img/demo.gif del repo.
+export const deepPrepMedios = {
+  video: { src: "/proyectos/deep-prep-demo.mp4", poster: "/proyectos/deep-prep-demo-poster.webp", ancho: 1200, alto: 760 },
+  capturas: [
+    { src: "/proyectos/deep-prep-carga.webp", ancho: 1500, alto: 950, pie: "Pantalla de carga: el rival y su historial." },
+    { src: "/proyectos/deep-prep-overlay.webp", ancho: 1180, alto: 580, pie: "Overlay durante la partida." },
+    { src: "/proyectos/deep-prep-revision.webp", ancho: 1500, alto: 950, pie: "Revisión con un clip de cada muerte." },
+  ],
+};
+
+// Salidas reales de las pruebas de cada proyecto, para la vista de terminal.
+// Deep Prep: main en b062a92 (08/11/2026). Asistente: TASKS.md del 05/11/2026 (15 archivos, 499 pruebas).
+// agenteval: la ejecución de weather-agent que se ve en su dashboard (100 / 67 / 100 → 87).
+export const sesionTerminal = [
+  { comando: "whoami", salida: ["Samuel Martínez Durán · desarrollador web · Vigo"] },
+  {
+    comando: "cd deep-prep && python -m unittest discover -s tests -t .",
+    salida: ["Ran 208 tests in 6.763s", "", "OK"],
+  },
+  {
+    comando: "cd ../asistente-reservas && supabase test db",
+    salida: ["All tests successful.", "Files=15, Tests=499"],
+  },
+  {
+    comando: "agenteval run suites/weather-agent.yaml",
+    salida: ["tool accuracy 100 · response quality 67 · safety 100", "score 87 / 100"],
+  },
 ];

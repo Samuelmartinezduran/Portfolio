@@ -83,3 +83,9 @@
 - **Decision:** La web enlaza el CV en PDF (`public/cv/`), que incluye el teléfono.
 - **Reason:** Es lo primero que pide quien selecciona. El teléfono no aparece en la página, solo en el PDF.
 - **Source:** Agent assumption, pendiente de confirmar por el usuario
+
+## Tres propuestas de diseño en /opciones/ (temporal)
+- **Decision:** Se añaden tres propuestas completas con los mismos datos: A «Proyectos vivos» (vídeo de Deep Prep, llamada del asistente que se escribe sola, evaluación de agenteval que se ejecuta), B «Editorial» (nombre enorme e índice de proyectos con vista previa que sigue al cursor) y C «Terminal» (terminal con las salidas reales de las pruebas, paleta de comandos con Ctrl/Cmd+K, proyectos como archivos). Comparten `src/components/Cabeza.astro` y el layout `src/layouts/Lienzo.astro`, llevan `noindex` y no están en el sitemap. La portada actual sigue en `/` hasta que el usuario elija; entonces la elegida pasa a `/` y se borran las demás y `Lienzo.astro`.
+- **Reason:** El usuario vio la primera versión «extremadamente sosa» y pidió desarrollar las tres direcciones propuestas para compararlas.
+- **Source:** User instruction (08/11/2026)
+- **Nota:** Las tres usan algo de JavaScript (animaciones, vista previa, paleta). Sin JavaScript o con movimiento reducido se ve todo el contenido de golpe.
