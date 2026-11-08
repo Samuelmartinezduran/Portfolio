@@ -51,9 +51,10 @@ falta las variables `RESEND_API_KEY`, `CONTACT_EMAIL` ni `VITE_GA_MEASUREMENT_ID
   08/11/2026: el script se sirve desde una ruta propia del despliegue). Los datos se ven en el panel de
   Vercel → Analytics, separados por entorno. En local no se carga.
 - **Google Analytics 4** solo se carga en producción y después de que la persona acepte el aviso de cookies.
-  Para activarlo, pon el ID de medición (`G-…`) en `GA_ID_PRODUCCION` de `src/lib/analitica.ts`. Mantén la
-  retención de datos de la propiedad en 2 meses, que es lo que dice `/privacidad/`. Si cambia lo que se
-  mide, actualiza `/privacidad/` y sube `VERSION_CONSENTIMIENTO`.
+  El ID (`G-2Z99X3GDBT`, propiedad «samuelmartinez.dev» de la cuenta personal de Google) está en
+  `GA_ID_PRODUCCION` de `src/lib/analitica.ts`. En la propiedad, la conservación de eventos y de usuario está
+  en 2 meses y las señales de Google desactivadas, que es lo que dice `/privacidad/`: si se cambia algo de
+  eso, o lo que se mide, actualiza `/privacidad/` y sube `VERSION_CONSENTIMIENTO`.
 
 ## Pruebas
 
