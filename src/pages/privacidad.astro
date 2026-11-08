@@ -1,0 +1,188 @@
+---
+// Privacidad y cookies. Explica lo mismo que el ADR «Analítica: Vercel Web Analytics y GA4 con
+// consentimiento». Si cambia la analítica, cambiar esta página y su fecha.
+import Pagina from "../layouts/Pagina.astro";
+import { persona } from "../data/perfil";
+import { GA_ID } from "../lib/analitica";
+
+const revisada = "2026-11-08";
+const conGA = GA_ID !== "";
+---
+
+<Pagina
+  titulo="Privacidad y cookies · Samuel Martínez Durán"
+  descripcion="Qué datos se recogen al visitar samuelmartinez.dev, para qué y cómo ejercer tus derechos."
+  indexable={false}
+>
+  <div class="legal">
+    <p class="mono orden">
+      <a href="/" class="volver">samuel@vigo</a><span class="ruta">~</span>$ cat privacidad.md
+    </p>
+    <main id="contenido">
+      <h1>Privacidad y cookies<span class="naranja">.</span></h1>
+      <p class="mono fecha">Revisada el <time datetime={revisada}>8 de noviembre de 2026</time></p>
+
+      <h2>Quién es el responsable</h2>
+      <p>
+        {persona.nombre}, autor de esta web. Para cualquier cuestión sobre tus datos:{" "}
+        <a href={`mailto:${persona.correo}`}>{persona.correo}</a>.
+      </p>
+
+      <h2>Qué se mide sin cookies</h2>
+      <p>
+        La web usa <strong>Vercel Web Analytics</strong> para contar visitas de forma agregada: qué página se ve, desde
+        qué página llegas, país y región aproximados, navegador, sistema y tipo de dispositivo. No usa cookies ni
+        guarda nada en tu dispositivo; identifica la visita con un valor calculado a partir de la petición que se
+        descarta a las 24 horas, y no permite saber quién eres ni seguirte por otras webs. Lo trata Vercel Inc. como
+        encargado. La base es el interés legítimo en saber si la web cumple su función (art. 6.1.f del RGPD).
+      </p>
+
+      {
+        conGA && (
+          <>
+            <h2>Qué se mide solo si aceptas: Google Analytics</h2>
+            <p>
+              Si aceptas en el aviso de cookies, se carga <strong>Google Analytics 4</strong> para saber qué se lee y
+              qué se usa: páginas vistas, clics en el correo, descargas del CV, uso de la paleta de comandos y
+              enlaces externos. Google Analytics guarda en tu navegador las cookies <code>_ga</code> y{" "}
+              <code>_ga_*</code>, que duran hasta 2 años, con un identificador aleatorio. Google no guarda tu
+              dirección IP; la usa para estimar la ubicación aproximada. Las señales de Google y la personalización
+              de anuncios están desactivadas, y los datos se borran a los 2 meses.
+            </p>
+            <p>
+              Lo trata Google Ireland Limited como encargado. Puede haber transferencias a Google LLC, en Estados
+              Unidos, amparadas por el Marco de Privacidad de Datos UE-EE. UU. La base es tu consentimiento (art. 6.1.a
+              del RGPD y art. 22.2 de la LSSI), que puedes retirar cuando quieras: si lo retiras, se borran esas
+              cookies.
+            </p>
+            <p>
+              <button type="button" class="boton-cookies mono" data-cookies>
+                Cambiar mis preferencias de cookies
+              </button>
+            </p>
+          </>
+        )
+      }
+
+      <h2>Qué se guarda en tu navegador</h2>
+      <p>
+        Además de lo anterior, la web solo recuerda en el almacenamiento local de tu navegador las elecciones que
+        haces en ella: {conGA && "tu decisión sobre las cookies de analítica y "}si has desactivado los atajos de una
+        tecla. No sale de tu dispositivo y puedes borrarlo desde el navegador.
+      </p>
+
+      <h2>Si me escribes</h2>
+      <p>
+        Uso tu correo y lo que me cuentes solo para responderte. No lo cedo a nadie y lo borro cuando deja de hacer
+        falta para esa conversación.
+      </p>
+
+      <h2>Tus derechos</h2>
+      <p>
+        Puedes pedir acceder a tus datos, rectificarlos, suprimirlos, oponerte a su tratamiento, limitarlo o
+        llevártelos escribiendo a <a href={`mailto:${persona.correo}`}>{persona.correo}</a>. Si crees que no se han
+        tratado bien, puedes reclamar ante la Agencia Española de Protección de Datos en{" "}
+        <a href="https://www.aepd.es">aepd.es</a>.
+      </p>
+
+      <p class="mono volver-inicio"><a href="/">cd ~ → volver al inicio</a></p>
+    </main>
+  </div>
+</Pagina>
+
+<script>
+  document.querySelector("[data-cookies]")?.addEventListener("click", () => window.abrirConsentimiento?.());
+</script>
+
+<style>
+  .legal {
+    min-height: 100vh;
+    padding: clamp(1.5rem, 5vw, 4rem) var(--margen) 6rem;
+    background: #0b0d11;
+  }
+
+  .legal main {
+    max-width: 44rem;
+  }
+
+  .orden {
+    font-size: 0.875rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .volver {
+    color: #4ade80;
+    text-decoration: none;
+  }
+
+  .ruta {
+    color: #8f9fff;
+  }
+
+  h1 {
+    margin-top: 2rem;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .naranja {
+    color: var(--acento);
+  }
+
+  .fecha {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: #fbbf77;
+  }
+
+  h2 {
+    margin-top: 2.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  h2::before {
+    content: "## " / "";
+    font-family: var(--mono);
+    font-weight: 400;
+    color: var(--acento);
+  }
+
+  p {
+    margin-top: 0.75rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  strong,
+  a {
+    color: var(--blanco);
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.875em;
+    color: #fbbf77;
+  }
+
+  .boton-cookies {
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    color: var(--blanco);
+    border: 1px solid var(--blanco);
+    border-radius: 2px;
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+
+  .boton-cookies:hover {
+    border-color: var(--acento);
+    color: var(--acento);
+  }
+
+  .volver-inicio {
+    margin-top: 3rem;
+  }
+</style>

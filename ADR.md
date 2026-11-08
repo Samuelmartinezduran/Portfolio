@@ -105,3 +105,29 @@
 - **Reason:** Enseña el producto funcionando: selección de campeón, partida y revisión.
 - **Source:** Agent assumption
 
+
+## Revisión de coherencia, SEO y GEO
+- **Decision:** Se revisan contenido, accesibilidad, SEO técnico y visibilidad en buscadores de IA; el detalle y las puntuaciones están en `docs/REVISION-2026-11-08.md`. Cambios de contenido: un archivo `sobre-mi.md` con un párrafo de 145 palabras que se entiende solo (para buscadores y asistentes de IA) y una ficha; un archivo `otros.md` que explica en texto los cuatro proyectos que antes solo eran nombres en la terminal; la salida de agenteval es la real de su suite de ejemplo con el juez heurístico (3/3 casos) y la barra de estado dice «3/3 casos» en lugar de «score 87», que era otra ejecución (juez LLM, la que se ve en la captura del dashboard); la latencia de 169 ms indica que se midió en local; todas las órdenes de la terminal usan `cd ~/<proyecto> &&`. SEO: título de 49 caracteres y descripción de 149, `og:site_name`, `og:image:alt`, iconos PNG, precarga de las dos fuentes visibles, `lastmod` en el sitemap, datos estructurados `ProfilePage`, `Person` (con `worksFor`, `alumniOf`, `knowsLanguage`), `SoftwareSourceCode` y `VideoObject`, y `llms.txt` con las cifras y su procedencia.
+- **Reason:** El usuario pidió una revisión completa de coherencia y optimizar SEO y GEO.
+- **Source:** User instruction (08/11/2026); Agent assumption (cambios concretos)
+
+## Accesibilidad y estabilidad de la portada
+- **Decision:** Contenido dentro de `<main>` y enlace para saltar a él; las pestañas son una `<nav>` de enlaces con `aria-current` (antes eran enlaces con `role="listitem"`, que les quitaba el papel de enlace); la paleta es un combobox con `aria-activedescendant`; los atajos de una tecla se pueden desactivar desde la paleta (WCAG 2.1.4); el cursor deja de parpadear a los 8 s (WCAG 2.2.2); el vídeo se carga al llegar, se pausa con un botón y no arranca solo con movimiento reducido; el gris de comentarios y rutas pasa de `#6B7280` (3,9:1) a `#858C99` (5,5:1). La terminal reserva desde el principio el sitio de lo que va a escribir (la orden completa invisible bajo la que se teclea y `visibility: hidden` en lo pendiente), lo que deja el CLS en 0 (antes 0,205 en móvil), y teclea más rápido (unos 9 s en total).
+- **Reason:** Lighthouse marcaba contraste, roles ARIA y CLS; el resto son criterios WCAG que la animación y los atajos tocaban.
+- **Source:** Agent assumption
+
+## Analítica: Vercel Web Analytics y GA4 con consentimiento
+- **Decision:** Dos capas. Vercel Web Analytics (paquete `@vercel/analytics`, componente de Astro) cuenta visitas sin cookies en cualquier compilación hecha en Vercel; en local no se carga porque su script daría 404. GA4 se carga solo en producción, solo con un ID en `src/lib/analitica.ts` y solo después de aceptar en el aviso de cookies (`src/components/Consentimiento.astro`): «Aceptar» y «Rechazar» pesan lo mismo, la elección dura 12 meses o hasta que cambie `VERSION_CONSENTIMIENTO`, se puede cambiar desde el pie o la paleta, y al retirarla se borran las cookies `_ga` y se recarga sin GA4. GA4 se configura con modo de consentimiento (solo `analytics_storage` concedido), sin señales de Google ni personalización de anuncios. Eventos propios: `contacto`, `abrir_paleta`, `comando` y `saltar_animacion`; las descargas del CV y los enlaces externos los recoge la medición mejorada de GA4. La página `/privacidad/` lo explica y solo habla de GA4 cuando hay ID. Sustituye a «Sin Google Analytics».
+- **Reason:** El usuario pidió instalar GA4 y ver Vercel Analytics. En España las cookies de analítica necesitan consentimiento previo (art. 22.2 LSSI y guía de cookies de la AEPD); Vercel Web Analytics no usa cookies ni identifica a nadie, así que mide a todo el mundo y GA4 añade el detalle de quien acepta. En el plan Hobby, Vercel Web Analytics da 50 000 eventos al mes y no permite eventos propios, por eso los eventos van a GA4.
+- **Source:** User instruction (GA4 y Vercel Analytics); Agent assumption (consentimiento, configuración y eventos)
+- **Pendiente:** poner el ID de GA4 (no había ninguna propiedad configurada: la variable de la web anterior estaba vacía) y activar Web Analytics en el proyecto de Vercel. La retención de datos de GA4 debe quedarse en 2 meses, que es lo que dice `/privacidad/`.
+
+## Pruebas de navegador
+- **Decision:** `npm run prueba:navegador` (`pruebas/navegador.mjs`, con `puppeteer-core` y el Edge o Chrome del sistema) compila una copia de producción con un ID de GA4 falso (`GA_ID_PRUEBA`), la sirve en local y comprueba 24 comportamientos: el aviso de cookies y que GA4 no se carga sin aceptar, retirar el consentimiento, la paleta, los atajos y su desactivación, el vídeo, el final de la terminal y que no haya errores en la consola.
+- **Reason:** El aviso de cookies y la paleta tienen lógica que no se ve en una captura; si se rompe, debe saberse antes de publicar.
+- **Source:** Agent assumption
+
+## Cabeceras de seguridad y CV sin indexar
+- **Decision:** `vercel.json` añade `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` y `Permissions-Policy` a todo, y `X-Robots-Tag: noindex` al CV en PDF (que lleva el teléfono). HSTS ya lo pone Vercel. No se añade Content-Security-Policy por ahora: GA4 y Vercel Analytics necesitan fuentes externas y una política mal ajustada rompería la analítica sin avisar.
+- **Reason:** Cabeceras básicas que faltaban, y evitar que el teléfono del CV aparezca en los resultados de búsqueda.
+- **Source:** Agent assumption

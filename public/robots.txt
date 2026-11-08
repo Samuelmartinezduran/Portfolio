@@ -1,3 +1,6 @@
+# samuelmartinez.dev — todo el contenido se puede leer, también por buscadores y asistentes de IA
+# (Googlebot, Bingbot, GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot...).
+# El CV en PDF se puede leer pero no indexar: lo marca la cabecera X-Robots-Tag (vercel.json).
 User-agent: *
 Allow: /
 

@@ -1,10 +1,13 @@
 ---
 // Portada. La web se presenta como una herramienta de desarrollador: una terminal que ejecuta las pruebas
-// reales, paleta de comandos (Ctrl/Cmd+K) y atajos, y cada proyecto se lee como un archivo abierto.
-// Ver DESIGN.md y el ADR «Dirección Terminal».
+// reales, paleta de comandos (Ctrl/Cmd+K) y atajos, y el perfil y los proyectos como archivos abiertos.
+// Ver DESIGN.md y los ADR «Dirección Terminal» y «Revisión de coherencia, SEO y GEO».
 import Pagina from "../layouts/Pagina.astro";
 import {
+  actualizada,
   cursos,
+  datosPersonales,
+  estado,
   experiencia,
   formacion,
   habilidades,
@@ -13,7 +16,76 @@ import {
   persona,
   proyectos,
   sesionTerminal,
+  sobreMi,
 } from "../data/perfil";
+import { gaActivo } from "../lib/analitica";
+
+const titulo = "Samuel Martínez Durán · Desarrollador web en Vigo";
+const descripcion =
+  "Desarrollador web en Vigo con Python, TypeScript e IA. Proyectos con código y pruebas: una app de escritorio publicada, un agente de voz y agenteval.";
+
+const sitio = Astro.site!;
+const abs = (ruta: string) => new URL(ruta, sitio).href;
+const idPersona = abs("/#samuel");
+const licencias: Record<string, string> = { MIT: "https://opensource.org/licenses/MIT" };
+const fechaLarga = new Intl.DateTimeFormat("es-ES", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+}).format(new Date(`${actualizada}T00:00:00Z`));
+
+// Datos estructurados propios de la portada: página de perfil, repositorios públicos y el vídeo de Deep Prep.
+const grafo: Record<string, unknown>[] = [
+  {
+    "@type": "ProfilePage",
+    "@id": abs("/#perfil"),
+    url: abs("/"),
+    name: titulo,
+    description: descripcion,
+    inLanguage: "es-ES",
+    dateModified: actualizada,
+    isPartOf: { "@id": abs("/#web") },
+    mainEntity: { "@id": idPersona },
+  },
+  ...proyectos.flatMap((p) =>
+    p.repo
+      ? [
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": abs(`/#${p.id}`),
+            name: p.nombre,
+            description: p.resumen,
+            url: abs(`/#${p.id}`),
+            codeRepository: p.repo.url,
+            programmingLanguage: p.repo.lenguaje,
+            license: licencias[p.repo.licencia] ?? p.repo.licencia,
+            author: { "@id": idPersona },
+            ...(p.video ? { video: { "@id": abs(`/#${p.id}-video`) } } : {}),
+          },
+        ]
+      : [],
+  ),
+  ...proyectos.flatMap((p) =>
+    p.video
+      ? [
+          {
+            "@type": "VideoObject",
+            "@id": abs(`/#${p.id}-video`),
+            name: `${p.nombre} en funcionamiento`,
+            description: p.video.alt,
+            thumbnailUrl: abs(p.video.poster),
+            contentUrl: abs(p.video.src),
+            uploadDate: p.video.fecha,
+            duration: p.video.duracion,
+            width: p.video.ancho,
+            height: p.video.alto,
+            creator: { "@id": idPersona },
+          },
+        ]
+      : [],
+  ),
+];
 
 const comandos = [
   { texto: "Ir a proyectos", atajo: "1", accion: "#proyectos" },
@@ -23,212 +95,354 @@ const comandos = [
   { texto: "Abrir GitHub", atajo: "G", accion: persona.github },
   { texto: "Abrir LinkedIn", atajo: "L", accion: persona.linkedin },
   { texto: "Copiar el correo", atajo: "", accion: "copiar" },
+  { texto: "Leer sobre mí", atajo: "", accion: "#sobre-mi" },
   ...proyectos.map((p) => ({ texto: `Ver ${p.nombre}`, atajo: "", accion: `#${p.id}` })),
+  { texto: "Ver otros proyectos", atajo: "", accion: "#otros" },
+  ...(gaActivo ? [{ texto: "Preferencias de cookies", atajo: "", accion: "cookies" }] : []),
+  { texto: "Desactivar atajos de una tecla", atajo: "", accion: "atajos" },
 ];
-const archivo = (id: string) => `proyectos/${id}/README.md`;
+const archivos = [
+  { id: "sobre-mi", nombre: "sobre-mi.md" },
+  ...proyectos.map((p) => ({ id: p.id, nombre: `${p.id}.md` })),
+  { id: "otros", nombre: "otros.md" },
+];
+const partirFechas = (fechas: string) => fechas.split(" – ");
 ---
 
-<Pagina
-  titulo="Samuel Martínez Durán · Desarrollador web en Vigo (Python, TypeScript e IA)"
-  descripcion="Desarrollador web en Vigo. Python, TypeScript e IA: una aplicación de escritorio publicada, un agente de voz que gestiona reservas y un framework para evaluar agentes LLM, con sus pruebas."
->
-  <div class="web">
+<Pagina titulo={titulo} descripcion={descripcion} grafo={grafo}>
+  <div class="web" data-correo={persona.correo}>
     <!-- Barra de ventana -->
     <header class="ventana">
       <span class="ventana__puntos" aria-hidden="true"><i></i><i></i><i></i></span>
       <span class="mono ventana__ruta">samuel@vigo: ~/portfolio</span>
       <a class="mono ventana__cv" href={persona.cv}>cv.pdf</a>
-      <button class="mono ventana__k" type="button" data-abrir-paleta>
+      <button class="mono ventana__k" type="button" data-abrir-paleta aria-haspopup="dialog">
         <kbd>Ctrl</kbd> <kbd>K</kbd> <span>comandos</span>
       </button>
     </header>
 
-    <!-- Terminal -->
-    <section class="terminal" aria-label="Terminal" data-terminal>
-      <div class="terminal__cuerpo mono">
-        {
-          sesionTerminal.map(({ comando, salida }) => (
-            <div class="bloque">
-              <p class="orden">
-                <span class="prompt">samuel@vigo</span>
-                <span class="ruta">~</span>
-                <span class="dolar">$</span> <span class="tecleo" data-texto={comando}>{comando}</span>
-              </p>
-              <div class="salida">
-                {salida.map((l) => (
-                  <p class={l.startsWith("OK") || l.startsWith("All tests") || l.startsWith("score") ? "bien" : ""}>
-                    {l || " "}
-                  </p>
-                ))}
-              </div>
-            </div>
-          ))
-        }
-        <div class="bloque">
-          <p class="orden">
-            <span class="prompt">samuel@vigo</span>
-            <span class="ruta">~</span>
-            <span class="dolar">$</span> <span class="tecleo" data-texto="ls proyectos/">ls proyectos/</span>
-          </p>
-          <ul class="salida ls">
-            {proyectos.map((p) => <li><a href={`#${p.id}`}>{p.id}/</a></li>)}
-            {otrosProyectos.map((o) => <li><a href={o.enlace.url}>{o.nombre.toLowerCase().replaceAll(" ", "-")}↗</a></li>)}
-          </ul>
-        </div>
-        <p class="orden final">
-          <span class="prompt">samuel@vigo</span>
-          <span class="ruta">~</span>
-          <span class="dolar">$</span> <span class="cursor" aria-hidden="true"></span>
-        </p>
-      </div>
-      <div class="terminal__lado">
-        <h1>
-          {persona.nombre}<span class="naranja">.</span>
-        </h1>
-        <p>
-          Desarrollador web en {persona.ciudad}. Python, TypeScript e IA. En la terminal, las pruebas reales de
-          mis proyectos: los comandos tal cual y lo que devuelven.
-        </p>
-        <p class="mono pista">
-          Pulsa <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> para moverte o <kbd>Ctrl</kbd> <kbd>K</kbd> para todo lo demás.
-        </p>
-        <button class="mono saltar" type="button" data-saltar>Saltar animación ↵</button>
-      </div>
-    </section>
-
-    <!-- Barra de estado -->
-    <div class="estado mono" aria-label="Estado">
-      <span class="estado__rama">⎇ main</span>
-      <span>✓ 208 pruebas</span>
-      <span>✓ 499 pruebas</span>
-      <span>✓ score 87</span>
-      <span class="estado__der"><i></i> disponible · enero 2027</span>
-    </div>
-
-    <!-- Proyectos como archivos -->
-    <section id="proyectos" class="editor" aria-label="Proyectos">
-      <div class="pestanas mono" role="list">
-        {proyectos.map((p, i) => <a role="listitem" href={`#${p.id}`} class={i === 0 ? "activa" : ""}>{p.id}.md</a>)}
-      </div>
-      {
-        proyectos.map((p) => (
-          <article id={p.id} class="archivo" aria-labelledby={`${p.id}-t`}>
-            <p class="archivo__ruta mono">{archivo(p.id)}</p>
-            <div class="archivo__cuerpo">
-              <div class="archivo__texto">
-                <p class="mono md"># </p>
-                <h2 id={`${p.id}-t`}>{p.nombre}</h2>
-                <p class="mono etiqueta">{p.etiqueta}</p>
-                <p class="resumen">{p.resumen}</p>
-                {p.detalle.map((d) => <p class="detalle">{d}</p>)}
-                <p class="mono md">## stack</p>
-                <pre class="mono codigo">{`[${p.stack.map((s) => `"${s}"`).join(", ")}]`}</pre>
-                <p class="mono md">## cifras</p>
-                <table class="mono tabla">
-                  <tbody>
-                    {p.datos.map(({ valor, texto }) => (
-                      <tr>
-                        <td>{texto}</td>
-                        <td class="cifra">{valor}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <p class="enlaces">
-                  {p.enlaces.length > 0 ? (
-                    p.enlaces.map((e) => <a class="enlace-flecha" href={e.url}>{e.texto}</a>)
-                  ) : (
-                    <span class="mono comentario">// repositorio privado: lo enseño en una entrevista</span>
-                  )}
+    <main id="contenido">
+      <!-- Terminal: las órdenes reservan su sitio desde el principio para que nada salte al escribir. -->
+      <section class="terminal" aria-label="Terminal con las pruebas de los proyectos" data-terminal>
+        <div class="terminal__cuerpo mono">
+          {
+            sesionTerminal.map(({ comando, salida }) => (
+              <div class="bloque">
+                <p class="orden">
+                  <span class="orden__prompt" aria-hidden="true">
+                    <span class="prompt">samuel@vigo</span>
+                    <span class="ruta">~</span>
+                    <span class="dolar">$</span>
+                  </span>
+                  <span class="solo-lector">$ {comando}</span>
+                  <span class="orden__comando" aria-hidden="true">
+                    <span class="fantasma">{comando}</span>
+                    <span class="tecleo" data-texto={comando}>
+                      {comando}
+                    </span>
+                  </span>
                 </p>
-              </div>
-              <div class="archivo__media">
-                {p.video ? (
-                  <figure>
-                    <video
-                      src={p.video.src}
-                      poster={p.video.poster}
-                      width={p.video.ancho}
-                      height={p.video.alto}
-                      autoplay
-                      muted
-                      loop
-                      playsinline
-                      preload="metadata"
-                      aria-label={p.video.alt}
-                    />
-                    <figcaption class="mono comentario">// {p.video.pie}</figcaption>
-                  </figure>
-                ) : p.imagen ? (
-                  <img src={p.imagen.src} width={p.imagen.ancho} height={p.imagen.alto} alt={p.imagen.alt} loading="lazy" decoding="async" />
+                {salida.tabla ? (
+                  <pre class="salida salida--tabla">{salida.lineas.map((l) => <span class={l.includes("PROMEDIO") ? "bien" : undefined}>{`${l}\n`}</span>)}</pre>
                 ) : (
-                  <pre class="mono log">{llamada.map(({ quien, texto }) => quien === "herramienta" ? <span class="log__h">{`  → ${texto}\n`}</span> : <span>{`[${quien.toLowerCase()}] ${texto}\n`}</span>)}</pre>
+                  <div class="salida">
+                    {salida.lineas.map((l) => (
+                      <p class={/^(OK|All tests)/.test(l) ? "bien" : undefined}>{l || " "}</p>
+                    ))}
+                  </div>
                 )}
               </div>
+            ))
+          }
+          <div class="bloque">
+            <p class="orden">
+              <span class="orden__prompt" aria-hidden="true">
+                <span class="prompt">samuel@vigo</span>
+                <span class="ruta">~</span>
+                <span class="dolar">$</span>
+              </span>
+              <span class="solo-lector">$ ls proyectos/</span>
+              <span class="orden__comando" aria-hidden="true">
+                <span class="fantasma">ls proyectos/</span>
+                <span class="tecleo" data-texto="ls proyectos/">ls proyectos/</span>
+              </span>
+            </p>
+            <ul class="salida ls" aria-label="Proyectos">
+              {[...proyectos, ...otrosProyectos].map((p) => <li><a href={`#${p.id}`}>{p.id}/</a></li>)}
+            </ul>
+          </div>
+          <p class="orden final" aria-hidden="true">
+            <span class="orden__prompt">
+              <span class="prompt">samuel@vigo</span>
+              <span class="ruta">~</span>
+              <span class="dolar">$</span>
+            </span>
+            <span class="cursor"></span>
+          </p>
+        </div>
+        <div class="terminal__lado">
+          <h1>
+            {persona.nombre}<span class="naranja">.</span>
+          </h1>
+          <p>
+            Desarrollador web en {persona.ciudad}. Python, TypeScript e IA. En la terminal, las pruebas reales de
+            mis proyectos: los comandos tal cual y lo que devuelven.
+          </p>
+          <p class="mono pista" data-pista>
+            Pulsa <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> para moverte o <kbd>Ctrl</kbd> <kbd>K</kbd> para todo lo
+            demás.
+          </p>
+          <button class="mono saltar" type="button" data-saltar>Saltar animación ↵</button>
+        </div>
+      </section>
+
+      <!-- Barra de estado: resume lo que acaba de salir en la terminal. -->
+      <div class="estado mono" role="group" aria-label="Estado de las pruebas">
+        <span class="estado__rama">⎇ main</span>
+        {estado.map((e) => <span>✓ {e}</span>)}
+        <span class="estado__der"><i aria-hidden="true"></i> disponible · enero 2027</span>
+      </div>
+
+      <!-- Perfil y proyectos como archivos abiertos en el editor -->
+      <section id="proyectos" class="editor" aria-label="Sobre mí y proyectos">
+        <nav class="pestanas mono" aria-label="Archivos">
+          {
+            archivos.map((a, i) => (
+              <a href={`#${a.id}`} aria-current={i === 0 ? "true" : undefined}>
+                {a.nombre}
+              </a>
+            ))
+          }
+        </nav>
+
+        <article id="sobre-mi" class="archivo" aria-labelledby="sobre-mi-t">
+          <p class="archivo__ruta mono">README.md</p>
+          <div class="archivo__cuerpo archivo__cuerpo--perfil">
+            <div class="archivo__texto">
+              <p class="mono md" aria-hidden="true"># </p>
+              <h2 id="sobre-mi-t">Sobre mí</h2>
+              <p class="resumen">{sobreMi}</p>
             </div>
-          </article>
-        ))
-      }
-    </section>
+            <dl class="mono ficha">
+              {
+                datosPersonales.map((d) => (
+                  <div>
+                    <dt>{d.clave}</dt>
+                    <dd>{d.valor}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </div>
+        </article>
 
-    <!-- Experiencia como log de git -->
-    <section id="experiencia" class="git" aria-labelledby="git-t">
-      <p class="mono md">$ git log --oneline --graph trayectoria</p>
-      <h2 id="git-t" class="solo-lector">Experiencia y formación</h2>
-      <ol class="grafo">
         {
-          experiencia.map((e) => (
-            <li>
-              <span class="mono fecha">{e.fechas}</span>
-              <h3>
-                {e.puesto} <span>@ {e.empresa}</span>
-              </h3>
-              <ul>{e.puntos.map((p) => <li>{p}</li>)}</ul>
-            </li>
+          proyectos.map((p) => (
+            <article id={p.id} class="archivo" aria-labelledby={`${p.id}-t`}>
+              <p class="archivo__ruta mono">{`proyectos/${p.id}/README.md`}</p>
+              <div class="archivo__cuerpo">
+                <div class="archivo__texto">
+                  <p class="mono md" aria-hidden="true">
+                    #{" "}
+                  </p>
+                  <h2 id={`${p.id}-t`}>{p.nombre}</h2>
+                  <p class="mono etiqueta">{p.etiqueta}</p>
+                  <p class="resumen">{p.resumen}</p>
+                  {p.detalle.map((d) => (
+                    <p class="detalle">{d}</p>
+                  ))}
+                  <h3 class="mono md"><span aria-hidden="true">## </span>stack</h3>
+                  <pre class="mono codigo">{`[${p.stack.map((s) => `"${s}"`).join(", ")}]`}</pre>
+                  <h3 class="mono md"><span aria-hidden="true">## </span>cifras</h3>
+                  <table class="mono tabla">
+                    <caption class="solo-lector">Cifras de {p.nombre}</caption>
+                    <tbody>
+                      {p.datos.map(({ valor, texto }) => (
+                        <tr>
+                          <th scope="row">{texto}</th>
+                          <td class="cifra">{valor}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <p class="enlaces">
+                    {p.enlaces.length > 0 ? (
+                      p.enlaces.map((e) => (
+                        <a class="enlace-flecha" href={e.url}>
+                          {e.texto}
+                          <span class="solo-lector"> de {p.nombre}</span>
+                        </a>
+                      ))
+                    ) : (
+                      <span class="mono comentario">// repositorio privado: lo enseño en una entrevista</span>
+                    )}
+                  </p>
+                </div>
+                <div class="archivo__media">
+                  {p.video ? (
+                    <figure data-video>
+                      <video
+                        src={p.video.src}
+                        poster={p.video.poster}
+                        width={p.video.ancho}
+                        height={p.video.alto}
+                        muted
+                        loop
+                        playsinline
+                        controls
+                        preload="none"
+                        aria-label={p.video.alt}
+                      />
+                      <figcaption class="mono comentario">
+                        // {p.video.pie}{" "}
+                        <button type="button" class="video__boton" data-video-boton hidden>
+                          ❚❚ pausar
+                        </button>
+                      </figcaption>
+                    </figure>
+                  ) : p.imagen ? (
+                    <figure>
+                      <img
+                        src={p.imagen.src}
+                        width={p.imagen.ancho}
+                        height={p.imagen.alto}
+                        alt={p.imagen.alt}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <figcaption class="mono comentario">// {p.imagen.pie}</figcaption>
+                    </figure>
+                  ) : (
+                    <figure>
+                      <pre class="mono log">{llamada.map(({ quien, texto }) => quien === "herramienta" ? <span class="log__h">{`  → ${texto}\n`}</span> : <span>{`[${quien.toLowerCase()}] ${texto}\n`}</span>)}</pre>
+                      <figcaption class="mono comentario">
+                        // Una reserva del guion de la demo, con las herramientas que llama el agente.
+                      </figcaption>
+                    </figure>
+                  )}
+                </div>
+              </div>
+            </article>
           ))
         }
-        {
-          formacion.map((f) => (
-            <li class="formacion">
-              <span class="mono fecha">{f.fechas}</span>
-              <h3>
-                {f.titulo} <span>@ {f.centro}</span>
-              </h3>
-            </li>
-          ))
-        }
-        <li class="formacion">
-          <span class="mono fecha">2026</span>
-          <h3>Cursos <span>@ Anthropic</span></h3>
-          <ul><li>{cursos.replace(/^Cursos de Anthropic \(2026\): /, "")}</li></ul>
-        </li>
-      </ol>
-      <p class="mono md">$ cat habilidades.json</p>
-      <pre class="mono json">{`{\n${habilidades.map((h) => `  "${h.grupo}": "${h.lista}"`).join(",\n")}\n}`}</pre>
-    </section>
 
-    <!-- Contacto -->
-    <section id="contacto" class="contacto">
-      <p class="mono md">$ ./contactar.sh</p>
-      <h2 class="solo-lector">Contacto</h2>
-      <a class="contacto__grande" href={`mailto:${persona.correo}`}>Escríbeme<span class="naranja">→</span></a>
-      <ul class="mono contacto__lista">
-        <li><span>correo</span><a href={`mailto:${persona.correo}`}>{persona.correo}</a></li>
-        <li><span>linkedin</span><a href={persona.linkedin}>{persona.nombre}</a></li>
-        <li><span>github</span><a href={persona.github}>Samuelmartinezduran</a></li>
-        <li><span>cv</span><a href={persona.cv}>CV_Samuel_Martinez_Duran.pdf</a></li>
-      </ul>
-      <p class="mono comentario">// © 2026 {persona.nombre} · hecha con Astro</p>
-    </section>
+        <article id="otros" class="archivo" aria-labelledby="otros-t">
+          <p class="archivo__ruta mono">proyectos/otros.md</p>
+          <p class="mono md" aria-hidden="true"># </p>
+          <h2 id="otros-t">Otros proyectos</h2>
+          <ul class="otros">
+            {
+              otrosProyectos.map((o) => (
+                <li id={o.id}>
+                  <h3>{o.nombre}</h3>
+                  <div>
+                    <p>{o.texto}</p>
+                    <p class="mono otros__stack">{o.stack}</p>
+                  </div>
+                  <a class="enlace-flecha" href={o.enlace.url}>
+                    {o.enlace.texto}
+                    <span class="solo-lector">: {o.nombre}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </article>
+      </section>
+
+      <!-- Experiencia y formación como log de git -->
+      <section id="experiencia" class="git" aria-labelledby="git-t">
+        <p class="mono md" aria-hidden="true">$ git log --oneline --graph trayectoria</p>
+        <h2 id="git-t" class="solo-lector">Experiencia y formación</h2>
+        <ol class="grafo">
+          {
+            experiencia.map((e) => {
+              const [desde, hasta] = partirFechas(e.fechas);
+              return (
+                <li>
+                  <span class="mono fecha">
+                    <time datetime={e.inicio}>{desde}</time> – <time datetime={e.fin}>{hasta}</time>
+                  </span>
+                  <h3>
+                    {e.puesto} <span>@ {e.empresa}</span>
+                  </h3>
+                  <ul>
+                    {e.puntos.map((p) => (
+                      <li>{p}</li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })
+          }
+          {
+            formacion.map((f) => (
+              <li class="formacion">
+                <span class="mono fecha">
+                  <time datetime={f.inicio}>{f.inicio}</time> – <time datetime={f.fin}>{f.fin}</time>
+                </span>
+                <h3>
+                  {f.titulo} <span>@ {f.centro}</span>
+                </h3>
+              </li>
+            ))
+          }
+          <li class="formacion">
+            <span class="mono fecha"><time datetime={cursos.fecha}>{cursos.fecha}</time></span>
+            <h3>Cursos <span>@ {cursos.entidad}</span></h3>
+            <ul><li>{cursos.lista}</li></ul>
+          </li>
+        </ol>
+        <p class="mono md" aria-hidden="true">$ cat habilidades.json</p>
+        <h3 class="solo-lector">Habilidades</h3>
+        <pre class="mono json">{`{\n${habilidades.map((h) => `  "${h.grupo}": "${h.lista}"`).join(",\n")}\n}`}</pre>
+      </section>
+
+      <!-- Contacto -->
+      <section id="contacto" class="contacto" aria-labelledby="contacto-t">
+        <p class="mono md" aria-hidden="true">$ ./contactar.sh</p>
+        <h2 id="contacto-t" class="solo-lector">Contacto</h2>
+        <a class="contacto__grande" href={`mailto:${persona.correo}`}>Escríbeme<span class="naranja" aria-hidden="true">→</span></a>
+        <ul class="mono contacto__lista">
+          <li><span>correo</span><a href={`mailto:${persona.correo}`}>{persona.correo}</a></li>
+          <li><span>linkedin</span><a href={persona.linkedin}>{persona.nombre}</a></li>
+          <li><span>github</span><a href={persona.github}>Samuelmartinezduran</a></li>
+          <li><span>cv</span><a href={persona.cv}>CV_Samuel_Martinez_Duran.pdf</a></li>
+        </ul>
+        <footer class="mono comentario pie">
+          // © 2026 {persona.nombre} · hecha con Astro · <a href="/privacidad/">privacidad</a>
+          {
+            gaActivo && (
+              <>
+                {" "}
+                · <button type="button" class="enlace-boton" data-cookies>cookies</button>
+              </>
+            )
+          }{" "}
+          · actualizada el <time datetime={actualizada}>{fechaLarga}</time>
+        </footer>
+      </section>
+    </main>
 
     <!-- Paleta de comandos -->
     <dialog class="paleta" data-paleta aria-label="Paleta de comandos">
-      <input class="mono" type="text" placeholder="Escribe un comando…" aria-label="Buscar comando" data-buscar />
-      <ul role="listbox" data-lista>
+      <input
+        class="mono"
+        type="text"
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="paleta-lista"
+        aria-autocomplete="list"
+        aria-label="Buscar comando"
+        placeholder="Escribe un comando…"
+        autocomplete="off"
+        data-buscar
+      />
+      <ul id="paleta-lista" role="listbox" aria-label="Comandos" data-lista>
         {
           comandos.map((c, i) => (
-            <li role="option" data-accion={c.accion} aria-selected={i === 0 ? "true" : "false"}>
-              <span>{c.texto}</span>
+            <li id={`comando-${i}`} role="option" data-accion={c.accion} aria-selected={i === 0 ? "true" : "false"}>
+              <span data-texto-comando>{c.texto}</span>
               {c.atajo && <kbd class="mono">{c.atajo}</kbd>}
             </li>
           ))
@@ -242,14 +456,20 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
 <script>
   const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const raiz = document.querySelector<HTMLElement>(".web")!;
   const terminal = document.querySelector<HTMLElement>("[data-terminal]");
   const aviso = document.querySelector<HTMLElement>("[data-aviso]");
+  const botonSaltar = document.querySelector<HTMLButtonElement>("[data-saltar]");
 
-  // Terminal: teclea cada orden y muestra su salida. Sin JS o con movimiento reducido, todo se ve ya.
+  // Terminal: teclea cada orden y muestra su salida. El espacio ya está reservado (ver CSS), así que no
+  // empuja nada. Sin JS o con movimiento reducido, todo se ve de golpe.
   const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms));
   let saltar = false;
   async function reproducir() {
-    if (!terminal || quieto) return;
+    if (!terminal || quieto) {
+      botonSaltar?.setAttribute("hidden", "");
+      return;
+    }
     terminal.classList.add("animando");
     const bloques = [...terminal.querySelectorAll<HTMLElement>(".bloque")];
     for (const b of bloques) {
@@ -261,22 +481,66 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
       for (const letra of texto) {
         if (saltar) break;
         t.textContent += letra;
-        await esperar(28 + Math.random() * 40);
+        await esperar(16 + Math.random() * 22);
       }
       t.textContent = texto;
-      await esperar(saltar ? 0 : 350);
+      await esperar(saltar ? 0 : 250);
       b.classList.add("hecho");
-      await esperar(saltar ? 0 : 500);
+      await esperar(saltar ? 0 : 350);
     }
-    terminal.classList.remove("animando");
     terminal.querySelectorAll(".bloque").forEach((b) => b.classList.add("activo", "hecho"));
-    document.querySelector<HTMLElement>("[data-saltar]")?.setAttribute("hidden", "");
+    terminal.classList.remove("animando");
+    botonSaltar?.setAttribute("hidden", "");
   }
-  if (quieto) document.querySelector<HTMLElement>("[data-saltar]")?.setAttribute("hidden", "");
-  document.querySelector("[data-saltar]")?.addEventListener("click", () => (saltar = true));
+  botonSaltar?.addEventListener("click", () => {
+    saltar = true;
+    window.medir?.("saltar_animacion");
+  });
   reproducir();
 
-  // Paleta de comandos.
+  // Vídeo: se reproduce solo cuando se ve y se puede pausar. Con movimiento reducido no arranca solo y
+  // quedan los controles del navegador.
+  document.querySelectorAll<HTMLElement>("[data-video]").forEach((figura) => {
+    const video = figura.querySelector("video");
+    const boton = figura.querySelector<HTMLButtonElement>("[data-video-boton]");
+    if (!video || !boton || quieto) return;
+    video.controls = false;
+    boton.hidden = false;
+    let pausadoAMano = false;
+    const pintar = () => (boton.textContent = video.paused ? "▶ reproducir" : "❚❚ pausar");
+    video.addEventListener("play", pintar);
+    video.addEventListener("pause", pintar);
+    boton.addEventListener("click", () => {
+      pausadoAMano = !video.paused;
+      if (video.paused) video.play().catch(() => {});
+      else video.pause();
+    });
+    new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting && !pausadoAMano) video.play().catch(() => {});
+        else if (!e.isIntersecting && !video.paused) video.pause();
+      },
+      { threshold: 0.25 },
+    ).observe(video);
+  });
+
+  // Atajos de una tecla: se pueden desactivar (WCAG 2.1.4). La elección se recuerda en este navegador.
+  const leerAtajos = () => {
+    try {
+      return localStorage.getItem("atajos") !== "no";
+    } catch {
+      return true;
+    }
+  };
+  let atajos = leerAtajos();
+  const pintarAtajos = () => {
+    raiz.dataset.atajos = atajos ? "si" : "no";
+    const opcion = document.querySelector<HTMLElement>("[data-accion='atajos'] [data-texto-comando]");
+    if (opcion) opcion.textContent = atajos ? "Desactivar atajos de una tecla" : "Activar atajos de una tecla";
+  };
+  pintarAtajos();
+
+  // Paleta de comandos (combobox con lista).
   const paleta = document.querySelector<HTMLDialogElement>("[data-paleta]")!;
   const buscar = paleta.querySelector<HTMLInputElement>("[data-buscar]")!;
   const opciones = [...paleta.querySelectorAll<HTMLElement>("[data-accion]")];
@@ -285,10 +549,14 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
   const visibles = () => opciones.filter((o) => !o.hidden);
   function marcar(i: number) {
     const v = visibles();
-    if (v.length === 0) return;
-    elegida = (i + v.length) % v.length;
     opciones.forEach((o) => o.setAttribute("aria-selected", "false"));
+    if (v.length === 0) {
+      buscar.removeAttribute("aria-activedescendant");
+      return;
+    }
+    elegida = (i + v.length) % v.length;
     v[elegida].setAttribute("aria-selected", "true");
+    buscar.setAttribute("aria-activedescendant", v[elegida].id);
     v[elegida].scrollIntoView({ block: "nearest" });
   }
   function abrirPaleta() {
@@ -296,22 +564,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     opciones.forEach((o) => (o.hidden = false));
     paleta.showModal();
     marcar(0);
-  }
-  async function ejecutar(accion: string) {
-    paleta.close();
-    if (accion === "copiar") {
-      const correo = "samuelmartinezduran044@outlook.com";
-      try {
-        await navigator.clipboard.writeText(correo);
-        mostrarAviso(`Copiado: ${correo}`);
-      } catch {
-        location.href = `mailto:${correo}`;
-      }
-    } else if (accion.startsWith("#")) {
-      document.querySelector(accion)?.scrollIntoView({ behavior: quieto ? "auto" : "smooth" });
-    } else {
-      window.open(accion, "_blank", "noopener");
-    }
+    window.medir?.("abrir_paleta");
   }
   function mostrarAviso(texto: string) {
     if (!aviso) return;
@@ -319,13 +572,40 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     aviso.classList.add("visible");
     setTimeout(() => aviso.classList.remove("visible"), 2200);
   }
+  async function ejecutar(accion: string, nombre = accion) {
+    if (paleta.open) paleta.close();
+    window.medir?.("comando", { comando: nombre });
+    if (accion === "copiar") {
+      const correo = raiz.dataset.correo ?? "";
+      try {
+        await navigator.clipboard.writeText(correo);
+        mostrarAviso(`Copiado: ${correo}`);
+      } catch {
+        location.href = `mailto:${correo}`;
+      }
+    } else if (accion === "cookies") {
+      window.abrirConsentimiento?.();
+    } else if (accion === "atajos") {
+      atajos = !atajos;
+      try {
+        localStorage.setItem("atajos", atajos ? "si" : "no");
+      } catch {
+        // Sin almacenamiento vale para esta visita.
+      }
+      pintarAtajos();
+      mostrarAviso(atajos ? "Atajos de una tecla activados" : "Atajos de una tecla desactivados");
+    } else if (accion.startsWith("#")) {
+      document.querySelector(accion)?.scrollIntoView({ behavior: quieto ? "auto" : "smooth" });
+      history.replaceState(null, "", accion);
+    } else {
+      window.open(accion, "_blank", "noopener");
+    }
+  }
 
   buscar.addEventListener("input", () => {
-    const q = buscar.value.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
-    opciones.forEach((o) => {
-      const t = (o.textContent ?? "").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
-      o.hidden = !t.includes(q);
-    });
+    const normalizar = (s: string) => s.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+    const q = normalizar(buscar.value);
+    opciones.forEach((o) => (o.hidden = !normalizar(o.textContent ?? "").includes(q)));
     marcar(0);
   });
   paleta.addEventListener("keydown", (e) => {
@@ -334,24 +614,31 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     if (e.key === "Enter") {
       e.preventDefault();
       const v = visibles()[elegida];
-      if (v) ejecutar(v.dataset.accion!);
+      if (v) ejecutar(v.dataset.accion!, v.textContent?.trim());
     }
   });
-  opciones.forEach((o) => o.addEventListener("click", () => ejecutar(o.dataset.accion!)));
+  opciones.forEach((o) => o.addEventListener("click", () => ejecutar(o.dataset.accion!, o.textContent?.trim())));
   paleta.addEventListener("click", (e) => {
     if (e.target === paleta) paleta.close();
   });
   document.querySelectorAll("[data-abrir-paleta]").forEach((b) => b.addEventListener("click", abrirPaleta));
+  document.querySelector("[data-cookies]")?.addEventListener("click", () => window.abrirConsentimiento?.());
 
-  // Atajos globales.
+  // Atajos globales. Ctrl/Cmd+K siempre; los de una tecla, solo si están activados.
   document.addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
-      paleta.open ? paleta.close() : abrirPaleta();
+      if (paleta.open) paleta.close();
+      else abrirPaleta();
       return;
     }
     if (paleta.open || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    if (e.key === "Enter" && terminal?.classList.contains("animando")) {
+      saltar = true;
+      return;
+    }
+    if (!atajos) return;
     const mapa: Record<string, string> = {
       "1": "#proyectos",
       "2": "#experiencia",
@@ -361,8 +648,12 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
       l: document.querySelector<HTMLElement>("[data-accion*='linkedin.com']")?.dataset.accion ?? "",
     };
     const destino = mapa[e.key.toLowerCase()];
-    if (destino) ejecutar(destino);
-    if (e.key === "Enter" && terminal?.classList.contains("animando")) saltar = true;
+    if (destino) ejecutar(destino, `atajo ${e.key.toLowerCase()}`);
+  });
+
+  // Contacto por correo, para saber si la web sirve para lo que está hecha.
+  document.addEventListener("click", (e) => {
+    if ((e.target as Element | null)?.closest?.("a[href^='mailto:']")) window.medir?.("contacto", { via: "correo" });
   });
 
   // Pestaña activa según el archivo visible.
@@ -370,7 +661,11 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
   document.querySelectorAll(".archivo").forEach((a) =>
     new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting) pestanas.forEach((p) => p.classList.toggle("activa", p.getAttribute("href") === `#${a.id}`));
+        if (!e.isIntersecting) return;
+        pestanas.forEach((p) => {
+          if (p.getAttribute("href") === `#${a.id}`) p.setAttribute("aria-current", "true");
+          else p.removeAttribute("aria-current");
+        });
       },
       { rootMargin: "-40% 0px -50% 0px" },
     ).observe(a),
@@ -380,6 +675,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 <style>
   .web {
     --fondo: #0b0d11;
+    --comentario: #858c99; /* 5,5:1 sobre grafito y 5,8:1 sobre la terminal */
     background: var(--grafito);
     color: var(--blanco);
     min-height: 100vh;
@@ -409,10 +705,11 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
   .md {
     color: var(--acento);
     font-size: 0.875rem;
+    font-weight: 400;
   }
 
   .comentario {
-    color: #6b7280;
+    color: var(--comentario);
     font-size: 0.875rem;
   }
 
@@ -449,6 +746,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
   .ventana__cv {
     margin-left: auto;
+    padding: 0.5rem 0.25rem;
     font-size: 0.8125rem;
     color: var(--blanco);
     text-decoration: none;
@@ -462,6 +760,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    min-height: 2.5rem;
     padding: 0.375rem 0.625rem;
     background: transparent;
     color: var(--texto-2-oscuro);
@@ -479,21 +778,15 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     margin-left: 0.375rem;
   }
 
-
-
   /* Terminal */
   .terminal {
     display: grid;
     background: var(--fondo);
   }
 
-  /* En móvil, el nombre va primero y la terminal reserva su altura para no dar saltos al escribir. */
+  /* En móvil, el nombre va primero. */
   .terminal__lado {
     order: -1;
-  }
-
-  .terminal__cuerpo {
-    min-height: 24rem;
   }
 
   @media (min-width: 64rem) {
@@ -507,12 +800,16 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     }
   }
 
-  /* Sin teclado físico no hay atajos que enseñar. */
+  /* Sin teclado físico, o con los atajos desactivados, no hay atajos que enseñar. */
   @media (hover: none) {
     .pista,
     .ventana__k kbd {
       display: none;
     }
+  }
+
+  .web[data-atajos="no"] .pista {
+    display: none;
   }
 
   @media (max-width: 30rem) {
@@ -522,10 +819,10 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
   }
 
   .terminal__cuerpo {
+    min-width: 0;
     padding: clamp(1.25rem, 4vw, 3rem) var(--margen);
     font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
     line-height: 1.7;
-    overflow-x: auto;
   }
 
   .bloque + .bloque {
@@ -533,8 +830,28 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
   }
 
   .orden {
+    display: flex;
+    gap: 1ch;
+  }
+
+  .orden__prompt {
+    flex: none;
+  }
+
+  /* La orden completa (invisible) y la que se teclea ocupan la misma celda: el alto no cambia. */
+  .orden__comando {
+    display: grid;
+    min-width: 0;
+  }
+
+  .orden__comando > span {
+    grid-area: 1 / 1;
     white-space: pre-wrap;
-    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .fantasma {
+    visibility: hidden;
   }
 
   .prompt {
@@ -555,6 +872,15 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
   .salida .bien {
     color: #4ade80;
+  }
+
+  .salida--tabla {
+    margin: 0.25rem 0 0;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    line-height: 1.45;
+    white-space: pre;
+    overflow-x: auto;
   }
 
   .ls {
@@ -578,7 +904,8 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     height: 1.15em;
     vertical-align: text-bottom;
     background: var(--acento);
-    animation: parpadeo 1s steps(1) infinite;
+    /* Parpadea unos segundos y se queda fijo (WCAG 2.2.2). */
+    animation: parpadeo 1s steps(1) 8;
   }
 
   @keyframes parpadeo {
@@ -587,13 +914,11 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     }
   }
 
+  /* Mientras teclea, lo que falta está oculto pero ocupa su sitio. */
   .animando .bloque:not(.activo),
-  .animando .final {
-    display: none;
-  }
-
+  .animando .final,
   .animando .bloque.activo:not(.hecho) .salida {
-    display: none;
+    visibility: hidden;
   }
 
   .animando .bloque.activo:not(.hecho) .tecleo::after {
@@ -611,11 +936,6 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     align-content: end;
     gap: 1.25rem;
     padding: clamp(1.25rem, 4vw, 3rem) var(--margen);
-    border-top: 1px solid var(--borde-oscuro);
-  }
-
-  .terminal__lado {
-    border-top: 0;
     border-bottom: 1px solid var(--borde-oscuro);
   }
 
@@ -644,6 +964,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
   .saltar {
     justify-self: start;
+    min-height: 2.5rem;
     padding: 0.5rem 0.75rem;
     background: transparent;
     color: var(--blanco);
@@ -706,7 +1027,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     white-space: nowrap;
   }
 
-  .pestanas a.activa {
+  .pestanas a[aria-current="true"] {
     color: var(--blanco);
     background: var(--grafito);
     border-top-color: var(--acento);
@@ -721,7 +1042,7 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
   .archivo__ruta {
     font-size: 0.75rem;
-    color: #6b7280;
+    color: var(--comentario);
   }
 
   .archivo__cuerpo {
@@ -734,6 +1055,11 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     .archivo__cuerpo {
       grid-template-columns: 5fr 7fr;
     }
+
+    /* En «Sobre mí» manda el texto: columna ancha para el párrafo y la ficha al lado. */
+    .archivo__cuerpo--perfil {
+      grid-template-columns: 7fr 4fr;
+    }
   }
 
   .archivo__texto {
@@ -742,12 +1068,16 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     align-content: start;
   }
 
-  .archivo__texto h2 {
+  .archivo h2 {
     margin-top: -0.5rem;
     font-size: clamp(2.25rem, 4.5vw, 3.5rem);
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.04em;
+  }
+
+  #otros > .md {
+    margin-top: 1.5rem;
   }
 
   .archivo__texto h2 + .etiqueta {
@@ -776,10 +1106,13 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     font-size: 0.875rem;
   }
 
+  .tabla th,
   .tabla td {
     padding: 0.375rem 1.5rem 0.375rem 0;
     border-bottom: 1px solid var(--borde-oscuro);
     color: var(--texto-2-oscuro);
+    font-weight: 400;
+    text-align: left;
   }
 
   .tabla td.cifra {
@@ -791,6 +1124,37 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     margin-top: 0.5rem;
   }
 
+  /* Ficha de «sobre mí» */
+  .ficha {
+    display: grid;
+    gap: 1rem;
+    align-self: start;
+    align-content: start;
+    padding: 1.5rem;
+    background: var(--fondo);
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+    font-size: 0.875rem;
+  }
+
+  .ficha div {
+    display: grid;
+    gap: 0.125rem;
+  }
+
+  .ficha dt {
+    color: #fbbf77;
+  }
+
+  .ficha dt::after {
+    content: ":";
+  }
+
+  .ficha dd {
+    color: var(--blanco);
+  }
+
+  /* Medios */
   .archivo__media video {
     display: block;
     width: 100%;
@@ -809,6 +1173,21 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     border-radius: 2px;
   }
 
+  .video__boton {
+    margin-left: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    color: var(--blanco);
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .video__boton:hover {
+    border-color: var(--acento);
+  }
+
   .log {
     margin: 0;
     padding: 1.5rem;
@@ -823,6 +1202,47 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
   .log__h {
     color: #4ade80;
+  }
+
+  /* Otros proyectos */
+  .otros {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .otros li {
+    display: grid;
+    gap: 0.375rem 2rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    scroll-margin-top: 4rem;
+  }
+
+  .otros h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .otros p {
+    color: var(--texto-2-oscuro);
+    font-size: 1rem;
+  }
+
+  .otros__stack {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    color: #fbbf77 !important;
+  }
+
+  @media (min-width: 64rem) {
+    .otros li {
+      grid-template-columns: 4fr 6fr 3fr;
+      align-items: baseline;
+    }
+
+    .otros .enlace-flecha {
+      justify-self: end;
+    }
   }
 
   /* Git log */
@@ -937,13 +1357,6 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
     transform: translateX(0.15em);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .contacto__grande,
-    .contacto__grande span {
-      transition: none;
-    }
-  }
-
   .contacto__lista {
     display: grid;
     gap: 0.5rem;
@@ -963,6 +1376,22 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
 
   .contacto__lista a {
     overflow-wrap: anywhere;
+  }
+
+  .pie a,
+  .enlace-boton {
+    color: var(--texto-2-oscuro);
+  }
+
+  .enlace-boton {
+    padding: 0;
+    background: none;
+    border: 0;
+    font: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--acento);
+    text-underline-offset: 0.2em;
+    cursor: pointer;
   }
 
   /* Paleta */
@@ -1044,6 +1473,12 @@ const archivo = (id: string) => `proyectos/${id}/README.md`;
   @media (prefers-reduced-motion: reduce) {
     .cursor {
       animation: none;
+    }
+
+    .contacto__grande,
+    .contacto__grande span,
+    .aviso {
+      transition: none;
     }
   }
 </style>

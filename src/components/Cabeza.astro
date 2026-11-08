@@ -1,34 +1,53 @@
 ---
-// Contenido del <head> común a todas las páginas: metadatos, Open Graph y datos estructurados.
+// Contenido del <head> común a todas las páginas: metadatos, Open Graph, precarga de fuentes, datos
+// estructurados y Vercel Web Analytics.
 import "../styles/global.css";
-import { persona } from "../data/perfil";
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import geistLatin from "@fontsource/geist-mono/files/geist-mono-latin-400-normal.woff2?url";
+import Analytics from "@vercel/analytics/astro";
+import { experiencia, formacion, persona, temas } from "../data/perfil";
+import { vercelAnalyticsActivo } from "../lib/analitica";
 
 interface Props {
   titulo: string;
   descripcion: string;
-  /** Sin canonical, sin datos estructurados y con noindex (404 y páginas de prueba). */
+  /** Sin canonical, sin datos estructurados y con noindex (404 y textos legales). */
   indexable?: boolean;
+  /** Nodos de datos estructurados propios de la página, que se añaden a los comunes. */
+  grafo?: Record<string, unknown>[];
 }
 
-const { titulo, descripcion, indexable = true } = Astro.props;
+const { titulo, descripcion, indexable = true, grafo = [] } = Astro.props;
 const sitio = Astro.site!;
 const canonica = new URL(Astro.url.pathname, sitio).href;
 const imagen = new URL("/og.png", sitio).href;
+const idPersona = new URL("/#samuel", sitio).href;
+const actual = experiencia[0].organizacion;
 
-// Datos estructurados de la persona. Sin foto: la retiró el 08/11/2026 (ADR «Sin foto»).
+// Persona y web. Sin foto: la retiró el 08/11/2026 (ADR «Sin foto»).
+// worksFor es el puesto actual: cambiarlo cuando cambie la experiencia en src/data/perfil.ts.
 const esquema = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Person",
-      "@id": new URL("/#samuel", sitio).href,
+      "@id": idPersona,
       name: persona.nombre,
+      alternateName: persona.nombreCorto,
       jobTitle: persona.puesto,
       url: sitio.href,
       email: `mailto:${persona.correo}`,
-      address: { "@type": "PostalAddress", addressLocality: persona.ciudad, addressCountry: "ES" },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: persona.ciudad,
+        addressRegion: persona.region,
+        addressCountry: "ES",
+      },
+      worksFor: { "@type": "Organization", name: actual.nombre, ...(actual.url ? { url: actual.url } : {}) },
+      alumniOf: formacion.map((f) => ({ "@type": "EducationalOrganization", name: f.nombreCentro })),
+      knowsAbout: temas,
+      knowsLanguage: ["es", "gl", "en"],
       sameAs: [persona.github, persona.linkedin],
-      knowsAbout: ["Python", "TypeScript", "Desarrollo web", "Agentes de IA", "PostgreSQL", "Astro"],
     },
     {
       "@type": "WebSite",
@@ -36,8 +55,9 @@ const esquema = {
       url: sitio.href,
       name: persona.nombre,
       inLanguage: "es-ES",
-      author: { "@id": new URL("/#samuel", sitio).href },
+      author: { "@id": idPersona },
     },
+    ...grafo,
   ],
 };
 ---
@@ -48,11 +68,21 @@ const esquema = {
 <meta name="description" content={descripcion} />
 <meta name="author" content={persona.nombre} />
 {indexable ? <link rel="canonical" href={canonica} /> : <meta name="robots" content="noindex" />}
-<meta name="theme-color" content="#111318" />
+<meta name="theme-color" content="#0b0d11" />
+<meta name="color-scheme" content="dark" />
 <meta name="google-site-verification" content="ULBMkq3C7Th-rGcKFbSXl418OZaEJ_9wEAvckRCcCRM" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
-<meta property="og:type" content="website" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-48.png" type="image/png" sizes="48x48" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="alternate" type="text/plain" href="/llms.txt" title="Resumen para asistentes de IA" />
+
+<!-- Las dos fuentes que se ven nada más entrar (texto y terminal). El resto de subconjuntos, a demanda. -->
+<link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+
+<meta property="og:type" content="profile" />
+<meta property="og:site_name" content={persona.nombre} />
 <meta property="og:locale" content="es_ES" />
 <meta property="og:url" content={canonica} />
 <meta property="og:title" content={titulo} />
@@ -60,6 +90,11 @@ const esquema = {
 <meta property="og:image" content={imagen} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Terminal con las pruebas de Deep Prep en verde y el nombre Samuel Martínez Durán" />
+<meta property="profile:first_name" content="Samuel" />
+<meta property="profile:last_name" content="Martínez Durán" />
 <meta name="twitter:card" content="summary_large_image" />
 
 {indexable && <script type="application/ld+json" set:html={JSON.stringify(esquema)} />}
+
+{vercelAnalyticsActivo && <Analytics />}

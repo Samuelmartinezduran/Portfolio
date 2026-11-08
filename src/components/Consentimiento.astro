@@ -1,0 +1,197 @@
+---
+// Aviso de cookies y carga de GA4. GA4 no se carga hasta que la persona acepta; «Aceptar» y «Rechazar»
+// tienen el mismo peso (criterio de la AEPD) y la elección se puede cambiar desde el pie o la paleta.
+// Si no hay GA4 configurado (src/lib/analitica.ts), no se pinta nada.
+import { GA_ID, MESES_VALIDEZ, VERSION_CONSENTIMIENTO, gaActivo } from "../lib/analitica";
+---
+
+{
+  gaActivo && (
+    <div
+      class="consentimiento mono"
+      role="region"
+      aria-label="Preferencias de cookies"
+      data-consentimiento
+      data-ga={GA_ID}
+      data-version={VERSION_CONSENTIMIENTO}
+      data-meses={MESES_VALIDEZ}
+      hidden
+    >
+      <p class="consentimiento__orden">
+        <span class="consentimiento__prompt">samuel@vigo</span>
+        <span class="consentimiento__ruta">~</span>$ cookies --analitica
+      </p>
+      <p class="consentimiento__texto">
+        ¿Me dejas medir las visitas con Google Analytics? Solo para saber qué se lee; sin publicidad.{" "}
+        <a href="/privacidad/">Más información</a>
+      </p>
+      <p class="consentimiento__botones">
+        <button type="button" data-consentir="si">Aceptar</button>
+        <button type="button" data-consentir="no">Rechazar</button>
+      </p>
+    </div>
+  )
+}
+
+<script>
+  const aviso = document.querySelector<HTMLElement>("[data-consentimiento]");
+  const CLAVE = "consentimiento-analitica";
+  type Decision = { valor: "si" | "no"; fecha: number; version: number };
+
+  if (aviso) {
+    const id = aviso.dataset.ga ?? "";
+    const version = Number(aviso.dataset.version ?? 1);
+    const validez = Number(aviso.dataset.meses ?? 12) * 30.44 * 24 * 60 * 60 * 1000;
+    let cargado = false;
+
+    const leer = (): Decision | null => {
+      try {
+        const d = JSON.parse(localStorage.getItem(CLAVE) ?? "null") as Decision | null;
+        if (!d || d.version !== version || Date.now() - d.fecha > validez) return null;
+        return d;
+      } catch {
+        return null;
+      }
+    };
+    const guardar = (valor: Decision["valor"]) => {
+      try {
+        localStorage.setItem(CLAVE, JSON.stringify({ valor, fecha: Date.now(), version }));
+      } catch {
+        // Sin almacenamiento la elección vale para esta visita.
+      }
+    };
+
+    // gtag necesita recibir el objeto arguments, no un array.
+    function gtag(..._: unknown[]) {
+      (window.dataLayer ??= []).push(arguments);
+    }
+
+    const cargarGA = () => {
+      if (cargado || !id) return;
+      cargado = true;
+      window.gtag = gtag;
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "granted",
+      });
+      gtag("js", new Date());
+      gtag("config", id, { allow_google_signals: false, allow_ad_personalization_signals: false });
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(id)}`;
+      document.head.append(s);
+    };
+
+    const borrarCookiesGA = () => {
+      const dominio = location.hostname.replace(/^www\./, "");
+      for (const c of document.cookie.split(";")) {
+        const nombre = c.split("=")[0].trim();
+        if (nombre !== "_ga" && !nombre.startsWith("_ga_")) continue;
+        for (const d of ["", `; domain=${dominio}`, `; domain=.${dominio}`]) {
+          document.cookie = `${nombre}=; Max-Age=0; path=/${d}`;
+        }
+      }
+    };
+
+    const mostrar = () => {
+      aviso.hidden = false;
+    };
+    const ocultar = () => {
+      aviso.hidden = true;
+    };
+
+    window.medir = (nombre, parametros = {}) => {
+      if (cargado) gtag("event", nombre, parametros);
+    };
+    window.abrirConsentimiento = mostrar;
+
+    aviso.querySelectorAll<HTMLButtonElement>("[data-consentir]").forEach((boton) =>
+      boton.addEventListener("click", () => {
+        const valor = boton.dataset.consentir === "si" ? "si" : "no";
+        guardar(valor);
+        ocultar();
+        if (valor === "si") {
+          cargarGA();
+        } else if (cargado) {
+          // Retira el permiso: fuera las cookies y se recarga sin GA4.
+          borrarCookiesGA();
+          location.reload();
+        } else {
+          borrarCookiesGA();
+        }
+      }),
+    );
+
+    const decision = leer();
+    if (decision?.valor === "si") cargarGA();
+    else if (!decision) mostrar();
+  }
+</script>
+
+<style>
+  .consentimiento {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 40;
+    width: min(32rem, calc(100% - 2rem));
+    padding: 1rem 1.25rem;
+    background: #0b0d11;
+    color: var(--blanco);
+    border: 1px solid var(--borde-oscuro);
+    border-left: 2px solid var(--acento);
+    border-radius: 2px;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .consentimiento[hidden] {
+    display: none;
+  }
+
+  .consentimiento__prompt {
+    color: #4ade80;
+  }
+
+  .consentimiento__ruta {
+    color: #8f9fff;
+  }
+
+  .consentimiento__texto {
+    margin-top: 0.5rem;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .consentimiento__texto a {
+    color: var(--blanco);
+  }
+
+  .consentimiento__botones {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.875rem;
+  }
+
+  /* Los dos botones iguales: rechazar no puede costar más que aceptar. */
+  .consentimiento button {
+    min-width: 7rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    color: var(--blanco);
+    border: 1px solid var(--blanco);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+
+  .consentimiento button:hover {
+    border-color: var(--acento);
+    color: var(--acento);
+  }
+</style>

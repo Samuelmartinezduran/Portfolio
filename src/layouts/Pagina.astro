@@ -1,23 +1,47 @@
 ---
-// Layout único: el <head> común y el contenido. Cada página dibuja su propia ventana y pie.
+// Layout único: el <head> común, el enlace para saltar al contenido y el aviso de cookies.
+// Cada página dibuja su propia ventana y pie, y debe tener un elemento con id="contenido".
 import Cabeza from "../components/Cabeza.astro";
+import Consentimiento from "../components/Consentimiento.astro";
 
 interface Props {
   titulo: string;
   descripcion: string;
-  /** Sin canonical, sin datos estructurados y con noindex (404). */
+  /** Sin canonical, sin datos estructurados y con noindex (404 y textos legales). */
   indexable?: boolean;
+  /** Datos estructurados propios de la página. */
+  grafo?: Record<string, unknown>[];
 }
 
-const { titulo, descripcion, indexable = true } = Astro.props;
+const { titulo, descripcion, indexable = true, grafo = [] } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
-    <Cabeza titulo={titulo} descripcion={descripcion} indexable={indexable} />
+    <Cabeza titulo={titulo} descripcion={descripcion} indexable={indexable} grafo={grafo} />
   </head>
   <body>
+    <a class="saltar-contenido" href="#contenido">Saltar al contenido</a>
     <slot />
+    <Consentimiento />
   </body>
 </html>
+
+<style>
+  .saltar-contenido {
+    position: absolute;
+    left: 1rem;
+    top: -4rem;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--acento);
+    color: var(--grafito);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .saltar-contenido:focus {
+    top: 1rem;
+  }
+</style>

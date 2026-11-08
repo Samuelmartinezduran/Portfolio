@@ -25,7 +25,11 @@ Reglas de la metáfora:
   comentarios de `sesionTerminal` en `src/data/perfil.ts`). Si un número cambia, se cambia allí y en el CV.
 - La lectura no depende de la metáfora: los textos largos van en Inter, no en monoespaciada, y sin JavaScript
   o con movimiento reducido se ve todo el contenido de golpe.
-- Los atajos (1, 2, 3, C, G, L y Ctrl/Cmd+K) son un extra: todo se puede hacer con enlaces normales.
+- Los atajos (1, 2, 3, C, G, L y Ctrl/Cmd+K) son un extra: todo se puede hacer con enlaces normales, y los
+  de una tecla se desactivan desde la paleta.
+- Los archivos del editor son `sobre-mi.md` (el párrafo para buscadores y asistentes de IA y una ficha),
+  uno por proyecto y `otros.md`. Lo que solo es decoración de la metáfora (`#`, `##`, el prompt) se oculta a
+  los lectores de pantalla.
 
 ## Sistema visual
 
@@ -36,12 +40,14 @@ acento propio y colores de sintaxis.
 |---|---|
 | Tipografía | Inter (400, 500, 600) para titulares y texto; Geist Mono 400 para la terminal, rutas, comandos, tablas y rótulos. |
 | Fondos | Terminal y paneles `#0B0D11`; página grafito `#111318`; superficie `#1B1E25`. Bordes `#2C303A`. |
-| Texto | Blanco `#F8FAFC`; secundario `#A3A9B6` (7,9:1 sobre grafito). |
+| Texto | Blanco `#F8FAFC`; secundario `#A3A9B6` (7,9:1 sobre grafito); comentarios y rutas `#858C99` (5,5:1). Nada por debajo de 4,5:1. |
 | Acento | Naranja `#FF5F1F`: barra de estado, cursor, punto del nombre, rótulos `#`, flecha de «Escríbeme». |
 | Sintaxis | Solo dentro de la metáfora: verde `#4ADE80` (prompt, OK), azul `#8F9FFF` (rutas, formación), ámbar `#FBBF77` (cadenas, fechas), rojo `#F87171` (error de la 404). No se usan fuera de código o salidas. |
 | Composición | Contenedor de 72 rem, múltiplos de 8 px, filas separadas por líneas finas. |
 | Superficies | Planas. Esquinas de 2 px. Sin degradados, sombras, cristal ni texto con degradado. |
-| Movimiento | Tecleo de la terminal, cursor que parpadea y transiciones cortas al pasar el ratón. Todo se desactiva con `prefers-reduced-motion`. |
+| Movimiento | Tecleo de la terminal (unos 9 s, con «Saltar animación» y Enter), cursor que parpadea 8 s y se queda fijo, vídeo en bucle que se pausa con un botón y solo corre cuando se ve, y transiciones cortas al pasar el ratón. Con `prefers-reduced-motion` no hay tecleo ni parpadeo y el vídeo no arranca solo. |
+| Estabilidad | Nada empuja el contenido al animarse: lo que la terminal aún no ha escrito está oculto pero ocupa su sitio (CLS 0). |
+| Aviso de cookies | Bloque de terminal fijo abajo a la izquierda (`$ cookies --analitica`), con «Aceptar» y «Rechazar» idénticos. Solo aparece si hay GA4. |
 | Imágenes | Grabación y capturas reales con borde de 1 px y pie. Sin foto de Samuel. |
 
 ## Comprobar antes de publicar
