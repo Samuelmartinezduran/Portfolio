@@ -1,0 +1,23 @@
+---
+// Layout único: el <head> común y el contenido. Cada página dibuja su propia ventana y pie.
+import Cabeza from "../components/Cabeza.astro";
+
+interface Props {
+  titulo: string;
+  descripcion: string;
+  /** Sin canonical, sin datos estructurados y con noindex (404). */
+  indexable?: boolean;
+}
+
+const { titulo, descripcion, indexable = true } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <Cabeza titulo={titulo} descripcion={descripcion} indexable={indexable} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

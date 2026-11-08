@@ -13,22 +13,6 @@ export const persona = {
   repoWeb: "https://github.com/Samuelmartinezduran/Portfolio",
 };
 
-export const ficha = [
-  { dato: "Ahora", valor: "Desarrollador web en Asomados, agencia de marketing" },
-  { dato: "Desde enero de 2027", valor: "Disponible para un puesto de desarrollador" },
-  { dato: "Dónde", valor: "Vigo · presencial, híbrido o remoto" },
-  { dato: "Idiomas", valor: "Español y gallego nativos, inglés avanzado" },
-];
-
-// Deep Prep: 208 pruebas y 73,8 % de cobertura (07/11/2026, CI de deep-prep).
-// Asistente: 499 pruebas SQL y p95 de 169 ms en 235 llamadas a tools (TASKS.md, 05/11/2026).
-export const cifras = [
-  { valor: "208", texto: "pruebas automatizadas en Deep Prep" },
-  { valor: "73,8 %", texto: "de cobertura de código en Deep Prep" },
-  { valor: "499", texto: "pruebas de base de datos en el asistente de reservas" },
-  { valor: "169 ms", texto: "de respuesta (p95) en las herramientas del agente de voz" },
-];
-
 export type Proyecto = {
   id: string;
   nombre: string;
@@ -39,6 +23,7 @@ export type Proyecto = {
   datos: { valor: string; texto: string }[];
   enlaces: { texto: string; url: string }[];
   imagen?: { src: string; ancho: number; alto: number; alt: string; pie: string };
+  video?: { src: string; poster: string; ancho: number; alto: number; alt: string; pie: string };
 };
 
 export const proyectos: Proyecto[] = [
@@ -59,12 +44,13 @@ export const proyectos: Proyecto[] = [
       { valor: "mypy", texto: "tipado estricto" },
     ],
     enlaces: [{ texto: "Código en GitHub", url: "https://github.com/Samuelmartinezduran/deep-prep" }],
-    imagen: {
-      src: "/proyectos/deep-prep-revision.webp",
-      ancho: 1500,
-      alto: 950,
-      alt: "Pantalla de revisión de Deep Prep: estadísticas de la partida, línea de tiempo con objetivos y muertes, y la lista de muertes con un botón para ver cada clip",
-      pie: "Revisión de una partida con los datos de demostración.",
+    video: {
+      src: "/proyectos/deep-prep-demo.mp4",
+      poster: "/proyectos/deep-prep-demo-poster.webp",
+      ancho: 1200,
+      alto: 760,
+      alt: "Grabación de Deep Prep: selección de campeón con el análisis del rival, la partida y la revisión con las muertes",
+      pie: "Grabación de la app real con los datos de demostración (docs/img/demo.gif del repo).",
     },
   },
   {
@@ -130,7 +116,6 @@ export const otrosProyectos = [
     texto: "Gestiona citas en lenguaje natural y las apunta en Google Calendar.",
     stack: "WhatsApp Cloud API · Google Calendar · function calling",
     enlace: { texto: "Ver la demo", url: "https://www.youtube.com/watch?v=UHxZyXY4cXU" },
-    imagen: "/proyectos/whatsapp-demo.webp",
   },
   {
     nombre: "Seguimiento de precios",
@@ -140,21 +125,18 @@ export const otrosProyectos = [
       texto: "Código",
       url: "https://github.com/Samuelmartinezduran/atmospheric-analyst---price-tracker",
     },
-    imagen: "/proyectos/price-tracker-dashboard.webp",
   },
   {
     nombre: "Tienda online",
     texto: "Catálogo, carrito, pagos y un panel para editar productos sin tocar código.",
     stack: "TypeScript · Stripe · Vercel",
     enlace: { texto: "Ver la demo", url: "https://e-commerce-sigma-ochre-81.vercel.app/es" },
-    imagen: "/proyectos/e-commerce.webp",
   },
   {
     nombre: "Bubble Tea España",
     texto: "Guía editorial de bubble tea por ciudades.",
     stack: "React · TypeScript · Vercel",
     enlace: { texto: "Ver la web", url: "https://bubble-tea-ebon.vercel.app/" },
-    imagen: "/proyectos/bubble-tea-espana.webp",
   },
 ];
 
@@ -196,16 +178,6 @@ export const habilidades = [
   { grupo: "Herramientas", lista: "Git, GitHub Actions, Docker, n8n, Vercel, Cloudflare" },
   { grupo: "Sistemas y diseño", lista: "Linux, redes y hardware · Photoshop, Illustrator, Premiere Pro" },
 ];
-
-// Imágenes de Deep Prep para las vistas con galería. El vídeo sale de docs/img/demo.gif del repo.
-export const deepPrepMedios = {
-  video: { src: "/proyectos/deep-prep-demo.mp4", poster: "/proyectos/deep-prep-demo-poster.webp", ancho: 1200, alto: 760 },
-  capturas: [
-    { src: "/proyectos/deep-prep-carga.webp", ancho: 1500, alto: 950, pie: "Pantalla de carga: el rival y su historial." },
-    { src: "/proyectos/deep-prep-overlay.webp", ancho: 1180, alto: 580, pie: "Overlay durante la partida." },
-    { src: "/proyectos/deep-prep-revision.webp", ancho: 1500, alto: 950, pie: "Revisión con un clip de cada muerte." },
-  ],
-};
 
 // Salidas reales de las pruebas de cada proyecto, para la vista de terminal.
 // Deep Prep: main en b062a92 (08/11/2026). Asistente: TASKS.md del 05/11/2026 (15 archivos, 499 pruebas).

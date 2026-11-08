@@ -1,19 +1,59 @@
 ---
-import Base from "../layouts/Base.astro";
+import Pagina from "../layouts/Pagina.astro";
 ---
 
-<Base titulo="Página no encontrada · Samuel Martínez Durán" descripcion="Esta página no existe." indexable={false}>
-  <section class="seccion">
-    <div class="contenedor">
-      <p class="rotulo"><b>404</b> · Página no encontrada</p>
-      <h1 class="titulo-seccion">Esta página no existe o se ha movido.</h1>
-      <p class="volver"><a class="enlace-flecha" href="/">Volver al inicio</a></p>
-    </div>
-  </section>
-</Base>
+<Pagina titulo="Página no encontrada · Samuel Martínez Durán" descripcion="Esta página no existe." indexable={false}>
+  <main class="no-encontrada mono">
+    <p><span class="prompt">samuel@vigo</span><span class="ruta">~</span>$ cd <span data-ruta>esta-ruta</span></p>
+    <p class="error">bash: cd: <span data-ruta>esta-ruta</span>: No such file or directory</p>
+    <h1>Esta página no existe<span class="naranja">.</span></h1>
+    <p><a href="/">cd ~ &nbsp;→ volver al inicio</a></p>
+  </main>
+</Pagina>
+
+<script>
+  // La página es estática: la ruta que no existe se lee en el navegador.
+  document.querySelectorAll("[data-ruta]").forEach((el) => (el.textContent = location.pathname));
+</script>
 
 <style>
-  .volver {
-    margin-top: 2rem;
+  .no-encontrada {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    min-height: 100vh;
+    padding: 2rem var(--margen);
+    background: #0b0d11;
+    color: var(--blanco);
+    font-size: 0.9375rem;
+  }
+
+  .prompt {
+    color: #4ade80;
+  }
+
+  .ruta {
+    color: #8f9fff;
+  }
+
+  .error {
+    color: #f87171;
+  }
+
+  h1 {
+    margin-block: 1.5rem;
+    font-family: var(--sans);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .naranja {
+    color: var(--acento);
+  }
+
+  a {
+    color: var(--blanco);
   }
 </style>

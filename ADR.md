@@ -89,3 +89,19 @@
 - **Reason:** El usuario vio la primera versión «extremadamente sosa» y pidió desarrollar las tres direcciones propuestas para compararlas.
 - **Source:** User instruction (08/11/2026)
 - **Nota:** Las tres usan algo de JavaScript (animaciones, vista previa, paleta). Sin JavaScript o con movimiento reducido se ve todo el contenido de golpe.
+
+## Dirección Terminal
+- **Decision:** La portada es la propuesta C («Terminal»): terminal que teclea las pruebas reales de Deep Prep, el asistente y agenteval; paleta de comandos con Ctrl/Cmd+K y atajos; proyectos como `README.md` en pestañas, trayectoria como `git log` y habilidades como `.json`. El contacto toma de la propuesta B el «Escríbeme→» enorme. Se borran las propuestas A y B, `src/layouts/Base.astro` y `src/pages/opciones/`; queda `src/layouts/Pagina.astro`. Sustituye a «Tres propuestas de diseño en /opciones/ (temporal)» y matiza «Reglas visuales de Veldria con acento naranja» (ahora en oscuro, con colores de sintaxis) y «Astro en lugar de Vite…» (la página lleva un script propio para la terminal, la paleta y los atajos).
+- **Reason:** Al usuario le gusta cómo impacta y el estilo de la C, ve la A muy básica y de la B le encanta el «Escríbeme».
+- **Source:** User instruction (08/11/2026)
+
+## Sin mensaje de búsqueda de empleo en el cierre
+- **Decision:** El contacto no dice «Busco un puesto de desarrollador desde enero de 2027»; la disponibilidad queda como dato en la barra de estado («disponible · enero 2027»).
+- **Reason:** Al usuario le sonaba desesperado.
+- **Source:** User instruction (08/11/2026)
+
+## Vídeo de Deep Prep en lugar de captura
+- **Decision:** El archivo de Deep Prep muestra la grabación de la app (`public/proyectos/deep-prep-demo.mp4`, 0,7 MB, convertida desde `docs/img/demo.gif` de deep-prep, de 3,5 MB) en bucle, sin sonido y con póster.
+- **Reason:** Enseña el producto funcionando: selección de campeón, partida y revisión.
+- **Source:** Agent assumption
+
