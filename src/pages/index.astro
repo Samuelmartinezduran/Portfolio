@@ -44,7 +44,8 @@ const grafo: Record<string, unknown>[] = [
     name: titulo,
     description: descripcion,
     inLanguage: "es-ES",
-    dateModified: actualizada,
+    // Google pide fecha y hora (ISO 8601 con zona) para ProfilePage.
+    dateModified: `${actualizada}T00:00:00+01:00`,
     isPartOf: { "@id": abs("/#web") },
     mainEntity: { "@id": idPersona },
   },
