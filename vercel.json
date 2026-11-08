@@ -3,7 +3,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/servicios/:ruta*", "destination": "/", "permanent": true },
+    { "source": "/servicios", "destination": "/", "permanent": true },
+    { "source": "/servicios/(.*)", "destination": "/", "permanent": true },
     { "source": "/desarrollo-web-vigo", "destination": "/", "permanent": true },
     { "source": "/desarrollo-web-vigo/", "destination": "/", "permanent": true },
     { "source": "/seo-local-vigo", "destination": "/", "permanent": true },

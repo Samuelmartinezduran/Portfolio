@@ -75,7 +75,7 @@
 - **Source:** User instruction (08/11/2026)
 
 ## Redirecciones de las páginas de servicios
-- **Decision:** `/servicios/*`, `/desarrollo-web-vigo/` y `/seo-local-vigo/` redirigen con 301 a la portada (`vercel.json`).
+- **Decision:** `/servicios/*`, `/desarrollo-web-vigo/` y `/seo-local-vigo/` redirigen de forma permanente a la portada (`vercel.json`; Vercel responde 308, que Google trata como un 301). El patrón de `/servicios` es `/servicios/(.*)`: el primero, `/servicios/:ruta*`, no casaba con las URL con barra final y daba 404 (corregido el 08/11/2026 al publicar).
 - **Reason:** Estaban indexadas; una redirección conserva las visitas y evita 404 mientras Google las retira.
 - **Source:** Agent assumption
 
