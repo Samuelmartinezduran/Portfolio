@@ -131,3 +131,8 @@
 - **Decision:** `vercel.json` añade `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options` y `Permissions-Policy` a todo, y `X-Robots-Tag: noindex` al CV en PDF (que lleva el teléfono). HSTS ya lo pone Vercel. No se añade Content-Security-Policy por ahora: GA4 y Vercel Analytics necesitan fuentes externas y una política mal ajustada rompería la analítica sin avisar.
 - **Reason:** Cabeceras básicas que faltaban, y evitar que el teléfono del CV aparezca en los resultados de búsqueda.
 - **Source:** Agent assumption
+
+## Sin fecha de disponibilidad en la web
+- **Decision:** Se quita «disponible · enero 2027» de la barra de estado, la fila «disponible» de la ficha, la última frase de «Sobre mí» («puede incorporarse a un equipo en enero de 2027») y la frase equivalente de `llms.txt`, junto con el campo `persona.disponible` y los estilos `.estado__der`, que se quedaron sin uso. Sustituye a «la disponibilidad va solo como dato».
+- **Reason:** El usuario pidió que la web no diga abiertamente que busca trabajo. Al lado de «Desarrollador web en Asomados», una fecha de incorporación lo anuncia ante cualquiera, también ante la empresa actual.
+- **Source:** User instruction

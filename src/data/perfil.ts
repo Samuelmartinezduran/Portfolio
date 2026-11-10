@@ -2,7 +2,7 @@
 // Las cifras salen de los repositorios de cada proyecto; ver la nota de cada una.
 
 /** Fecha de la última revisión del contenido (ISO). Se muestra en el pie, en el sitemap y en los datos estructurados. */
-export const actualizada = "2026-11-08";
+export const actualizada = "2026-11-10";
 
 export const persona = {
   nombre: "Samuel Martínez Durán",
@@ -16,18 +16,16 @@ export const persona = {
   linkedin: "https://www.linkedin.com/in/samuel-mart%C3%ADnez-dur%C3%A1n-40a70335b",
   cv: "/cv/CV_Samuel_Martinez_Duran.pdf",
   repoWeb: "https://github.com/Samuelmartinezduran/Portfolio",
-  disponible: "enero de 2027",
 };
 
 // Bloque «sobre mí»: un párrafo que se entiende solo (unas 150 palabras), pensado para que buscadores y
 // asistentes de IA puedan citarlo tal cual. Escrito en tercera persona, como un README.
 export const sobreMi =
-  "Samuel Martínez Durán es desarrollador web en Vigo (Galicia, España) y trabaja con Python, TypeScript e inteligencia artificial. Desde septiembre de 2026 hace webs corporativas y landings de campaña en Asomados, una agencia de marketing, para clientes como Vithas e IGMontes. Por su cuenta ha construido tres proyectos completos, con su código y sus pruebas: Deep Prep, una aplicación de escritorio para League of Legends publicada con instalador y actualizador (208 pruebas automatizadas y un 73,8 % de cobertura); un asistente telefónico con IA que gestiona las reservas de un restaurante (499 pruebas de base de datos), y agenteval, un framework open source para evaluar agentes LLM que usan herramientas. Viene de sistemas (SMR) y de marketing digital, así que se mueve bien entre lo técnico y el negocio. Habla español, gallego e inglés avanzado, y puede incorporarse a un equipo en enero de 2027.";
+  "Samuel Martínez Durán es desarrollador web en Vigo (Galicia, España) y trabaja con Python, TypeScript e inteligencia artificial. Desde septiembre de 2026 hace webs corporativas y landings de campaña en Asomados, una agencia de marketing, para clientes como Vithas e IGMontes. Por su cuenta ha construido tres proyectos completos, con su código y sus pruebas: Deep Prep, una aplicación de escritorio para League of Legends publicada con instalador y actualizador (208 pruebas automatizadas y un 73,8 % de cobertura); un asistente telefónico con IA que gestiona las reservas de un restaurante (499 pruebas de base de datos), y agenteval, un framework open source para evaluar agentes LLM que usan herramientas. Viene de sistemas (SMR) y de marketing digital, así que se mueve bien entre lo técnico y el negocio. Habla español, gallego e inglés avanzado.";
 
 export const datosPersonales = [
   { clave: "ubicación", valor: "Vigo, Galicia (España) · presencial, híbrido o remoto" },
   { clave: "ahora", valor: "Desarrollador web en Asomados" },
-  { clave: "disponible", valor: "enero de 2027" },
   { clave: "idiomas", valor: "español y gallego (nativos), inglés (avanzado), alemán (iniciación)" },
 ];
 

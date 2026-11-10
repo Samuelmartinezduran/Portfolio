@@ -201,7 +201,6 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
       <div class="estado mono" role="group" aria-label="Estado de las pruebas">
         <span class="estado__rama">⎇ main</span>
         {estado.map((e) => <span>✓ {e}</span>)}
-        <span class="estado__der"><i aria-hidden="true"></i> disponible · enero 2027</span>
       </div>
 
       <!-- Perfil y proyectos como archivos abiertos en el editor -->
@@ -988,19 +987,6 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
     background: var(--acento);
     color: var(--grafito);
     font-size: 0.75rem;
-  }
-
-  .estado__der {
-    margin-left: auto;
-  }
-
-  .estado__der i {
-    display: inline-block;
-    width: 0.5rem;
-    height: 0.5rem;
-    margin-right: 0.375rem;
-    border-radius: 50%;
-    background: var(--grafito);
   }
 
   /* Editor */
