@@ -136,3 +136,8 @@
 - **Decision:** Se quita «disponible · enero 2027» de la barra de estado, la fila «disponible» de la ficha, la última frase de «Sobre mí» («puede incorporarse a un equipo en enero de 2027») y la frase equivalente de `llms.txt`, junto con el campo `persona.disponible` y los estilos `.estado__der`, que se quedaron sin uso. Sustituye a «la disponibilidad va solo como dato».
 - **Reason:** El usuario pidió que la web no diga abiertamente que busca trabajo. Al lado de «Desarrollador web en Asomados», una fecha de incorporación lo anuncia ante cualquiera, también ante la empresa actual.
 - **Source:** User instruction
+
+## Sin «lo enseño en una entrevista»
+- **Decision:** El comentario de los proyectos sin enlace público pasa de «// repositorio privado: lo enseño en una entrevista» a «// repositorio privado: lo enseño en una llamada».
+- **Reason:** El usuario probablemente se queda en Asomados y no quiere ninguna referencia a buscar trabajo. Hablar de entrevistas lo anunciaba igual que la fecha de disponibilidad. «En una llamada» sirve a cualquiera, también a clientes de fuera de Vigo; «en privado» repetía «privado».
+- **Source:** User instruction (cambiar la frase); Agent assumption («en una llamada»)
