@@ -198,3 +198,8 @@
 - **Decision:** El servidor de `pruebas/navegador.mjs` responde a `Range` con `206`, como Vercel, y las pruebas pasan de 24 a 28: saltar a una fase del vídeo, que quede marcada, que la llamada termine con la reserva en la agenda y que las barras de agenteval se llenen con su nota.
 - **Reason:** Sin peticiones parciales, el navegador no puede saltar dentro del vídeo y la prueba de las fases fallaba solo en local.
 - **Source:** Agent assumption
+
+## CV sin la línea «Otros»
+- **Decision:** El CV en PDF de `public/cv/` se regenera sin la línea «Otros» de Proyectos: agente de citas por WhatsApp, seguimiento de precios y tienda online. El original editado (`cv.html` y su README) está en `C:\Users\samue\Documents\CV` del PC, y falta copiarlo a `~/Documents/CV` del Mac.
+- **Reason:** El usuario pidió quitarla para que el CV coincida con la web, de la que esos proyectos salieron (ver «Fuera los proyectos secundarios»).
+- **Source:** User instruction (13/11/2026)
