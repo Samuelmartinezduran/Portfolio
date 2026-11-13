@@ -283,7 +283,7 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
                     <figure data-video>
                       <video
                         src={p.video.src}
-                        poster={p.video.poster}
+                        poster={p.video.posterPagina ?? p.video.poster}
                         width={p.video.ancho}
                         height={p.video.alto}
                         muted

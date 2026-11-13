@@ -43,7 +43,10 @@ export type Proyecto = {
   imagen?: { src: string; ancho: number; alto: number; alt: string; pie: string };
   video?: {
     src: string;
+    /** Póster a tamaño completo: es la miniatura de VideoObject (Google prefiere imágenes grandes). */
     poster: string;
+    /** Póster que se muestra en la página, más ligero (la columna mide menos de 800 px). */
+    posterPagina?: string;
     ancho: number;
     alto: number;
     alt: string;
@@ -77,6 +80,7 @@ export const proyectos: Proyecto[] = [
     video: {
       src: "/proyectos/deep-prep-demo.mp4",
       poster: "/proyectos/deep-prep-demo-poster.webp",
+      posterPagina: "/proyectos/deep-prep-demo-poster-800.webp",
       ancho: 1200,
       alto: 760,
       alt: "Grabación de Deep Prep: selección de campeón con el análisis del rival, la partida y la revisión con las muertes",

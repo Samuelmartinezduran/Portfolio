@@ -66,6 +66,7 @@ de publicar cambios en los scripts.
 ## Revisiones
 
 - `docs/REVISION-2026-11-08.md`: coherencia, SEO, GEO, accesibilidad y analítica, con Lighthouse antes y después.
+- `docs/AUDITORIA-2026-11-13.md`: GA4, Search Console, Vercel Web Analytics y Lighthouse sobre producción, cinco días después de publicar.
 
 ## Decisiones
 
