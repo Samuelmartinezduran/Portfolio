@@ -18,7 +18,7 @@ export const GET: APIRoute = ({ site }) => {
   const lineas = [
     `# ${persona.nombre}`,
     "",
-    `> ${persona.puesto} en ${persona.ciudad} (${persona.region}, ${persona.pais}). Python, TypeScript e IA.`,
+    `> ${persona.puesto} en ${persona.ciudad} (${persona.region}, ${persona.pais}). Python y TypeScript.`,
     "",
     sobreMi,
     "",

@@ -151,3 +151,8 @@
 - **Decision:** Se quita de `habilidades.json` (y, con ello, de `llms.txt`) la línea «IA: API de Anthropic y de OpenAI, function calling, MCP, Ollama, Retell». Las demás habilidades, los proyectos y `knowsAbout` de los datos estructurados se quedan como estaban.
 - **Reason:** El usuario pidió eliminarla.
 - **Source:** User instruction (13/11/2026)
+
+## Sin «e IA» ni «viene de sistemas y marketing digital»
+- **Decision:** La presentación dice «Python y TypeScript» en lugar de «Python, TypeScript e IA» (portada, descripción para buscadores y redes, `llms.txt`) y el párrafo de `sobre-mi.md` pasa de «Python, TypeScript e inteligencia artificial» a «Python y TypeScript» y pierde la frase «Viene de sistemas (SMR) y de marketing digital, así que se mueve bien entre lo técnico y el negocio». El párrafo queda en 114 palabras, algo por debajo de las 134-167 que recomienda la guía GEO; manda la preferencia del usuario. El CV en PDF de `public/cv/` se regenera sin la fila «IA» de Habilidades (el original, `cv.html`, está en `~/Documents/CV` del Mac).
+- **Reason:** Al usuario no le gusta «e IA» ni esa frase, ni en la web ni en LinkedIn, y pidió quitar la fila de IA también del CV.
+- **Source:** User instruction (13/11/2026)

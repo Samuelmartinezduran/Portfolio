@@ -22,7 +22,7 @@ import { gaActivo } from "../lib/analitica";
 
 const titulo = "Samuel Martínez Durán · Desarrollador web en Vigo";
 const descripcion =
-  "Desarrollador web en Vigo con Python, TypeScript e IA. Proyectos con código y pruebas: una app de escritorio publicada, un agente de voz y agenteval.";
+  "Desarrollador web en Vigo con Python y TypeScript. Proyectos con código y pruebas: una app de escritorio publicada, un agente de voz y agenteval.";
 
 const sitio = Astro.site!;
 const abs = (ruta: string) => new URL(ruta, sitio).href;
@@ -186,7 +186,7 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
             {persona.nombre}<span class="naranja">.</span>
           </h1>
           <p>
-            Desarrollador web en {persona.ciudad}. Python, TypeScript e IA. En la terminal, las pruebas reales de
+            Desarrollador web en {persona.ciudad}. Python y TypeScript. En la terminal, las pruebas reales de
             mis proyectos: los comandos tal cual y lo que devuelven.
           </p>
           <p class="mono pista" data-pista>
