@@ -49,6 +49,7 @@ acento propio y colores de sintaxis.
 | Estabilidad | Nada empuja el contenido al animarse: lo que la terminal aún no ha escrito está oculto pero ocupa su sitio (CLS 0). |
 | Aviso de cookies | Bloque de terminal fijo abajo a la izquierda (`$ cookies --analitica`), con «Aceptar» y «Rechazar» idénticos. Solo aparece si hay GA4. |
 | Proyectos | Nombre a gran tamaño, la demostración a todo el ancho, una franja de tres cifras grandes y debajo el texto y la ficha. Cada demostración es real y distinta: la grabación de Deep Prep, la llamada del guion del asistente y un caso del YAML de agenteval con su nota. Sin capturas sueltas ni foto de Samuel. |
+| Páginas de proyecto | Mismo arranque que en la portada (ruta, nombre como h1, demostración y cuatro cifras), un índice numerado y siete apartados con el rótulo a la izquierda, fijo en el ordenador, y el contenido a la derecha. Las decisiones llevan «Descartado», «Por qué» o «Coste» en ámbar; los límites, un «!» en ámbar; la consola, el $ en verde. Termina con el siguiente proyecto en grande y el contacto. Todo el texto sale de los repositorios. |
 
 ## Comprobar antes de publicar
 

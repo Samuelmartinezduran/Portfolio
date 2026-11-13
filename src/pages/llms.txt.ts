@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import { paginas } from "../data/paginas";
 import {
   actualizada,
   cursos,
@@ -24,9 +25,10 @@ export const GET: APIRoute = ({ site }) => {
     "## Proyectos",
     "",
     ...proyectos.map((p) => {
-      const enlace = p.enlaces[0]?.url ?? url(`/#${p.id}`);
+      const enlace = paginas[p.id] ? url(`/proyectos/${p.id}/`) : (p.enlaces[0]?.url ?? url(`/#${p.id}`));
+      const codigo = paginas[p.id] && p.enlaces[0] ? ` Código: ${p.enlaces[0].url}.` : "";
       const cifras = p.datos.map((d) => `${d.valor} (${d.texto})`).join("; ");
-      return `- [${p.nombre}](${enlace}): ${p.etiqueta}. ${p.resumen} ${p.detalle.join(" ")} Tecnologías: ${p.stack.join(", ")}. Cifras: ${cifras}.`;
+      return `- [${p.nombre}](${enlace}): ${p.etiqueta}. ${p.resumen} ${p.detalle.join(" ")} Tecnologías: ${p.stack.join(", ")}. Cifras: ${cifras}.${codigo}`;
     }),
     "",
     "## Experiencia",

@@ -1,0 +1,126 @@
+---
+// Cierre común: el «Escríbeme→» enorme, los datos de contacto y el pie. Mide los clics en el correo
+// (evento «contacto» de GA4) y abre las preferencias de cookies desde el pie.
+import { actualizada, persona } from "../data/perfil";
+import { gaActivo } from "../lib/analitica";
+
+const fechaLarga = new Intl.DateTimeFormat("es-ES", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+}).format(new Date(`${actualizada}T00:00:00Z`));
+---
+
+<section id="contacto" class="contacto" aria-labelledby="contacto-t">
+  <p class="mono md" aria-hidden="true">$ ./contactar.sh</p>
+  <h2 id="contacto-t" class="solo-lector">Contacto</h2>
+  <a class="contacto__grande" href={`mailto:${persona.correo}`}>Escríbeme<span class="naranja" aria-hidden="true">→</span></a>
+  <ul class="mono contacto__lista">
+    <li><span>correo</span><a href={`mailto:${persona.correo}`}>{persona.correo}</a></li>
+    <li><span>linkedin</span><a href={persona.linkedin}>{persona.nombre}</a></li>
+    <li><span>github</span><a href={persona.github}>Samuelmartinezduran</a></li>
+    <li><span>cv</span><a href={persona.cv}>CV_Samuel_Martinez_Duran.pdf</a></li>
+  </ul>
+  <footer class="mono comentario pie">
+    // © 2026 {persona.nombre} · hecha con Astro · <a href="/privacidad/">privacidad</a>
+    {
+      gaActivo && (
+        <>
+          {" "}
+          · <button type="button" class="enlace-boton" data-cookies>cookies</button>
+        </>
+      )
+    }{" "}
+    · actualizada el <time datetime={actualizada}>{fechaLarga}</time>
+  </footer>
+</section>
+
+<script>
+  document.querySelector("[data-cookies]")?.addEventListener("click", () => window.abrirConsentimiento?.());
+
+  // Contacto por correo, para saber si la web sirve para lo que está hecha.
+  document.addEventListener("click", (e) => {
+    if ((e.target as Element | null)?.closest?.("a[href^='mailto:']")) window.medir?.("contacto", { via: "correo" });
+  });
+</script>
+
+<style>
+  .contacto {
+    max-width: calc(var(--contenedor) + 2 * var(--margen));
+    margin-inline: auto;
+    padding: clamp(3rem, 6vw, 5rem) var(--margen) 6rem;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .contacto__grande {
+    display: block;
+    width: fit-content;
+    white-space: nowrap;
+    margin-top: 1rem;
+    font-size: clamp(3.25rem, 12.5vw, 11rem);
+    font-weight: 600;
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+    text-decoration: none;
+    transition: color 300ms;
+  }
+
+  .contacto__grande:hover {
+    color: var(--acento);
+  }
+
+  .contacto__grande span {
+    display: inline-block;
+    margin-left: 0.1em;
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .contacto__grande:hover span {
+    transform: translateX(0.15em);
+  }
+
+  .contacto__lista {
+    display: grid;
+    gap: 0.5rem;
+    margin-block: 2.5rem 3rem;
+    font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
+  }
+
+  .contacto__lista li {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1rem;
+  }
+
+  .contacto__lista span {
+    color: var(--texto-2-oscuro);
+  }
+
+  .contacto__lista a {
+    overflow-wrap: anywhere;
+  }
+
+  .pie a,
+  .enlace-boton {
+    color: var(--texto-2-oscuro);
+  }
+
+  .enlace-boton {
+    padding: 0;
+    background: none;
+    border: 0;
+    font: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--acento);
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contacto__grande,
+    .contacto__grande span {
+      transition: none;
+    }
+  }
+</style>

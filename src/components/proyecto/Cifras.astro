@@ -1,0 +1,68 @@
+---
+// Franja de cifras grandes de un proyecto. Las líneas entre celdas son el fondo que asoma por el hueco de
+// 1 px, así quedan bien en una fila o en dos.
+interface Props {
+  datos: { valor: string; texto: string }[];
+}
+
+const { datos } = Astro.props;
+---
+
+<dl class="cifras" style={`--n: ${datos.length}`} data-cuatro={datos.length === 4 ? "" : undefined}>
+  {
+    datos.map(({ valor, texto }) => (
+      <div>
+        <dt class="mono">{texto}</dt>
+        <dd>{valor}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .cifras {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    gap: 1px;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    background: var(--borde-oscuro);
+    border-block: 1px solid var(--borde-oscuro);
+  }
+
+  .cifras div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1.25rem clamp(0.75rem, 2vw, 1.5rem);
+    background: var(--grafito);
+  }
+
+  .cifras div:first-child {
+    padding-left: 0;
+  }
+
+  .cifras dd {
+    font-size: clamp(1.5rem, 4.5vw, 3.25rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cifras dt {
+    font-size: 0.75rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  @media (max-width: 40rem) {
+    .cifras[data-cuatro] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cifras[data-cuatro] div:nth-child(odd) {
+      padding-left: 0;
+    }
+  }
+</style>

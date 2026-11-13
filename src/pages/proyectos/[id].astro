@@ -1,0 +1,804 @@
+---
+// Página de cada proyecto: la misma cabecera, demostración y cifras que en la portada, y después todo el
+// detalle (qué hace, cómo funciona, cómo está hecho, decisiones, calidad, límites y cómo probarlo).
+// El contenido está en src/data/paginas.ts y sale de los repositorios. Ver el ADR «Páginas de proyecto».
+import Pagina from "../../layouts/Pagina.astro";
+import Contacto from "../../components/Contacto.astro";
+import Ventana from "../../components/Ventana.astro";
+import Cabecera from "../../components/proyecto/Cabecera.astro";
+import Cifras from "../../components/proyecto/Cifras.astro";
+import Demo from "../../components/proyecto/Demo.astro";
+import { paginas } from "../../data/paginas";
+import { actualizada, proyectos } from "../../data/perfil";
+
+export function getStaticPaths() {
+  return proyectos.filter((p) => paginas[p.id]).map((p) => ({ params: { id: p.id } }));
+}
+
+const { id } = Astro.params as { id: string };
+const indice = proyectos.findIndex((p) => p.id === id);
+const p = proyectos[indice];
+const pagina = paginas[id];
+
+// Navegación entre los proyectos que tienen página.
+const conPagina = proyectos.filter((x) => paginas[x.id]);
+const posicion = conPagina.findIndex((x) => x.id === id);
+const siguiente = conPagina[(posicion + 1) % conPagina.length];
+
+const sitio = Astro.site!;
+const abs = (ruta: string) => new URL(ruta, sitio).href;
+const url = abs(`/proyectos/${id}/`);
+const idPersona = abs("/#samuel");
+const licencias: Record<string, string> = { MIT: "https://opensource.org/licenses/MIT" };
+
+const grafo: Record<string, unknown>[] = [
+  {
+    "@type": "WebPage",
+    "@id": `${url}#pagina`,
+    url,
+    name: pagina.titulo,
+    description: pagina.descripcion,
+    inLanguage: "es-ES",
+    dateModified: `${actualizada}T00:00:00+01:00`,
+    isPartOf: { "@id": abs("/#web") },
+    about: { "@id": abs(`/#${id}`) },
+    breadcrumb: { "@id": `${url}#migas` },
+  },
+  {
+    "@type": "BreadcrumbList",
+    "@id": `${url}#migas`,
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: abs("/") },
+      { "@type": "ListItem", position: 2, name: p.nombre, item: url },
+    ],
+  },
+  ...(p.repo
+    ? [
+        {
+          "@type": "SoftwareSourceCode",
+          "@id": abs(`/#${id}`),
+          name: p.nombre,
+          description: p.resumen,
+          url,
+          codeRepository: p.repo.url,
+          programmingLanguage: p.repo.lenguaje,
+          license: licencias[p.repo.licencia] ?? p.repo.licencia,
+          author: { "@id": idPersona },
+          ...(p.video ? { video: { "@id": abs(`/#${id}-video`) } } : {}),
+        },
+      ]
+    : []),
+  ...(p.video
+    ? [
+        {
+          "@type": "VideoObject",
+          "@id": abs(`/#${id}-video`),
+          name: `${p.nombre} en funcionamiento`,
+          description: p.video.alt,
+          thumbnailUrl: abs(p.video.poster),
+          contentUrl: abs(p.video.src),
+          uploadDate: p.video.fecha,
+          duration: p.video.duracion,
+          width: p.video.ancho,
+          height: p.video.alto,
+          creator: { "@id": idPersona },
+        },
+      ]
+    : []),
+];
+
+const secciones = [
+  { id: "que-hace", titulo: "Qué hace" },
+  { id: "como-funciona", titulo: pagina.flujo.titulo },
+  { id: "como-esta-hecho", titulo: "Cómo está hecho" },
+  { id: "decisiones", titulo: "Decisiones" },
+  { id: "calidad", titulo: "Calidad" },
+  { id: "limites", titulo: "Límites conocidos" },
+  { id: "pruebalo", titulo: "Pruébalo" },
+];
+const titulo = (sid: string) => secciones.find((s) => s.id === sid)!.titulo;
+const dosCifras = (n: number) => String(n).padStart(2, "0");
+
+// Consola de «Pruébalo»: cada orden con su $ y los comentarios en gris. Se monta como texto para que el <pre>
+// no recoja los saltos de línea del marcado.
+const escapar = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const consola = pagina.pruebalo.comandos
+  .split("\n")
+  .map((linea) => {
+    const [, orden, comentario] = linea.match(/^(.*?)(\s+#\s.*)?$/) ?? [, linea, undefined];
+    const gris = comentario ? `<span class="consola__comentario">${escapar(comentario)}</span>` : "";
+    return `<span class="consola__dolar" aria-hidden="true">$ </span>${escapar(orden)}${gris}`;
+  })
+  .join("\n");
+---
+
+<Pagina titulo={pagina.titulo} descripcion={pagina.descripcion} grafo={grafo}>
+  <div class="web">
+    <Ventana ruta={`/proyectos/${id}`} />
+
+    <main id="contenido" class="detalle-proyecto">
+      <nav class="mono migas" aria-label="Migas de pan">
+        <a href="/">inicio</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/#${id}`}>proyectos</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{id}</span>
+      </nav>
+
+      <Cabecera
+        id={id}
+        nombre={p.nombre}
+        etiqueta={p.etiqueta}
+        indice={indice + 1}
+        total={proyectos.length}
+        nivel={1}
+        ruta={`proyectos/${id}/`}
+      />
+      <Demo proyecto={p} />
+      <Cifras datos={pagina.cifras} />
+
+      <nav class="mono indice" aria-label="En esta página">
+        {
+          secciones.map((s, i) => (
+            <a href={`#${s.id}`}>
+              <span aria-hidden="true">{dosCifras(i + 1)}</span> {s.titulo}
+            </a>
+          ))
+        }
+      </nav>
+
+      <section id="que-hace" class="seccion" aria-labelledby="que-hace-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## que-hace</p>
+          <h2 id="que-hace-t">{titulo("que-hace")}</h2>
+        </div>
+        <div class="seccion__cuerpo">
+          {pagina.intro.map((t, i) => <p class={i === 0 ? "entrada" : undefined}>{t}</p>)}
+          {
+            pagina.ejemplos?.map((e) => (
+              <figure class="codigo">
+                <figcaption class="mono">{e.etiqueta}</figcaption>
+                <pre class="mono">{e.codigo}</pre>
+              </figure>
+            ))
+          }
+          {
+            pagina.tabla && (
+              <div class="tabla">
+                <table>
+                  <caption class="mono">{pagina.tabla.titulo}</caption>
+                  <thead>
+                    <tr>
+                      {pagina.tabla.columnas.map((c) => (
+                        <th scope="col">{c}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pagina.tabla.filas.map((fila) => (
+                      <tr>
+                        {fila.map((celda, j) =>
+                          j === 0 ? (
+                            <th scope="row">{celda}</th>
+                          ) : (
+                            <td data-columna={pagina.tabla!.columnas[j]}>{celda}</td>
+                          ),
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )
+          }
+        </div>
+      </section>
+
+      <section id="como-funciona" class="seccion" aria-labelledby="como-funciona-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## como-funciona</p>
+          <h2 id="como-funciona-t">{titulo("como-funciona")}</h2>
+        </div>
+        <ol class="seccion__cuerpo flujo">
+          {
+            pagina.flujo.pasos.map((paso, i) => (
+              <li>
+                <span class="mono flujo__n" aria-hidden="true">
+                  {dosCifras(i + 1)}
+                </span>
+                <h3 class="mono flujo__nombre">{paso.nombre}</h3>
+                <p>{paso.texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section id="como-esta-hecho" class="seccion" aria-labelledby="como-esta-hecho-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## como-esta-hecho</p>
+          <h2 id="como-esta-hecho-t">{titulo("como-esta-hecho")}</h2>
+        </div>
+        <div class="seccion__cuerpo">
+          <p class="entrada">{pagina.capas.intro}</p>
+          <ul class="capas">
+            {
+              pagina.capas.filas.map((c) => (
+                <li>
+                  <h3>{c.nombre}</h3>
+                  <p class="mono capas__donde">{c.donde}</p>
+                  <p class="capas__texto">{c.texto}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <section id="decisiones" class="seccion" aria-labelledby="decisiones-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## decisiones</p>
+          <h2 id="decisiones-t">{titulo("decisiones")}</h2>
+          <p class="seccion__nota">Qué se eligió, qué se descartó y lo que cuesta.</p>
+        </div>
+        <ol class="seccion__cuerpo decisiones">
+          {
+            pagina.decisiones.map((d, i) => (
+              <li>
+                <span class="mono decisiones__n" aria-hidden="true">
+                  {dosCifras(i + 1)}
+                </span>
+                <h3>{d.titulo}</h3>
+                <p>{d.decision}</p>
+                <dl class="decisiones__notas">
+                  {d.notas.map((n) => (
+                    <div>
+                      <dt class="mono">{n.etiqueta}</dt>
+                      <dd>{n.texto}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section id="calidad" class="seccion" aria-labelledby="calidad-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## calidad</p>
+          <h2 id="calidad-t">{titulo("calidad")}</h2>
+          <p class="seccion__nota">{pagina.calidad.medido}</p>
+        </div>
+        <div class="seccion__cuerpo">
+          <div class="tabla">
+            <table class="tabla--calidad">
+              <caption class="solo-lector">Calidad de {p.nombre}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Qué</th>
+                  <th scope="col">Cifra</th>
+                  <th scope="col">Cómo se comprueba</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  pagina.calidad.filas.map((f) => (
+                    <tr>
+                      <th scope="row">{f.que}</th>
+                      <td data-columna="Cifra">{f.cifra}</td>
+                      <td data-columna="Cómo" class="mono">
+                        {f.como}
+                      </td>
+                    </tr>
+                  ))
+                }
+              </tbody>
+            </table>
+          </div>
+          <p class="detalle">{pagina.calidad.nota}</p>
+        </div>
+      </section>
+
+      <section id="limites" class="seccion" aria-labelledby="limites-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## limites</p>
+          <h2 id="limites-t">{titulo("limites")}</h2>
+          <p class="seccion__nota">Lo que todavía no está bien, dicho tal cual.</p>
+        </div>
+        <ul class="seccion__cuerpo limites">
+          {pagina.limites.map((l) => <li>{l}</li>)}
+        </ul>
+      </section>
+
+      <section id="pruebalo" class="seccion" aria-labelledby="pruebalo-t">
+        <div class="seccion__rotulo">
+          <p class="mono md" aria-hidden="true">## pruebalo</p>
+          <h2 id="pruebalo-t">{titulo("pruebalo")}</h2>
+        </div>
+        <div class="seccion__cuerpo">
+          <pre class="mono consola" set:html={consola} />
+          <p class="detalle">{pagina.pruebalo.nota}</p>
+          <ul class="enlaces">
+            {
+              pagina.enlaces.map((e) => (
+                <li>
+                  <a class="enlace-flecha" href={e.url}>
+                    {e.texto}
+                    <span class="solo-lector"> de {p.nombre}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </section>
+
+      <nav class="siguiente" aria-label="Más proyectos">
+        <a class="mono siguiente__volver" href={`/#${id}`}>← volver a la portada</a>
+        {
+          siguiente && siguiente.id !== id && (
+            <a class="siguiente__proyecto" href={`/proyectos/${siguiente.id}/`}>
+              <span class="mono">siguiente proyecto</span>
+              <strong>
+                {siguiente.nombre}
+                <span class="naranja" aria-hidden="true">
+                  {" "}
+                  →
+                </span>
+              </strong>
+            </a>
+          )
+        }
+      </nav>
+    </main>
+
+    <Contacto />
+  </div>
+</Pagina>
+
+<style>
+  .detalle-proyecto {
+    max-width: calc(var(--contenedor) + 2 * var(--margen));
+    margin-inline: auto;
+    padding: clamp(1.5rem, 4vw, 3rem) var(--margen) clamp(4rem, 8vw, 6rem);
+  }
+
+  .migas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    font-size: 0.8125rem;
+    color: var(--comentario);
+  }
+
+  .migas a {
+    color: var(--texto-2-oscuro);
+  }
+
+  .migas [aria-current] {
+    color: var(--blanco);
+  }
+
+  /* Índice de la página: los apartados numerados, en una fila que se puede deslizar en el móvil. */
+  .indice {
+    display: flex;
+    gap: 0.5rem 1.75rem;
+    flex-wrap: wrap;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    font-size: 0.8125rem;
+  }
+
+  .indice a {
+    color: var(--texto-2-oscuro);
+    text-decoration: none;
+  }
+
+  .indice a span {
+    color: var(--comentario);
+  }
+
+  .indice a:hover {
+    color: var(--blanco);
+  }
+
+  /* Secciones: rótulo a la izquierda y contenido a la derecha; apiladas en el móvil. */
+  .seccion {
+    display: grid;
+    gap: 1.5rem;
+    padding-top: clamp(3.5rem, 8vw, 6rem);
+    scroll-margin-top: 1rem;
+  }
+
+  .seccion__rotulo h2 {
+    margin-top: 0.25rem;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .seccion__nota {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--comentario);
+  }
+
+  .seccion__cuerpo {
+    display: grid;
+    gap: 1.25rem;
+    align-content: start;
+    min-width: 0;
+  }
+
+  .seccion__cuerpo > p {
+    max-width: 44rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .seccion__cuerpo > p.entrada {
+    font-size: clamp(1.125rem, 2vw, 1.3125rem);
+    line-height: 1.55;
+    color: var(--blanco);
+  }
+
+  @media (min-width: 64rem) {
+    .seccion {
+      grid-template-columns: 3fr 8fr;
+      gap: 4rem;
+    }
+
+    .seccion__rotulo {
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+    }
+  }
+
+  /* Código del contrato y consola de «Pruébalo» */
+  .codigo {
+    background: var(--fondo);
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+  }
+
+  .codigo figcaption {
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .codigo pre,
+  .consola {
+    margin: 0;
+    padding: 1rem;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: #fbbf77;
+  }
+
+  .consola {
+    background: var(--fondo);
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    color: var(--blanco);
+  }
+
+  .consola :global(.consola__dolar) {
+    color: #4ade80;
+  }
+
+  .consola :global(.consola__comentario) {
+    color: var(--comentario);
+  }
+
+  /* Tablas: de momentos y de calidad. En el móvil, cada fila se lee como una ficha. */
+  .tabla {
+    min-width: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  caption {
+    padding-bottom: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--comentario);
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 0.875rem 1.25rem 0.875rem 0;
+    border-bottom: 1px solid var(--borde-oscuro);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--comentario);
+  }
+
+  tbody th {
+    font-weight: 600;
+  }
+
+  td {
+    color: var(--texto-2-oscuro);
+  }
+
+  td.mono {
+    font-size: 0.8125rem;
+    color: #fbbf77;
+    overflow-wrap: anywhere;
+  }
+
+  .tabla--calidad td:nth-child(2) {
+    color: var(--blanco);
+  }
+
+  @media (max-width: 48rem) {
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    tr {
+      display: grid;
+      gap: 0.375rem;
+      padding-block: 1rem;
+      border-bottom: 1px solid var(--borde-oscuro);
+    }
+
+    th,
+    td {
+      display: block;
+      padding: 0;
+      border: 0;
+    }
+
+    td::before {
+      content: attr(data-columna);
+      display: block;
+      margin-bottom: 0.125rem;
+      font-family: var(--mono);
+      font-size: 0.6875rem;
+      color: var(--comentario);
+    }
+  }
+
+  /* Flujo: pasos numerados sobre una línea vertical. */
+  .flujo {
+    list-style: none;
+    gap: 0;
+    border-left: 1px solid var(--borde-oscuro);
+  }
+
+  .flujo li {
+    position: relative;
+    display: grid;
+    gap: 0.375rem;
+    padding: 0 0 2rem 1.75rem;
+  }
+
+  .flujo li:last-child {
+    padding-bottom: 0;
+  }
+
+  .flujo li::before {
+    content: "";
+    position: absolute;
+    left: -0.3125rem;
+    top: 0.3125rem;
+    width: 0.5625rem;
+    height: 0.5625rem;
+    border-radius: 50%;
+    background: var(--grafito);
+    border: 1px solid var(--acento);
+  }
+
+  .flujo__n {
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .flujo__nombre {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--blanco);
+  }
+
+  .flujo p {
+    max-width: 44rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  /* Capas */
+  .capas {
+    list-style: none;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .capas li {
+    display: grid;
+    gap: 0.25rem 1.5rem;
+    padding-block: 1.125rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .capas h3 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .capas__donde {
+    font-size: 0.8125rem;
+    color: #8f9fff;
+    overflow-wrap: anywhere;
+  }
+
+  .capas__texto {
+    color: var(--texto-2-oscuro);
+  }
+
+  @media (min-width: 48rem) {
+    .capas li {
+      grid-template-columns: 9rem minmax(0, 1fr);
+    }
+
+    .capas__texto {
+      grid-column: 2;
+    }
+  }
+
+  /* Decisiones */
+  .decisiones {
+    list-style: none;
+    gap: 0;
+  }
+
+  .decisiones li {
+    display: grid;
+    gap: 0.75rem;
+    padding-block: 1.75rem;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .decisiones li:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .decisiones__n {
+    font-size: 0.75rem;
+    color: var(--acento);
+  }
+
+  .decisiones h3 {
+    font-size: clamp(1.25rem, 2.2vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .decisiones li > p {
+    max-width: 44rem;
+  }
+
+  .decisiones__notas {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 44rem;
+  }
+
+  .decisiones__notas div {
+    display: grid;
+    gap: 0.125rem 1rem;
+  }
+
+  .decisiones__notas dt {
+    font-size: 0.75rem;
+    color: #fbbf77;
+  }
+
+  .decisiones__notas dd {
+    color: var(--texto-2-oscuro);
+  }
+
+  @media (min-width: 48rem) {
+    .decisiones__notas div {
+      grid-template-columns: 7rem minmax(0, 1fr);
+    }
+
+    .decisiones__notas dt {
+      padding-top: 0.2rem;
+    }
+  }
+
+  /* Límites */
+  .limites {
+    list-style: none;
+    gap: 0.875rem;
+  }
+
+  .limites li {
+    position: relative;
+    max-width: 44rem;
+    padding-left: 1.5rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .limites li::before {
+    content: "!";
+    position: absolute;
+    left: 0;
+    font-family: var(--mono);
+    color: #fbbf77;
+  }
+
+  .detalle {
+    color: var(--texto-2-oscuro);
+  }
+
+  .enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    list-style: none;
+  }
+
+  /* Siguiente proyecto */
+  .siguiente {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 2rem;
+    margin-top: clamp(4rem, 8vw, 6rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--borde-oscuro);
+  }
+
+  .siguiente__volver {
+    font-size: 0.875rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .siguiente__proyecto {
+    display: grid;
+    gap: 0.25rem;
+    text-align: right;
+    text-decoration: none;
+  }
+
+  .siguiente__proyecto span.mono {
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .siguiente__proyecto strong {
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .siguiente__proyecto:hover strong {
+    color: var(--acento);
+  }
+</style>

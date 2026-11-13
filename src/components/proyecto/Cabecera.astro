@@ -1,0 +1,59 @@
+---
+// Cabecera de un proyecto: la ruta del archivo con su número y el nombre a gran tamaño. En la portada el
+// nombre es un h2; en la página del proyecto, el h1.
+interface Props {
+  id: string;
+  nombre: string;
+  etiqueta: string;
+  indice: number;
+  total: number;
+  nivel?: 1 | 2;
+  /** Ruta que se enseña arriba; por defecto, la del README del proyecto. */
+  ruta?: string;
+}
+
+const { id, nombre, etiqueta, indice, total, nivel = 2, ruta = `proyectos/${id}/README.md` } = Astro.props;
+const dosCifras = (n: number) => String(n).padStart(2, "0");
+const Titulo = nivel === 1 ? "h1" : "h2";
+---
+
+<p class="mono ruta">
+  <span>{ruta}</span>
+  <span aria-hidden="true">{`${dosCifras(indice)} / ${dosCifras(total)}`}</span>
+</p>
+<header class="cabeza">
+  <p class="mono md" aria-hidden="true"># </p>
+  <Titulo id={`${id}-t`} class="titulo">{nombre}</Titulo>
+  <p class="mono etiqueta">{etiqueta}</p>
+</header>
+
+<style>
+  .ruta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .cabeza {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .titulo {
+    margin-top: 0.25rem;
+    font-size: clamp(2.75rem, 8vw, 6.5rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  .etiqueta {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: var(--texto-2-oscuro);
+  }
+</style>

@@ -234,6 +234,40 @@ const terminalAcabada = await pagina.$eval("[data-terminal]", (t) => !t.classLis
 const saltarOculto = await pagina.$eval("[data-saltar]", (b) => b.hidden);
 comprobar("la terminal termina y oculta «Saltar animación»", terminalAcabada && saltarOculto);
 
+// 9. Páginas de proyecto: la portada las enlaza, cargan con su h1, su canónica y sus migas, y el enlace al
+// siguiente proyecto funciona.
+const enlacesProyecto = await pagina.$$eval(".proyecto__mas", (as) => as.map((a) => a.getAttribute("href")));
+comprobar(
+  "la portada enlaza la página de Deep Prep y la de agenteval",
+  enlacesProyecto.join(",") === "/proyectos/deep-prep/,/proyectos/agenteval/",
+  enlacesProyecto.join(","),
+);
+for (const [id, nombre] of [
+  ["deep-prep", "Deep Prep"],
+  ["agenteval", "agenteval"],
+]) {
+  await pagina.goto(`${URL_BASE}proyectos/${id}/`, { waitUntil: "networkidle0" });
+  const datos = await pagina.evaluate(() => ({
+    h1: document.querySelector("h1")?.textContent.trim(),
+    canonica: document.querySelector("link[rel=canonical]")?.href,
+    migas: [...document.querySelectorAll("script[type='application/ld+json']")].some((s) => s.textContent.includes("BreadcrumbList")),
+    secciones: document.querySelectorAll(".seccion").length,
+  }));
+  comprobar(
+    `la página de ${nombre} carga con su h1, canónica y migas`,
+    datos.h1 === nombre && datos.canonica?.endsWith(`/proyectos/${id}/`) && datos.migas && datos.secciones === 7,
+    JSON.stringify(datos),
+  );
+}
+await pagina.goto(`${URL_BASE}proyectos/deep-prep/`, { waitUntil: "networkidle0" });
+await Promise.all([pagina.waitForNavigation({ waitUntil: "networkidle0" }), pagina.click(".siguiente__proyecto")]);
+comprobar("«siguiente proyecto» lleva de Deep Prep a agenteval", pagina.url().endsWith("/proyectos/agenteval/"), pagina.url());
+const sitemap = await (await fetch(`${URL_BASE}sitemap.xml`)).text();
+comprobar(
+  "el sitemap incluye las páginas de proyecto",
+  sitemap.includes("/proyectos/deep-prep/") && sitemap.includes("/proyectos/agenteval/"),
+);
+
 comprobar("sin errores en la consola", errores.length === 0, errores.join(" | "));
 const ajenas = fallidas.filter((f) => !f.includes("/_vercel/insights/"));
 comprobar("sin recursos rotos (salvo el script de Vercel, que solo existe en Vercel)", ajenas.length === 0, ajenas.join(" | "));

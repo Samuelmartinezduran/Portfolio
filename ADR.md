@@ -203,3 +203,38 @@
 - **Decision:** El CV en PDF de `public/cv/` se regenera sin la línea «Otros» de Proyectos: agente de citas por WhatsApp, seguimiento de precios y tienda online. El original editado (`cv.html` y su README) está en `C:\Users\samue\Documents\CV` del PC, y falta copiarlo a `~/Documents/CV` del Mac.
 - **Reason:** El usuario pidió quitarla para que el CV coincida con la web, de la que esos proyectos salieron (ver «Fuera los proyectos secundarios»).
 - **Source:** User instruction (13/11/2026)
+
+## Páginas de proyecto
+- **Decision:** Deep Prep y agenteval tienen su página, `/proyectos/<id>/` (`src/pages/proyectos/[id].astro`, con el contenido en `src/data/paginas.ts`).
+  - **Arriba, lo mismo que en la portada:** la ruta, el nombre (aquí es el h1), la demostración y la franja de cifras, con cuatro en vez de tres.
+  - **Después, siete apartados numerados**, con el rótulo a la izquierda (fijo en el ordenador) y el contenido a la derecha:
+    - qué hace;
+    - cómo funciona, como pasos sobre una línea;
+    - cómo está hecho, por capas;
+    - decisiones, con lo descartado y el coste;
+    - calidad, en una tabla con el comando de cada cifra;
+    - límites conocidos;
+    - pruébalo, con los comandos reales.
+  - **Al final:** el siguiente proyecto y el contacto.
+  - **En la portada,** cada proyecto con página tiene «Ver el proyecto completo →».
+  - **Para buscadores:** cada página lleva `WebPage`, `BreadcrumbList` y los mismos `SoftwareSourceCode` y `VideoObject` que la portada (mismo `@id`, con `url` en la página del proyecto), y va en el sitemap y en `llms.txt`.
+  - El asistente telefónico no tiene página todavía: su código solo está en el Mac.
+- **Reason:** El usuario aceptó la propuesta de una página por proyecto que profundice en cada uno. Así cada proyecto puede aparecer en búsquedas propias, y quien quiera detalle lo tiene sin alargar la portada.
+- **Source:** User instruction (13/11/2026). Contenido sacado de los repositorios:
+  - Deep Prep: README y `docs/ARQUITECTURA.md` en main, b062a92.
+  - agenteval: README, `ADR.md`, el código de `packages/core` y la CI en b2cd22a.
+
+  El usuario ofreció inventar lo que faltara de agenteval; se descartó porque no hizo falta, y una cifra inventada se descubre en cuanto alguien abre el repositorio.
+
+## Componentes compartidos entre la portada y las páginas de proyecto
+- **Decision:**
+  - La barra de ventana (`Ventana.astro`) y el cierre con el contacto y el pie (`Contacto.astro`) salen de la portada a componentes, igual que la cabecera, la demostración y las cifras de cada proyecto (`src/components/proyecto/`).
+  - La base del editor (`.web`, `--fondo`, `--comentario`, `.md`, `.comentario`, `kbd`) pasa a `global.css`, limitada a `.web`.
+  - El JavaScript de la demostración (vídeo con fases, llamada y barras) y el del contacto (clic en el correo y cookies) van con su componente.
+- **Reason:** Las páginas de proyecto usan lo mismo; copiarlo habría dejado dos versiones que se separan con el primer cambio.
+- **Source:** Agent assumption
+
+## Caché de `/proyectos/` solo para el vídeo y las imágenes
+- **Decision:** La regla de `vercel.json` de un día de caché pasa de `/proyectos/(.*)` a `/proyectos/(.*)\.(mp4|webp)`. Matiza «Caché».
+- **Reason:** Las páginas de proyecto viven ahora en `/proyectos/<id>/`. Con la regla anterior, su HTML habría quedado guardado un día en el navegador y un cambio no se vería hasta el día siguiente.
+- **Source:** Agent assumption

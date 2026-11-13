@@ -3,16 +3,20 @@
 // reales, paleta de comandos (Ctrl/Cmd+K) y atajos, y el perfil y los proyectos como archivos abiertos.
 // Ver DESIGN.md y los ADR «Dirección Terminal» y «Revisión de coherencia, SEO y GEO».
 import Pagina from "../layouts/Pagina.astro";
+import Contacto from "../components/Contacto.astro";
+import Ventana from "../components/Ventana.astro";
+import Cabecera from "../components/proyecto/Cabecera.astro";
+import Cifras from "../components/proyecto/Cifras.astro";
+import Demo from "../components/proyecto/Demo.astro";
+import { paginas } from "../data/paginas";
 import {
   actualizada,
-  agenda,
   cursos,
   datosPersonales,
   estado,
   experiencia,
   formacion,
   habilidades,
-  llamada,
   persona,
   proyectos,
   sesionTerminal,
@@ -28,12 +32,6 @@ const sitio = Astro.site!;
 const abs = (ruta: string) => new URL(ruta, sitio).href;
 const idPersona = abs("/#samuel");
 const licencias: Record<string, string> = { MIT: "https://opensource.org/licenses/MIT" };
-const fechaLarga = new Intl.DateTimeFormat("es-ES", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-}).format(new Date(`${actualizada}T00:00:00Z`));
 
 // Datos estructurados propios de la portada: página de perfil, repositorios públicos y el vídeo de Deep Prep.
 const grafo: Record<string, unknown>[] = [
@@ -57,7 +55,7 @@ const grafo: Record<string, unknown>[] = [
             "@id": abs(`/#${p.id}`),
             name: p.nombre,
             description: p.resumen,
-            url: abs(`/#${p.id}`),
+            url: paginas[p.id] ? abs(`/proyectos/${p.id}/`) : abs(`/#${p.id}`),
             codeRepository: p.repo.url,
             programmingLanguage: p.repo.lenguaje,
             license: licencias[p.repo.licencia] ?? p.repo.licencia,
@@ -106,42 +104,16 @@ const archivos = [
   ...proyectos.map((p) => ({ id: p.id, nombre: `${p.id}.md` })),
 ];
 const partirFechas = (fechas: string) => fechas.split(" – ");
-const dosCifras = (n: number) => String(n).padStart(2, "0");
-
-// Coloreado mínimo del YAML de agenteval: claves en blanco, cadenas en ámbar y null/números en azul.
-const escapar = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const pintarYaml = (yaml: string) =>
-  yaml
-    .split("\n")
-    .map((linea) => {
-      const m = linea.match(/^(\s*-?\s*)([\w]+)(:)(\s*)(.*)$/);
-      if (!m) return escapar(linea);
-      const [, sangria, clave, dosPuntos, espacio, valor] = m;
-      const clase = valor.startsWith('"') ? "y-s" : /^(null|true|false|\d+)$/.test(valor) ? "y-n" : "y-v";
-      const pintado = valor ? `<span class="${clase}">${escapar(valor)}</span>` : "";
-      return `${escapar(sangria)}<span class="y-k">${clave}</span>${dosPuntos}${espacio}${pintado}`;
-    })
-    .join("\n");
-
-// La nota de agenteval, calculada con los pesos para que se vea de dónde sale.
-const decimal = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");
-const formula = (dimensiones: { peso: number; valor: number }[]) =>
-  `${dimensiones.map((d) => `${decimal(d.peso / 100)} × ${d.valor}`).join(" + ")} = ${decimal(
-    dimensiones.reduce((suma, d) => suma + (d.peso * d.valor) / 100, 0),
-  )}`;
 ---
 
 <Pagina titulo={titulo} descripcion={descripcion} grafo={grafo}>
   <div class="web" data-correo={persona.correo}>
     <!-- Barra de ventana -->
-    <header class="ventana">
-      <span class="ventana__puntos" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="mono ventana__ruta">samuel@vigo: ~/portfolio</span>
-      <a class="mono ventana__cv" href={persona.cv}>cv.pdf</a>
+    <Ventana>
       <button class="mono ventana__k" type="button" data-abrir-paleta aria-haspopup="dialog">
         <kbd>Ctrl</kbd> <kbd>K</kbd> <span>comandos</span>
       </button>
-    </header>
+    </Ventana>
 
     <main id="contenido">
       <!-- Terminal: las órdenes reservan su sitio desde el principio para que nada salte al escribir. -->
@@ -260,178 +232,32 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
         {
           proyectos.map((p, i) => (
             <article id={p.id} class="archivo proyecto" aria-labelledby={`${p.id}-t`}>
-              <p class="archivo__ruta mono proyecto__ruta">
-                <span>{`proyectos/${p.id}/README.md`}</span>
-                <span aria-hidden="true">{`${dosCifras(i + 1)} / ${dosCifras(proyectos.length)}`}</span>
-              </p>
-              <header class="proyecto__cabeza">
-                <p class="mono md" aria-hidden="true">
-                  #{" "}
-                </p>
-                <h2 id={`${p.id}-t`}>{p.nombre}</h2>
-                <p class="mono proyecto__etiqueta">{p.etiqueta}</p>
-              </header>
-
-              {p.demo === "video" && p.video && (
-                <figure class="demo" data-video>
-                  <div class="demo__marco">
-                    <video
-                      src={p.video.src}
-                      poster={p.video.posterPagina ?? p.video.poster}
-                      width={p.video.ancho}
-                      height={p.video.alto}
-                      muted
-                      loop
-                      playsinline
-                      controls
-                      preload="none"
-                      aria-label={p.video.alt}
-                    />
-                  </div>
-                  <div class="capitulos mono" role="group" aria-label="Fases de la grabación" data-capitulos>
-                    {p.video.capitulos.map((c, j) => (
-                      <button
-                        type="button"
-                        data-desde={c.desde}
-                        data-hasta={p.video!.capitulos[j + 1]?.desde}
-                        aria-label={`Ver la fase «${c.texto}» de la grabación`}
-                      >
-                        <span class="capitulos__barra" aria-hidden="true">
-                          <i />
-                        </span>
-                        {c.texto}
-                      </button>
-                    ))}
-                  </div>
-                  <figcaption class="mono comentario">
-                    // {p.video.pie}{" "}
-                    <button type="button" class="video__boton" data-video-boton hidden>
-                      ❚❚ pausar
-                    </button>
-                  </figcaption>
-                </figure>
-              )}
-
-              {p.demo === "llamada" && (
-                <figure class="demo">
-                  <div class="llamada" data-llamada>
-                    <div class="llamada__panel mono">
-                      <p class="llamada__cabeza">
-                        <span data-llamada-estado>llamada · restaurante de la demo</span>
-                        <button type="button" class="llamada__repetir" data-llamada-repetir hidden>
-                          ↻ repetir
-                        </button>
-                      </p>
-                      <ol class="llamada__lineas">
-                        {llamada.map(({ quien, texto }) => {
-                          if (quien !== "herramienta") {
-                            return (
-                              <li class={`linea linea--${quien.toLowerCase()}`}>
-                                <span class="linea__quien">{quien}</span>
-                                <span>{texto}</span>
-                              </li>
-                            );
-                          }
-                          const [accion, resultado] = texto.split(" → ");
-                          return (
-                            <li class="linea linea--h">
-                              <span class="linea__quien" aria-hidden="true">
-                                →
-                              </span>
-                              <span>
-                                <span class="solo-lector">Herramienta: </span>
-                                {accion} <span class="linea__ok">→ {resultado}</span>
-                              </span>
-                            </li>
-                          );
-                        })}
-                      </ol>
-                    </div>
-                    <div class="agenda" role="group" aria-label="Agenda del personal">
-                      <p class="agenda__cabeza mono">agenda · {agenda.dia}</p>
-                      <ul>
-                        {agenda.franjas.map((hora) =>
-                          hora === agenda.reserva.hora ? (
-                            <li class="agenda__franja agenda__franja--reserva" data-agenda-reserva>
-                              <span class="mono agenda__hora">{hora}</span>
-                              <span class="agenda__reserva">
-                                <strong>{agenda.reserva.nombre}</strong> · {agenda.reserva.personas} personas
-                                <span class="mono agenda__origen">{agenda.reserva.origen}</span>
-                              </span>
-                            </li>
-                          ) : (
-                            <li class="agenda__franja">
-                              <span class="mono agenda__hora">{hora}</span>
-                              <span class="solo-lector">libre</span>
-                            </li>
-                          ),
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                  <figcaption class="mono comentario">
-                    // Una reserva del guion de la demo: lo que dice el cliente, las herramientas que llama el agente y lo
-                    que ve el personal al colgar.
-                  </figcaption>
-                </figure>
-              )}
-
-              {p.demo === "evaluacion" && p.evaluacion && (
-                <figure class="demo">
-                  <div class="evaluacion" data-evaluacion>
-                    <div class="evaluacion__caso">
-                      <p class="mono evaluacion__archivo">{p.evaluacion.archivo}</p>
-                      <pre class="mono yaml" set:html={pintarYaml(p.evaluacion.caso)} />
-                    </div>
-                    <div class="evaluacion__nota">
-                      <ul class="barras">
-                        {p.evaluacion.dimensiones.map((d) => (
-                          <li class={d.valor >= 90 ? "barras--bien" : "barras--medio"} style={`--valor: ${d.valor}`}>
-                            <span class="barras__nombre">{d.nombre}</span>
-                            <span class="mono barras__como">
-                              {d.peso} % · {d.como}
-                            </span>
-                            <span class="barras__pista" aria-hidden="true">
-                              <i />
-                            </span>
-                            <span class="mono barras__valor">{d.valor}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <p class="evaluacion__total">
-                        <span class="evaluacion__cifra">{p.evaluacion.total}</span>
-                        <span class="mono">/ 100</span>
-                      </p>
-                      <p class="mono evaluacion__formula">{formula(p.evaluacion.dimensiones)}</p>
-                    </div>
-                  </div>
-                  <figcaption class="mono comentario">// {p.evaluacion.fuente}</figcaption>
-                </figure>
-              )}
-
-              <dl class="proyecto__cifras">
-                {p.datos.map(({ valor, texto }) => (
-                  <div>
-                    <dt class="mono">{texto}</dt>
-                    <dd>{valor}</dd>
-                  </div>
-                ))}
-              </dl>
-
+              <Cabecera id={p.id} nombre={p.nombre} etiqueta={p.etiqueta} indice={i + 1} total={proyectos.length} />
+              <Demo proyecto={p} />
+              <Cifras datos={p.datos} />
               <div class="proyecto__cuerpo">
                 <div class="proyecto__texto">
                   <p class="resumen">{p.resumen}</p>
                   {p.detalle.map((d) => (
                     <p class="detalle">{d}</p>
                   ))}
+                  {paginas[p.id] && (
+                    <a class="proyecto__mas" href={`/proyectos/${p.id}/`}>
+                      Ver el proyecto completo<span class="solo-lector">: {p.nombre}</span>
+                      <span class="naranja" aria-hidden="true">
+                        {" "}
+                        →
+                      </span>
+                    </a>
+                  )}
                 </div>
                 <div class="proyecto__ficha">
                   <h3 class="mono md">
                     <span aria-hidden="true">## </span>stack
                   </h3>
                   <ul class="mono chips">
-                    {p.stack.map((s) => (
-                      <li>{s}</li>
+                    {p.stack.map((t) => (
+                      <li>{t}</li>
                     ))}
                   </ul>
                   <p class="enlaces">
@@ -501,30 +327,7 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
         <pre class="mono json">{`{\n${habilidades.map((h) => `  "${h.grupo}": "${h.lista}"`).join(",\n")}\n}`}</pre>
       </section>
 
-      <!-- Contacto -->
-      <section id="contacto" class="contacto" aria-labelledby="contacto-t">
-        <p class="mono md" aria-hidden="true">$ ./contactar.sh</p>
-        <h2 id="contacto-t" class="solo-lector">Contacto</h2>
-        <a class="contacto__grande" href={`mailto:${persona.correo}`}>Escríbeme<span class="naranja" aria-hidden="true">→</span></a>
-        <ul class="mono contacto__lista">
-          <li><span>correo</span><a href={`mailto:${persona.correo}`}>{persona.correo}</a></li>
-          <li><span>linkedin</span><a href={persona.linkedin}>{persona.nombre}</a></li>
-          <li><span>github</span><a href={persona.github}>Samuelmartinezduran</a></li>
-          <li><span>cv</span><a href={persona.cv}>CV_Samuel_Martinez_Duran.pdf</a></li>
-        </ul>
-        <footer class="mono comentario pie">
-          // © 2026 {persona.nombre} · hecha con Astro · <a href="/privacidad/">privacidad</a>
-          {
-            gaActivo && (
-              <>
-                {" "}
-                · <button type="button" class="enlace-boton" data-cookies>cookies</button>
-              </>
-            )
-          }{" "}
-          · actualizada el <time datetime={actualizada}>{fechaLarga}</time>
-        </footer>
-      </section>
+      <Contacto />
     </main>
 
     <!-- Paleta de comandos -->
@@ -600,119 +403,6 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
     window.medir?.("saltar_animacion");
   });
   reproducir();
-
-  // Vídeo: se reproduce solo cuando se ve y se puede pausar. Con movimiento reducido no arranca solo y
-  // quedan los controles del navegador.
-  document.querySelectorAll<HTMLElement>("[data-video]").forEach((figura) => {
-    const video = figura.querySelector("video");
-    const boton = figura.querySelector<HTMLButtonElement>("[data-video-boton]");
-    if (!video) return;
-
-    // Fases: cada botón se llena según avanza el vídeo y, al pulsarlo, salta a su segundo. Funcionan también
-    // con movimiento reducido, porque solo se mueven si la persona reproduce el vídeo.
-    const fases = [...figura.querySelectorAll<HTMLButtonElement>("[data-capitulos] button")];
-    const pintarFases = () => {
-      const t = video.currentTime;
-      fases.forEach((f) => {
-        const desde = Number(f.dataset.desde);
-        const hasta = f.dataset.hasta ? Number(f.dataset.hasta) : video.duration || desde + 4;
-        const avance = Math.min(1, Math.max(0, (t - desde) / (hasta - desde)));
-        f.style.setProperty("--avance", String(avance));
-        if (t >= desde && t < hasta) f.setAttribute("aria-current", "step");
-        else f.removeAttribute("aria-current");
-      });
-    };
-    let cuadro = 0;
-    const seguir = () => {
-      pintarFases();
-      if (!video.paused) cuadro = requestAnimationFrame(seguir);
-    };
-    video.addEventListener("play", () => (cuadro = requestAnimationFrame(seguir)));
-    video.addEventListener("pause", () => cancelAnimationFrame(cuadro));
-    video.addEventListener("seeked", pintarFases);
-    fases.forEach((f) =>
-      f.addEventListener("click", () => {
-        video.currentTime = Number(f.dataset.desde);
-        pintarFases();
-        video.play().catch(() => {});
-      }),
-    );
-
-    if (!boton || quieto) return;
-    video.controls = false;
-    boton.hidden = false;
-    let pausadoAMano = false;
-    const pintar = () => (boton.textContent = video.paused ? "▶ reproducir" : "❚❚ pausar");
-    video.addEventListener("play", pintar);
-    video.addEventListener("pause", pintar);
-    boton.addEventListener("click", () => {
-      pausadoAMano = !video.paused;
-      if (video.paused) video.play().catch(() => {});
-      else video.pause();
-    });
-    new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting && !pausadoAMano) video.play().catch(() => {});
-        else if (!e.isIntersecting && !video.paused) video.pause();
-      },
-      { threshold: 0.25 },
-    ).observe(video);
-  });
-
-  // Llamada del asistente: al llegar a ella se reproduce una vez, línea a línea, y al colgar la reserva entra en
-  // la agenda. Todo está en el HTML desde el principio (oculto, pero ocupando su sitio), así que no salta nada.
-  // Sin JS o con movimiento reducido se ve entera.
-  document.querySelectorAll<HTMLElement>("[data-llamada]").forEach((caja) => {
-    const lineas = [...caja.querySelectorAll<HTMLElement>(".linea")];
-    const reserva = caja.querySelector<HTMLElement>("[data-agenda-reserva]");
-    const estado = caja.querySelector<HTMLElement>("[data-llamada-estado]");
-    const repetir = caja.querySelector<HTMLButtonElement>("[data-llamada-repetir]");
-    if (quieto || lineas.length === 0) return;
-    const textoInicial = estado?.textContent ?? "";
-    let sonando = false;
-    async function llamar() {
-      if (sonando) return;
-      sonando = true;
-      if (repetir) repetir.hidden = true;
-      lineas.forEach((l) => l.classList.remove("vista"));
-      reserva?.classList.remove("vista");
-      if (estado) estado.textContent = "● en llamada…";
-      for (const l of lineas) {
-        await esperar(l.classList.contains("linea--h") ? 450 : 900);
-        l.classList.add("vista");
-      }
-      await esperar(700);
-      reserva?.classList.add("vista");
-      if (estado) estado.textContent = "✓ llamada terminada · reserva en la agenda";
-      if (repetir) repetir.hidden = false;
-      sonando = false;
-    }
-    caja.classList.add("llamada--animando");
-    if (estado) estado.textContent = textoInicial;
-    new IntersectionObserver(
-      ([e], o) => {
-        if (!e.isIntersecting) return;
-        o.disconnect();
-        llamar();
-      },
-      { threshold: 0.4 },
-    ).observe(caja);
-    repetir?.addEventListener("click", llamar);
-  });
-
-  // agenteval: las barras se llenan y aparece la nota cuando la evaluación entra en pantalla.
-  document.querySelectorAll<HTMLElement>("[data-evaluacion]").forEach((caja) => {
-    if (quieto) return;
-    caja.classList.add("evaluacion--animando");
-    new IntersectionObserver(
-      ([e], o) => {
-        if (!e.isIntersecting) return;
-        o.disconnect();
-        caja.classList.add("evaluacion--vista");
-      },
-      { threshold: 0.4 },
-    ).observe(caja);
-  });
 
   // Atajos de una tecla: se pueden desactivar (WCAG 2.1.4). La elección se recuerda en este navegador.
   const leerAtajos = () => {
@@ -812,7 +502,6 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
     if (e.target === paleta) paleta.close();
   });
   document.querySelectorAll("[data-abrir-paleta]").forEach((b) => b.addEventListener("click", abrirPaleta));
-  document.querySelector("[data-cookies]")?.addEventListener("click", () => window.abrirConsentimiento?.());
 
   // Atajos globales. Ctrl/Cmd+K siempre; los de una tecla, solo si están activados.
   document.addEventListener("keydown", (e) => {
@@ -841,11 +530,6 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
     if (destino) ejecutar(destino, `atajo ${e.key.toLowerCase()}`);
   });
 
-  // Contacto por correo, para saber si la web sirve para lo que está hecha.
-  document.addEventListener("click", (e) => {
-    if ((e.target as Element | null)?.closest?.("a[href^='mailto:']")) window.medir?.("contacto", { via: "correo" });
-  });
-
   // Pestaña activa según el archivo visible.
   const pestanas = [...document.querySelectorAll<HTMLAnchorElement>(".pestanas a")];
   document.querySelectorAll(".archivo").forEach((a) =>
@@ -863,89 +547,9 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
 </script>
 
 <style>
-  .web {
-    --fondo: #0b0d11;
-    --comentario: #858c99; /* 5,5:1 sobre grafito y 5,8:1 sobre la terminal */
-    background: var(--grafito);
-    color: var(--blanco);
-    min-height: 100vh;
-  }
+  /* Base del editor (.web, .md, .comentario, kbd): en global.css. */
 
-  .naranja {
-    color: var(--acento);
-  }
-
-  .web a {
-    text-decoration-color: var(--acento);
-  }
-
-  kbd {
-    display: inline-block;
-    min-width: 1.4em;
-    padding: 0.05em 0.35em;
-    border: 1px solid var(--borde-oscuro);
-    border-bottom-width: 2px;
-    border-radius: 2px;
-    font-family: var(--mono);
-    font-size: 0.75em;
-    text-align: center;
-    color: var(--blanco);
-  }
-
-  .md {
-    color: var(--acento);
-    font-size: 0.875rem;
-    font-weight: 400;
-  }
-
-  .comentario {
-    color: var(--comentario);
-    font-size: 0.875rem;
-  }
-
-  /* Ventana */
-  .ventana {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem var(--margen);
-    background: var(--fondo);
-    border-bottom: 1px solid var(--borde-oscuro);
-  }
-
-  .ventana__puntos {
-    display: flex;
-    gap: 0.375rem;
-  }
-
-  .ventana__puntos i {
-    width: 0.625rem;
-    height: 0.625rem;
-    border-radius: 50%;
-    background: var(--borde-oscuro);
-  }
-
-  .ventana__puntos i:first-child {
-    background: var(--acento);
-  }
-
-  .ventana__ruta {
-    font-size: 0.8125rem;
-    color: var(--texto-2-oscuro);
-  }
-
-  .ventana__cv {
-    margin-left: auto;
-    padding: 0.5rem 0.25rem;
-    font-size: 0.8125rem;
-    color: var(--blanco);
-    text-decoration: none;
-  }
-
-  .ventana__cv:hover {
-    color: var(--acento);
-  }
-
+  /* Botón de comandos de la barra de ventana */
   .ventana__k {
     display: flex;
     align-items: center;
@@ -1296,432 +900,11 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
     color: var(--blanco);
   }
 
-  /* Proyectos: cabecera grande, la demo a todo el ancho, las cifras en una franja y el texto debajo. */
+  /* Proyectos (cabecera, demostración y cifras en src/components/proyecto/) */
   .proyecto {
     padding-top: clamp(4rem, 9vw, 7rem);
   }
 
-  .proyecto__ruta {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--borde-oscuro);
-  }
-
-  .proyecto__cabeza {
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
-  }
-
-  .proyecto h2 {
-    margin-top: 0.25rem;
-    font-size: clamp(2.75rem, 8vw, 6.5rem);
-    line-height: 0.95;
-    letter-spacing: -0.045em;
-    text-wrap: balance;
-  }
-
-  .proyecto__etiqueta {
-    margin-top: 1rem;
-    font-size: 0.8125rem;
-    color: var(--texto-2-oscuro);
-  }
-
-  .demo {
-    margin-top: clamp(1.75rem, 4vw, 3rem);
-  }
-
-  .demo > figcaption {
-    margin-top: 0.75rem;
-    font-size: 0.75rem;
-  }
-
-  .demo__marco {
-    background: var(--fondo);
-    border: 1px solid var(--borde-oscuro);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .demo__marco video {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  /* Fases del vídeo: cada una se llena mientras se reproduce y lleva a su segundo al pulsarla. */
-  .capitulos {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .capitulos button {
-    display: grid;
-    gap: 0.5rem;
-    padding: 0 0 0.25rem;
-    background: none;
-    border: 0;
-    color: var(--comentario);
-    font: inherit;
-    font-size: 0.75rem;
-    text-align: left;
-    cursor: pointer;
-    transition: color 150ms ease;
-  }
-
-  .capitulos button:hover,
-  .capitulos button[aria-current="step"] {
-    color: var(--blanco);
-  }
-
-  .capitulos__barra {
-    display: block;
-    height: 2px;
-    background: var(--borde-oscuro);
-  }
-
-  .capitulos__barra i {
-    display: block;
-    height: 100%;
-    width: calc(var(--avance, 0) * 100%);
-    background: var(--acento);
-  }
-
-  .video__boton {
-    margin-left: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    background: transparent;
-    color: var(--blanco);
-    border: 1px solid var(--borde-oscuro);
-    border-radius: 2px;
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .video__boton:hover {
-    border-color: var(--acento);
-  }
-
-  /* Llamada del asistente: la conversación a la izquierda y la agenda del personal a la derecha. */
-  .llamada {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .llamada__panel,
-  .agenda {
-    background: var(--fondo);
-    border: 1px solid var(--borde-oscuro);
-    border-radius: 2px;
-  }
-
-  .llamada__panel {
-    padding: clamp(1rem, 3vw, 1.75rem);
-    font-size: 0.875rem;
-    line-height: 1.6;
-  }
-
-  .llamada__cabeza {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--borde-oscuro);
-    font-size: 0.75rem;
-    color: var(--comentario);
-  }
-
-  .llamada__repetir {
-    background: none;
-    border: 0;
-    padding: 0;
-    color: var(--blanco);
-    font: inherit;
-    cursor: pointer;
-  }
-
-  .llamada__repetir:hover {
-    color: var(--acento);
-  }
-
-  .llamada__lineas {
-    display: grid;
-    gap: 0.625rem;
-    list-style: none;
-  }
-
-  .linea {
-    display: grid;
-    grid-template-columns: 5.75rem minmax(0, 1fr);
-    gap: 0.75rem;
-    color: var(--blanco);
-    transition:
-      opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
-      translate 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .linea__quien {
-    color: var(--comentario);
-  }
-
-  .linea--asistente .linea__quien {
-    color: #8f9fff;
-  }
-
-  .linea--h {
-    color: var(--comentario);
-    font-size: 0.8125rem;
-  }
-
-  .linea--h .linea__quien {
-    padding-left: 1.5rem;
-    color: #4ade80;
-  }
-
-  .linea__ok {
-    color: #4ade80;
-  }
-
-  .agenda {
-    align-self: start;
-  }
-
-  .agenda__cabeza {
-    padding: 0.875rem 1.25rem;
-    border-bottom: 1px solid var(--borde-oscuro);
-    font-size: 0.75rem;
-    color: var(--comentario);
-  }
-
-  .agenda ul {
-    list-style: none;
-  }
-
-  .agenda__franja {
-    display: grid;
-    grid-template-columns: 3.5rem minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: center;
-    min-height: 3.5rem;
-    padding: 0.5rem 1.25rem;
-  }
-
-  .agenda__franja + .agenda__franja {
-    border-top: 1px solid var(--borde-oscuro);
-  }
-
-  .agenda__hora {
-    font-size: 0.8125rem;
-    color: var(--comentario);
-  }
-
-  .agenda__reserva {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.25rem 0.625rem;
-    padding: 0.5rem 0.75rem;
-    border-left: 2px solid var(--acento);
-    background: var(--grafito-2);
-    transition:
-      opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
-      translate 500ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .agenda__origen {
-    font-size: 0.6875rem;
-    color: var(--texto-2-oscuro);
-    padding: 0.125rem 0.375rem;
-    border: 1px solid var(--borde-oscuro);
-    border-radius: 2px;
-  }
-
-  .llamada--animando .linea:not(.vista),
-  .llamada--animando .agenda__franja--reserva:not(.vista) .agenda__reserva {
-    opacity: 0;
-    translate: 0 0.375rem;
-  }
-
-  /* agenteval: un caso real del YAML y la nota que sale de las tres dimensiones. */
-  .evaluacion {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .evaluacion__caso,
-  .evaluacion__nota {
-    background: var(--fondo);
-    border: 1px solid var(--borde-oscuro);
-    border-radius: 2px;
-    padding: clamp(1rem, 3vw, 1.75rem);
-  }
-
-  .evaluacion__archivo {
-    padding-bottom: 0.75rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--borde-oscuro);
-    font-size: 0.75rem;
-    color: #8f9fff;
-  }
-
-  .yaml {
-    margin: 0;
-    font-size: 0.8125rem;
-    line-height: 1.7;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    color: var(--texto-2-oscuro);
-  }
-
-  .yaml :global(.y-k) {
-    color: var(--blanco);
-  }
-
-  .yaml :global(.y-s) {
-    color: #fbbf77;
-  }
-
-  .yaml :global(.y-n) {
-    color: #8f9fff;
-  }
-
-  .barras {
-    display: grid;
-    gap: 1.25rem;
-    list-style: none;
-  }
-
-  /* Nombre y nota arriba, la barra a todo el ancho (igual en las tres) y el peso debajo. */
-  .barras li {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 0.5rem 1rem;
-    align-items: baseline;
-  }
-
-  .barras__nombre {
-    grid-area: 1 / 1;
-    font-size: 0.9375rem;
-  }
-
-  .barras__valor {
-    grid-area: 1 / 2;
-  }
-
-  .barras__pista {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    display: block;
-    height: 0.5rem;
-    background: var(--grafito-2);
-  }
-
-  .barras__como {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    font-size: 0.75rem;
-    color: var(--comentario);
-  }
-
-  .barras__pista i {
-    display: block;
-    height: 100%;
-    width: calc(var(--valor) * 1%);
-    background: #4ade80;
-    transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .barras--medio .barras__pista i {
-    background: #fbbf77;
-  }
-
-  .barras li:nth-child(2) .barras__pista i {
-    transition-delay: 150ms;
-  }
-
-  .barras li:nth-child(3) .barras__pista i {
-    transition-delay: 300ms;
-  }
-
-  .barras__valor {
-    font-size: 0.875rem;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .evaluacion__total {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    margin-top: 1.75rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--borde-oscuro);
-    color: var(--comentario);
-    transition: opacity 500ms 600ms ease;
-  }
-
-  .evaluacion__cifra {
-    font-size: clamp(3.5rem, 8vw, 5.5rem);
-    font-weight: 600;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    color: var(--blanco);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .evaluacion__formula {
-    margin-top: 0.5rem;
-    font-size: 0.75rem;
-    color: var(--comentario);
-  }
-
-  .evaluacion--animando:not(.evaluacion--vista) .barras__pista i {
-    width: 0;
-  }
-
-  .evaluacion--animando:not(.evaluacion--vista) .evaluacion__total {
-    opacity: 0;
-  }
-
-  /* Franja de cifras */
-  .proyecto__cifras {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    margin-top: clamp(2rem, 4vw, 3rem);
-    border-block: 1px solid var(--borde-oscuro);
-  }
-
-  .proyecto__cifras div {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    padding: 1.25rem 1rem 1.25rem 0;
-  }
-
-  .proyecto__cifras div + div {
-    padding-left: clamp(0.75rem, 2vw, 1.5rem);
-    border-left: 1px solid var(--borde-oscuro);
-  }
-
-  .proyecto__cifras dd {
-    font-size: clamp(1.5rem, 4.5vw, 3.25rem);
-    white-space: nowrap;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.035em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .proyecto__cifras dt {
-    font-size: 0.75rem;
-    color: var(--texto-2-oscuro);
-  }
-
-  /* Texto y ficha técnica */
   .proyecto__cuerpo {
     display: grid;
     gap: 2rem;
@@ -1738,6 +921,14 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
   .proyecto__texto .resumen {
     font-size: clamp(1.125rem, 2vw, 1.3125rem);
     line-height: 1.5;
+  }
+
+  .proyecto__mas {
+    justify-self: start;
+    margin-top: 0.75rem;
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
   }
 
   .proyecto__ficha {
@@ -1762,41 +953,9 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
   }
 
   @media (min-width: 64rem) {
-    .llamada {
-      grid-template-columns: 7fr 5fr;
-    }
-
-    .evaluacion {
-      grid-template-columns: 6fr 5fr;
-    }
-
     .proyecto__cuerpo {
       grid-template-columns: 7fr 4fr;
       gap: 4rem;
-    }
-  }
-
-  @media (max-width: 40rem) {
-    .capitulos {
-      gap: 0.25rem;
-    }
-
-    .capitulos button {
-      font-size: 0.6875rem;
-    }
-
-    .linea {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0.125rem;
-    }
-
-    .linea--h .linea__quien {
-      display: none;
-    }
-
-    .linea--h {
-      padding-left: 1rem;
-      border-left: 1px solid #4ade80;
     }
   }
 
@@ -1875,78 +1034,6 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
     white-space: pre-wrap;
     color: #fbbf77;
     overflow-x: auto;
-  }
-
-  /* Contacto */
-  .contacto {
-    max-width: calc(var(--contenedor) + 2 * var(--margen));
-    margin-inline: auto;
-    padding: clamp(3rem, 6vw, 5rem) var(--margen) 6rem;
-    border-top: 1px solid var(--borde-oscuro);
-  }
-
-  .contacto__grande {
-    display: block;
-    width: fit-content;
-    white-space: nowrap;
-    margin-top: 1rem;
-    font-size: clamp(3.25rem, 12.5vw, 11rem);
-    font-weight: 600;
-    line-height: 0.9;
-    letter-spacing: -0.06em;
-    text-decoration: none;
-    transition: color 300ms;
-  }
-
-  .contacto__grande:hover {
-    color: var(--acento);
-  }
-
-  .contacto__grande span {
-    display: inline-block;
-    margin-left: 0.1em;
-    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .contacto__grande:hover span {
-    transform: translateX(0.15em);
-  }
-
-  .contacto__lista {
-    display: grid;
-    gap: 0.5rem;
-    margin-block: 2.5rem 3rem;
-    font-size: clamp(0.875rem, 1.6vw, 1.0625rem);
-  }
-
-  .contacto__lista li {
-    display: grid;
-    grid-template-columns: 6rem 1fr;
-    gap: 1rem;
-  }
-
-  .contacto__lista span {
-    color: var(--texto-2-oscuro);
-  }
-
-  .contacto__lista a {
-    overflow-wrap: anywhere;
-  }
-
-  .pie a,
-  .enlace-boton {
-    color: var(--texto-2-oscuro);
-  }
-
-  .enlace-boton {
-    padding: 0;
-    background: none;
-    border: 0;
-    font: inherit;
-    text-decoration: underline;
-    text-decoration-color: var(--acento);
-    text-underline-offset: 0.2em;
-    cursor: pointer;
   }
 
   /* Paleta */
@@ -2030,14 +1117,7 @@ const formula = (dimensiones: { peso: number; valor: number }[]) =>
       animation: none;
     }
 
-    .contacto__grande,
-    .contacto__grande span,
-    .aviso,
-    .capitulos button,
-    .linea,
-    .agenda__reserva,
-    .barras__pista i,
-    .evaluacion__total {
+    .aviso {
       transition: none;
     }
   }

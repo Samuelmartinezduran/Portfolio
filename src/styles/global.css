@@ -125,3 +125,44 @@ a:hover {
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
+
+/* Páginas con aspecto de editor (portada y páginas de proyecto). Ver DESIGN.md. */
+.web {
+  --fondo: #0b0d11;
+  --comentario: #858c99; /* 5,5:1 sobre grafito y 5,8:1 sobre la terminal */
+  background: var(--grafito);
+  color: var(--blanco);
+  min-height: 100vh;
+}
+
+.web a {
+  text-decoration-color: var(--acento);
+}
+
+.web .naranja {
+  color: var(--acento);
+}
+
+.web .md {
+  color: var(--acento);
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.web .comentario {
+  color: var(--comentario);
+  font-size: 0.875rem;
+}
+
+.web kbd {
+  display: inline-block;
+  min-width: 1.4em;
+  padding: 0.05em 0.35em;
+  border: 1px solid var(--borde-oscuro);
+  border-bottom-width: 2px;
+  border-radius: 2px;
+  font-family: var(--mono);
+  font-size: 0.75em;
+  text-align: center;
+  color: var(--blanco);
+}
