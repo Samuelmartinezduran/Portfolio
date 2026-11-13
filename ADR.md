@@ -82,7 +82,7 @@
 ## CV en la web
 - **Decision:** La web enlaza el CV en PDF (`public/cv/`), que incluye el teléfono.
 - **Reason:** Es lo primero que pide quien selecciona. El teléfono no aparece en la página, solo en el PDF.
-- **Source:** Agent assumption, pendiente de confirmar por el usuario
+- **Source:** Agent assumption, confirmada por el usuario el 13/11/2026 («sí, puede llevar mi teléfono el CV»)
 
 ## Tres propuestas de diseño en /opciones/ (temporal)
 - **Decision:** Se añaden tres propuestas completas con los mismos datos: A «Proyectos vivos» (vídeo de Deep Prep, llamada del asistente que se escribe sola, evaluación de agenteval que se ejecuta), B «Editorial» (nombre enorme e índice de proyectos con vista previa que sigue al cursor) y C «Terminal» (terminal con las salidas reales de las pruebas, paleta de comandos con Ctrl/Cmd+K, proyectos como archivos). Comparten `src/components/Cabeza.astro` y el layout `src/layouts/Lienzo.astro`, llevan `noindex` y no están en el sitemap. La portada actual sigue en `/` hasta que el usuario elija; entonces la elegida pasa a `/` y se borran las demás y `Lienzo.astro`.
@@ -146,3 +146,8 @@
 - **Decision:** Dos capas, sin service worker. En el navegador, `vercel.json` da `public, max-age=31536000, immutable` a `/_astro/*` (CSS y fuentes, con hash en el nombre) y `public, max-age=86400, stale-while-revalidate=604800` a `/proyectos/*` (vídeo y capturas, sin hash). Lo demás (HTML, `og.png`, favicon, CV, `llms.txt`, sitemap) se queda con lo que pone Vercel, `public, max-age=0, must-revalidate`: el navegador pregunta en cada visita con el ETag y, si nada ha cambiado, recibe un 304 vacío. En el CDN, Vercel guarda una copia de todo en cada nodo y la vacía en cada despliegue, así que un cambio se ve en segundos (unos 15 al cambiar la frase de la entrevista). Comprobado en producción el 10/11/2026: HTML con Brotli, `X-Vercel-Cache: HIT` en la portada, 304 al revalidar y 206 al pedir el vídeo por trozos. El script de Vercel Analytics lleva 31 días, que pone Vercel.
 - **Reason:** Lo que tiene hash puede guardarse un año porque un cambio genera otro nombre y el HTML ya pide el nuevo. El HTML no puede llevar hash (su dirección es fija), así que se revalida siempre para que un despliegue se vea al momento. Los archivos de `/proyectos/` se pesan más que el HTML y casi nunca cambian: un día de caché ahorra descargarlos en cada visita y `stale-while-revalidate` los actualiza en segundo plano. Consecuencia: **al sustituir un archivo de `public/proyectos/`, hay que cambiarle el nombre**, porque con el mismo nombre quien ya entró puede ver el viejo hasta un día, y una visita más si vuelve en la semana siguiente.
 - **Source:** Agent assumption. Las dos reglas vienen de la web anterior en Vite (commit 19cb69f, 18/09/2026, con `/assets/*` y todas las imágenes) y se adaptaron a las rutas de Astro al rehacerla (e3cea86, 08/11/2026). Las imágenes de fuera de `/proyectos/`, como `og.png` y el favicon, dejaron de tener un día de caché.
+
+## Sin el grupo «IA» en las habilidades
+- **Decision:** Se quita de `habilidades.json` (y, con ello, de `llms.txt`) la línea «IA: API de Anthropic y de OpenAI, function calling, MCP, Ollama, Retell». Las demás habilidades, los proyectos y `knowsAbout` de los datos estructurados se quedan como estaban.
+- **Reason:** El usuario pidió eliminarla.
+- **Source:** User instruction (13/11/2026)

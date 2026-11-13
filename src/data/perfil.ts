@@ -2,7 +2,7 @@
 // Las cifras salen de los repositorios de cada proyecto; ver la nota de cada una.
 
 /** Fecha de la última revisión del contenido (ISO). Se muestra en el pie, en el sitemap y en los datos estructurados. */
-export const actualizada = "2026-11-10";
+export const actualizada = "2026-11-13";
 
 export const persona = {
   nombre: "Samuel Martínez Durán",
@@ -242,7 +242,6 @@ export const habilidades = [
   { grupo: "Lenguajes", lista: "Python, TypeScript, JavaScript, SQL, HTML, CSS" },
   { grupo: "Web", lista: "React, Astro, Next.js, Tailwind CSS, WordPress (Divi y Elementor)" },
   { grupo: "Backend y datos", lista: "FastAPI, PostgreSQL, Supabase, SQLite" },
-  { grupo: "IA", lista: "API de Anthropic y de OpenAI, function calling, MCP, Ollama, Retell" },
   { grupo: "Herramientas", lista: "Git, GitHub Actions, Docker, n8n, Vercel, Cloudflare" },
   { grupo: "Sistemas y diseño", lista: "Linux, redes y hardware · Photoshop, Illustrator, Premiere Pro" },
 ];
