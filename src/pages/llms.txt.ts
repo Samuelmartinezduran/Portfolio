@@ -5,7 +5,6 @@ import {
   experiencia,
   formacion,
   habilidades,
-  otrosProyectos,
   persona,
   proyectos,
   sobreMi,
@@ -22,17 +21,13 @@ export const GET: APIRoute = ({ site }) => {
     "",
     sobreMi,
     "",
-    "## Proyectos principales",
+    "## Proyectos",
     "",
     ...proyectos.map((p) => {
       const enlace = p.enlaces[0]?.url ?? url(`/#${p.id}`);
       const cifras = p.datos.map((d) => `${d.valor} (${d.texto})`).join("; ");
       return `- [${p.nombre}](${enlace}): ${p.etiqueta}. ${p.resumen} ${p.detalle.join(" ")} Tecnologías: ${p.stack.join(", ")}. Cifras: ${cifras}.`;
     }),
-    "",
-    "## Otros proyectos",
-    "",
-    ...otrosProyectos.map((o) => `- [${o.nombre}](${o.enlace.url}): ${o.texto} Tecnologías: ${o.stack.replaceAll(" · ", ", ")}.`),
     "",
     "## Experiencia",
     "",

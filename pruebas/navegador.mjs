@@ -45,7 +45,23 @@ const servidor = createServer((peticion, respuesta) => {
     respuesta.writeHead(404).end("No existe");
     return;
   }
-  respuesta.writeHead(200, { "Content-Type": tipos[extname(archivo)] ?? "application/octet-stream" });
+  const tipo = tipos[extname(archivo)] ?? "application/octet-stream";
+  const tamano = statSync(archivo).size;
+  // Peticiones parciales (Range), como Vercel: sin ellas el navegador no puede saltar dentro del vídeo.
+  const rango = /^bytes=(\d*)-(\d*)$/.exec(peticion.headers.range ?? "");
+  if (rango) {
+    const inicio = rango[1] ? Number(rango[1]) : tamano - Number(rango[2]);
+    const fin = rango[1] && rango[2] ? Math.min(Number(rango[2]), tamano - 1) : tamano - 1;
+    respuesta.writeHead(206, {
+      "Content-Type": tipo,
+      "Content-Range": `bytes ${inicio}-${fin}/${tamano}`,
+      "Content-Length": fin - inicio + 1,
+      "Accept-Ranges": "bytes",
+    });
+    createReadStream(archivo, { start: inicio, end: fin }).pipe(respuesta);
+    return;
+  }
+  respuesta.writeHead(200, { "Content-Type": tipo, "Content-Length": tamano, "Accept-Ranges": "bytes" });
   createReadStream(archivo).pipe(respuesta);
 });
 await new Promise((resolver) => servidor.listen(0, "127.0.0.1", resolver));
@@ -176,6 +192,41 @@ await new Promise((r) => setTimeout(r, 300));
 const tras = await pagina.$eval("[data-video] video", (v) => v.paused);
 const textoBoton = await pagina.$eval("[data-video-boton]", (b) => b.textContent.trim());
 comprobar("el botón pausa el vídeo", tras && textoBoton.includes("reproducir"), textoBoton);
+
+// 7b. Fases del vídeo: pulsar «overlay» salta a su segundo y la marca como actual.
+await pagina.$$eval("[data-capitulos] button", (bs) => bs.find((b) => b.textContent.trim() === "overlay").click());
+await new Promise((r) => setTimeout(r, 600));
+const fase = await pagina.$eval("[data-video] video", (v) => {
+  v.pause();
+  const actual = document.querySelector("[data-capitulos] [aria-current='step']");
+  return { t: v.currentTime, actual: actual?.textContent.trim() };
+});
+comprobar("pulsar una fase salta a su segundo", fase.t >= 7.3 && fase.t < 9.8, `t=${fase.t}`);
+comprobar("la fase pulsada queda marcada", fase.actual === "overlay", fase.actual ?? "ninguna");
+
+// 7c. Llamada del asistente: al verla se reproduce entera y la reserva entra en la agenda.
+await pagina.$eval("[data-llamada]", (c) => c.scrollIntoView({ block: "center" }));
+await pagina
+  .waitForFunction(() => document.querySelector("[data-llamada-estado]").textContent.includes("agenda"), { timeout: 15000 })
+  .catch(() => {});
+const llamadaFin = await pagina.$eval("[data-llamada]", (c) => ({
+  lineas: [...c.querySelectorAll(".linea")].every((l) => l.classList.contains("vista")),
+  reserva: c.querySelector("[data-agenda-reserva]").classList.contains("vista"),
+  repetir: !c.querySelector("[data-llamada-repetir]").hidden,
+}));
+comprobar(
+  "la llamada termina con la reserva en la agenda",
+  llamadaFin.lineas && llamadaFin.reserva && llamadaFin.repetir,
+  JSON.stringify(llamadaFin),
+);
+
+// 7d. agenteval: las barras se llenan al verse.
+await pagina.$eval("[data-evaluacion]", (c) => c.scrollIntoView({ block: "center" }));
+await new Promise((r) => setTimeout(r, 1500));
+const anchos = await pagina.$$eval("[data-evaluacion] .barras__pista i", (is) =>
+  is.map((i) => Math.round((i.getBoundingClientRect().width / i.parentElement.getBoundingClientRect().width) * 100)),
+);
+comprobar("las barras de agenteval se llenan con su nota", anchos.join(",") === "100,67,100", anchos.join(","));
 
 // 8. La terminal termina y oculta «Saltar animación» (se da hasta 20 s desde la última carga).
 await pagina.waitForFunction(() => !document.querySelector("[data-terminal]").classList.contains("animando"), { timeout: 20000 }).catch(() => {});

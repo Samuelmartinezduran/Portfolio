@@ -14,7 +14,7 @@ npm ci
 npm run dev      # http://localhost:4321
 npm run verify             # astro check + astro build
 npm run preview            # sirve dist/ después de compilar
-npm run prueba:navegador   # 24 pruebas de comportamiento en Edge o Chrome (ver «Pruebas»)
+npm run prueba:navegador   # 28 pruebas de comportamiento en Edge o Chrome (ver «Pruebas»)
 ```
 
 ## Dónde está cada cosa
@@ -60,7 +60,8 @@ falta las variables `RESEND_API_KEY`, `CONTACT_EMAIL` ni `VITE_GA_MEASUREMENT_ID
 
 `npm run prueba:navegador` compila una copia con un ID de GA4 falso, la sirve en local y la recorre con el
 navegador del sistema (Edge en Windows, Chrome en macOS; otro con `NAVEGADOR=/ruta`). Comprueba el aviso de
-cookies, que GA4 no se carga sin aceptar, la paleta, los atajos, el vídeo y que no haya errores. Pasarlas antes
+cookies, que GA4 no se carga sin aceptar, la paleta, los atajos, el vídeo y sus fases, la llamada del asistente, las
+barras de agenteval y que no haya errores. Pasarlas antes
 de publicar cambios en los scripts.
 
 ## Revisiones

@@ -171,3 +171,30 @@
 - **Decision:** En GA4 son eventos clave `contacto` (clic en el correo) y `file_download` (descarga del CV, por la medición mejorada). Se crearon con «Crear con código», sin valor monetario y contados una vez por sesión. GA4 queda vinculado a la propiedad de dominio de Search Console, y la colección «Search Console» está publicada en los informes. No cambia qué datos se recogen, así que `/privacidad/` sigue igual.
 - **Reason:** Sin eventos clave no se veía cuántas visitas acaban en contacto. La vinculación permite ver en GA4 las búsquedas que traen visitas. Ver `docs/AUDITORIA-2026-11-13.md`.
 - **Source:** Agent assumption, con el visto bueno del usuario (13/11/2026)
+
+## Proyectos con su demostración a la vista
+- **Decision:** Cada uno de los tres proyectos tiene su propio archivo, de arriba abajo:
+  - ruta e índice (`01 / 03`);
+  - nombre grande;
+  - la demostración a todo el ancho;
+  - una franja con sus tres cifras grandes;
+  - el texto y la ficha (stack en etiquetas y enlace).
+
+  Cada demostración enseña algo distinto:
+  - **Deep Prep:** la grabación con sus cinco fases (selección, carga, partida, overlay y revisión). Se llenan mientras se reproduce y, al pulsarlas, saltan a su segundo. Los cortes se midieron fotograma a fotograma.
+  - **Asistente:** la llamada del guion de la demo, que se reproduce línea a línea al llegar a ella y termina con la reserva entrando en la agenda del personal.
+  - **agenteval:** un caso real de `weather-agent.yaml` (la inyección de prompt) al lado de la nota por dimensiones, con sus pesos y la cuenta que da 87.
+
+  La captura blanca del dashboard de agenteval se sustituye por esa vista y se borra. Todo está en el HTML desde el principio. Sin JavaScript o con movimiento reducido se ve entero y estático, y las fases del vídeo siguen sirviendo para saltar. Sustituye a la columna 5/7 de texto e imagen.
+- **Reason:** El usuario pidió hacer más llamativos los tres proyectos grandes. Antes eran sobre todo texto, con la imagen pequeña a un lado; ahora lo primero que se ve de cada uno es el proyecto funcionando y sus cifras.
+- **Source:** User instruction (13/11/2026); Agent assumption (el diseño concreto)
+
+## Fuera los proyectos secundarios
+- **Decision:** Se quita `otros.md`, con el agente de citas por WhatsApp, el seguimiento de precios, la tienda online y Bubble Tea España. Desaparece de las pestañas, la paleta, el `ls` de la terminal, `llms.txt` y `perfil.ts`. La web enseña solo los tres proyectos principales.
+- **Reason:** El usuario pidió puntuarlos de forma objetiva y quitar los que no merecieran la pena. Ninguno llega al 6 sobre 10; los principales sacan entre 7,7 y 8,8 con los mismos criterios. Puntuación y pruebas en `docs/PUNTUACION-PROYECTOS-2026-11-13.md`.
+- **Source:** User instruction (13/11/2026); Agent assumption (criterios y umbral)
+
+## Peticiones parciales en las pruebas de navegador
+- **Decision:** El servidor de `pruebas/navegador.mjs` responde a `Range` con `206`, como Vercel, y las pruebas pasan de 24 a 28: saltar a una fase del vídeo, que quede marcada, que la llamada termine con la reserva en la agenda y que las barras de agenteval se llenen con su nota.
+- **Reason:** Sin peticiones parciales, el navegador no puede saltar dentro del vídeo y la prueba de las fases fallaba solo en local.
+- **Source:** Agent assumption

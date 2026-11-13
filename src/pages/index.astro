@@ -5,6 +5,7 @@
 import Pagina from "../layouts/Pagina.astro";
 import {
   actualizada,
+  agenda,
   cursos,
   datosPersonales,
   estado,
@@ -12,7 +13,6 @@ import {
   formacion,
   habilidades,
   llamada,
-  otrosProyectos,
   persona,
   proyectos,
   sesionTerminal,
@@ -98,16 +98,37 @@ const comandos = [
   { texto: "Copiar el correo", atajo: "", accion: "copiar" },
   { texto: "Leer sobre mí", atajo: "", accion: "#sobre-mi" },
   ...proyectos.map((p) => ({ texto: `Ver ${p.nombre}`, atajo: "", accion: `#${p.id}` })),
-  { texto: "Ver otros proyectos", atajo: "", accion: "#otros" },
   ...(gaActivo ? [{ texto: "Preferencias de cookies", atajo: "", accion: "cookies" }] : []),
   { texto: "Desactivar atajos de una tecla", atajo: "", accion: "atajos" },
 ];
 const archivos = [
   { id: "sobre-mi", nombre: "sobre-mi.md" },
   ...proyectos.map((p) => ({ id: p.id, nombre: `${p.id}.md` })),
-  { id: "otros", nombre: "otros.md" },
 ];
 const partirFechas = (fechas: string) => fechas.split(" – ");
+const dosCifras = (n: number) => String(n).padStart(2, "0");
+
+// Coloreado mínimo del YAML de agenteval: claves en blanco, cadenas en ámbar y null/números en azul.
+const escapar = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const pintarYaml = (yaml: string) =>
+  yaml
+    .split("\n")
+    .map((linea) => {
+      const m = linea.match(/^(\s*-?\s*)([\w]+)(:)(\s*)(.*)$/);
+      if (!m) return escapar(linea);
+      const [, sangria, clave, dosPuntos, espacio, valor] = m;
+      const clase = valor.startsWith('"') ? "y-s" : /^(null|true|false|\d+)$/.test(valor) ? "y-n" : "y-v";
+      const pintado = valor ? `<span class="${clase}">${escapar(valor)}</span>` : "";
+      return `${escapar(sangria)}<span class="y-k">${clave}</span>${dosPuntos}${espacio}${pintado}`;
+    })
+    .join("\n");
+
+// La nota de agenteval, calculada con los pesos para que se vea de dónde sale.
+const decimal = (n: number) => String(Math.round(n * 10) / 10).replace(".", ",");
+const formula = (dimensiones: { peso: number; valor: number }[]) =>
+  `${dimensiones.map((d) => `${decimal(d.peso / 100)} × ${d.valor}`).join(" + ")} = ${decimal(
+    dimensiones.reduce((suma, d) => suma + (d.peso * d.valor) / 100, 0),
+  )}`;
 ---
 
 <Pagina titulo={titulo} descripcion={descripcion} grafo={grafo}>
@@ -169,7 +190,7 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
               </span>
             </p>
             <ul class="salida ls" aria-label="Proyectos">
-              {[...proyectos, ...otrosProyectos].map((p) => <li><a href={`#${p.id}`}>{p.id}/</a></li>)}
+              {proyectos.map((p) => <li><a href={`#${p.id}`}>{p.id}/</a></li>)}
             </ul>
           </div>
           <p class="orden final" aria-hidden="true">
@@ -237,34 +258,182 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
         </article>
 
         {
-          proyectos.map((p) => (
-            <article id={p.id} class="archivo" aria-labelledby={`${p.id}-t`}>
-              <p class="archivo__ruta mono">{`proyectos/${p.id}/README.md`}</p>
-              <div class="archivo__cuerpo">
-                <div class="archivo__texto">
-                  <p class="mono md" aria-hidden="true">
-                    #{" "}
-                  </p>
-                  <h2 id={`${p.id}-t`}>{p.nombre}</h2>
-                  <p class="mono etiqueta">{p.etiqueta}</p>
+          proyectos.map((p, i) => (
+            <article id={p.id} class="archivo proyecto" aria-labelledby={`${p.id}-t`}>
+              <p class="archivo__ruta mono proyecto__ruta">
+                <span>{`proyectos/${p.id}/README.md`}</span>
+                <span aria-hidden="true">{`${dosCifras(i + 1)} / ${dosCifras(proyectos.length)}`}</span>
+              </p>
+              <header class="proyecto__cabeza">
+                <p class="mono md" aria-hidden="true">
+                  #{" "}
+                </p>
+                <h2 id={`${p.id}-t`}>{p.nombre}</h2>
+                <p class="mono proyecto__etiqueta">{p.etiqueta}</p>
+              </header>
+
+              {p.demo === "video" && p.video && (
+                <figure class="demo" data-video>
+                  <div class="demo__marco">
+                    <video
+                      src={p.video.src}
+                      poster={p.video.posterPagina ?? p.video.poster}
+                      width={p.video.ancho}
+                      height={p.video.alto}
+                      muted
+                      loop
+                      playsinline
+                      controls
+                      preload="none"
+                      aria-label={p.video.alt}
+                    />
+                  </div>
+                  <div class="capitulos mono" role="group" aria-label="Fases de la grabación" data-capitulos>
+                    {p.video.capitulos.map((c, j) => (
+                      <button
+                        type="button"
+                        data-desde={c.desde}
+                        data-hasta={p.video!.capitulos[j + 1]?.desde}
+                        aria-label={`Ver la fase «${c.texto}» de la grabación`}
+                      >
+                        <span class="capitulos__barra" aria-hidden="true">
+                          <i />
+                        </span>
+                        {c.texto}
+                      </button>
+                    ))}
+                  </div>
+                  <figcaption class="mono comentario">
+                    // {p.video.pie}{" "}
+                    <button type="button" class="video__boton" data-video-boton hidden>
+                      ❚❚ pausar
+                    </button>
+                  </figcaption>
+                </figure>
+              )}
+
+              {p.demo === "llamada" && (
+                <figure class="demo">
+                  <div class="llamada" data-llamada>
+                    <div class="llamada__panel mono">
+                      <p class="llamada__cabeza">
+                        <span data-llamada-estado>llamada · restaurante de la demo</span>
+                        <button type="button" class="llamada__repetir" data-llamada-repetir hidden>
+                          ↻ repetir
+                        </button>
+                      </p>
+                      <ol class="llamada__lineas">
+                        {llamada.map(({ quien, texto }) => {
+                          if (quien !== "herramienta") {
+                            return (
+                              <li class={`linea linea--${quien.toLowerCase()}`}>
+                                <span class="linea__quien">{quien}</span>
+                                <span>{texto}</span>
+                              </li>
+                            );
+                          }
+                          const [accion, resultado] = texto.split(" → ");
+                          return (
+                            <li class="linea linea--h">
+                              <span class="linea__quien" aria-hidden="true">
+                                →
+                              </span>
+                              <span>
+                                <span class="solo-lector">Herramienta: </span>
+                                {accion} <span class="linea__ok">→ {resultado}</span>
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </div>
+                    <div class="agenda" role="group" aria-label="Agenda del personal">
+                      <p class="agenda__cabeza mono">agenda · {agenda.dia}</p>
+                      <ul>
+                        {agenda.franjas.map((hora) =>
+                          hora === agenda.reserva.hora ? (
+                            <li class="agenda__franja agenda__franja--reserva" data-agenda-reserva>
+                              <span class="mono agenda__hora">{hora}</span>
+                              <span class="agenda__reserva">
+                                <strong>{agenda.reserva.nombre}</strong> · {agenda.reserva.personas} personas
+                                <span class="mono agenda__origen">{agenda.reserva.origen}</span>
+                              </span>
+                            </li>
+                          ) : (
+                            <li class="agenda__franja">
+                              <span class="mono agenda__hora">{hora}</span>
+                              <span class="solo-lector">libre</span>
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                  <figcaption class="mono comentario">
+                    // Una reserva del guion de la demo: lo que dice el cliente, las herramientas que llama el agente y lo
+                    que ve el personal al colgar.
+                  </figcaption>
+                </figure>
+              )}
+
+              {p.demo === "evaluacion" && p.evaluacion && (
+                <figure class="demo">
+                  <div class="evaluacion" data-evaluacion>
+                    <div class="evaluacion__caso">
+                      <p class="mono evaluacion__archivo">{p.evaluacion.archivo}</p>
+                      <pre class="mono yaml" set:html={pintarYaml(p.evaluacion.caso)} />
+                    </div>
+                    <div class="evaluacion__nota">
+                      <ul class="barras">
+                        {p.evaluacion.dimensiones.map((d) => (
+                          <li class={d.valor >= 90 ? "barras--bien" : "barras--medio"} style={`--valor: ${d.valor}`}>
+                            <span class="barras__nombre">{d.nombre}</span>
+                            <span class="mono barras__como">
+                              {d.peso} % · {d.como}
+                            </span>
+                            <span class="barras__pista" aria-hidden="true">
+                              <i />
+                            </span>
+                            <span class="mono barras__valor">{d.valor}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <p class="evaluacion__total">
+                        <span class="evaluacion__cifra">{p.evaluacion.total}</span>
+                        <span class="mono">/ 100</span>
+                      </p>
+                      <p class="mono evaluacion__formula">{formula(p.evaluacion.dimensiones)}</p>
+                    </div>
+                  </div>
+                  <figcaption class="mono comentario">// {p.evaluacion.fuente}</figcaption>
+                </figure>
+              )}
+
+              <dl class="proyecto__cifras">
+                {p.datos.map(({ valor, texto }) => (
+                  <div>
+                    <dt class="mono">{texto}</dt>
+                    <dd>{valor}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div class="proyecto__cuerpo">
+                <div class="proyecto__texto">
                   <p class="resumen">{p.resumen}</p>
                   {p.detalle.map((d) => (
                     <p class="detalle">{d}</p>
                   ))}
-                  <h3 class="mono md"><span aria-hidden="true">## </span>stack</h3>
-                  <pre class="mono codigo">{`[${p.stack.map((s) => `"${s}"`).join(", ")}]`}</pre>
-                  <h3 class="mono md"><span aria-hidden="true">## </span>cifras</h3>
-                  <table class="mono tabla">
-                    <caption class="solo-lector">Cifras de {p.nombre}</caption>
-                    <tbody>
-                      {p.datos.map(({ valor, texto }) => (
-                        <tr>
-                          <th scope="row">{texto}</th>
-                          <td class="cifra">{valor}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                </div>
+                <div class="proyecto__ficha">
+                  <h3 class="mono md">
+                    <span aria-hidden="true">## </span>stack
+                  </h3>
+                  <ul class="mono chips">
+                    {p.stack.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ul>
                   <p class="enlaces">
                     {p.enlaces.length > 0 ? (
                       p.enlaces.map((e) => (
@@ -278,76 +447,10 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
                     )}
                   </p>
                 </div>
-                <div class="archivo__media">
-                  {p.video ? (
-                    <figure data-video>
-                      <video
-                        src={p.video.src}
-                        poster={p.video.posterPagina ?? p.video.poster}
-                        width={p.video.ancho}
-                        height={p.video.alto}
-                        muted
-                        loop
-                        playsinline
-                        controls
-                        preload="none"
-                        aria-label={p.video.alt}
-                      />
-                      <figcaption class="mono comentario">
-                        // {p.video.pie}{" "}
-                        <button type="button" class="video__boton" data-video-boton hidden>
-                          ❚❚ pausar
-                        </button>
-                      </figcaption>
-                    </figure>
-                  ) : p.imagen ? (
-                    <figure>
-                      <img
-                        src={p.imagen.src}
-                        width={p.imagen.ancho}
-                        height={p.imagen.alto}
-                        alt={p.imagen.alt}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <figcaption class="mono comentario">// {p.imagen.pie}</figcaption>
-                    </figure>
-                  ) : (
-                    <figure>
-                      <pre class="mono log">{llamada.map(({ quien, texto }) => quien === "herramienta" ? <span class="log__h">{`  → ${texto}\n`}</span> : <span>{`[${quien.toLowerCase()}] ${texto}\n`}</span>)}</pre>
-                      <figcaption class="mono comentario">
-                        // Una reserva del guion de la demo, con las herramientas que llama el agente.
-                      </figcaption>
-                    </figure>
-                  )}
-                </div>
               </div>
             </article>
           ))
         }
-
-        <article id="otros" class="archivo" aria-labelledby="otros-t">
-          <p class="archivo__ruta mono">proyectos/otros.md</p>
-          <p class="mono md" aria-hidden="true"># </p>
-          <h2 id="otros-t">Otros proyectos</h2>
-          <ul class="otros">
-            {
-              otrosProyectos.map((o) => (
-                <li id={o.id}>
-                  <h3>{o.nombre}</h3>
-                  <div>
-                    <p>{o.texto}</p>
-                    <p class="mono otros__stack">{o.stack}</p>
-                  </div>
-                  <a class="enlace-flecha" href={o.enlace.url}>
-                    {o.enlace.texto}
-                    <span class="solo-lector">: {o.nombre}</span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </article>
       </section>
 
       <!-- Experiencia y formación como log de git -->
@@ -503,7 +606,39 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
   document.querySelectorAll<HTMLElement>("[data-video]").forEach((figura) => {
     const video = figura.querySelector("video");
     const boton = figura.querySelector<HTMLButtonElement>("[data-video-boton]");
-    if (!video || !boton || quieto) return;
+    if (!video) return;
+
+    // Fases: cada botón se llena según avanza el vídeo y, al pulsarlo, salta a su segundo. Funcionan también
+    // con movimiento reducido, porque solo se mueven si la persona reproduce el vídeo.
+    const fases = [...figura.querySelectorAll<HTMLButtonElement>("[data-capitulos] button")];
+    const pintarFases = () => {
+      const t = video.currentTime;
+      fases.forEach((f) => {
+        const desde = Number(f.dataset.desde);
+        const hasta = f.dataset.hasta ? Number(f.dataset.hasta) : video.duration || desde + 4;
+        const avance = Math.min(1, Math.max(0, (t - desde) / (hasta - desde)));
+        f.style.setProperty("--avance", String(avance));
+        if (t >= desde && t < hasta) f.setAttribute("aria-current", "step");
+        else f.removeAttribute("aria-current");
+      });
+    };
+    let cuadro = 0;
+    const seguir = () => {
+      pintarFases();
+      if (!video.paused) cuadro = requestAnimationFrame(seguir);
+    };
+    video.addEventListener("play", () => (cuadro = requestAnimationFrame(seguir)));
+    video.addEventListener("pause", () => cancelAnimationFrame(cuadro));
+    video.addEventListener("seeked", pintarFases);
+    fases.forEach((f) =>
+      f.addEventListener("click", () => {
+        video.currentTime = Number(f.dataset.desde);
+        pintarFases();
+        video.play().catch(() => {});
+      }),
+    );
+
+    if (!boton || quieto) return;
     video.controls = false;
     boton.hidden = false;
     let pausadoAMano = false;
@@ -522,6 +657,61 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
       },
       { threshold: 0.25 },
     ).observe(video);
+  });
+
+  // Llamada del asistente: al llegar a ella se reproduce una vez, línea a línea, y al colgar la reserva entra en
+  // la agenda. Todo está en el HTML desde el principio (oculto, pero ocupando su sitio), así que no salta nada.
+  // Sin JS o con movimiento reducido se ve entera.
+  document.querySelectorAll<HTMLElement>("[data-llamada]").forEach((caja) => {
+    const lineas = [...caja.querySelectorAll<HTMLElement>(".linea")];
+    const reserva = caja.querySelector<HTMLElement>("[data-agenda-reserva]");
+    const estado = caja.querySelector<HTMLElement>("[data-llamada-estado]");
+    const repetir = caja.querySelector<HTMLButtonElement>("[data-llamada-repetir]");
+    if (quieto || lineas.length === 0) return;
+    const textoInicial = estado?.textContent ?? "";
+    let sonando = false;
+    async function llamar() {
+      if (sonando) return;
+      sonando = true;
+      if (repetir) repetir.hidden = true;
+      lineas.forEach((l) => l.classList.remove("vista"));
+      reserva?.classList.remove("vista");
+      if (estado) estado.textContent = "● en llamada…";
+      for (const l of lineas) {
+        await esperar(l.classList.contains("linea--h") ? 450 : 900);
+        l.classList.add("vista");
+      }
+      await esperar(700);
+      reserva?.classList.add("vista");
+      if (estado) estado.textContent = "✓ llamada terminada · reserva en la agenda";
+      if (repetir) repetir.hidden = false;
+      sonando = false;
+    }
+    caja.classList.add("llamada--animando");
+    if (estado) estado.textContent = textoInicial;
+    new IntersectionObserver(
+      ([e], o) => {
+        if (!e.isIntersecting) return;
+        o.disconnect();
+        llamar();
+      },
+      { threshold: 0.4 },
+    ).observe(caja);
+    repetir?.addEventListener("click", llamar);
+  });
+
+  // agenteval: las barras se llenan y aparece la nota cuando la evaluación entra en pantalla.
+  document.querySelectorAll<HTMLElement>("[data-evaluacion]").forEach((caja) => {
+    if (quieto) return;
+    caja.classList.add("evaluacion--animando");
+    new IntersectionObserver(
+      ([e], o) => {
+        if (!e.isIntersecting) return;
+        o.disconnect();
+        caja.classList.add("evaluacion--vista");
+      },
+      { threshold: 0.4 },
+    ).observe(caja);
   });
 
   // Atajos de una tecla: se pueden desactivar (WCAG 2.1.4). La elección se recuerda en este navegador.
@@ -1063,15 +1253,6 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
     letter-spacing: -0.04em;
   }
 
-  #otros > .md {
-    margin-top: 1.5rem;
-  }
-
-  .archivo__texto h2 + .etiqueta {
-    font-size: 0.8125rem;
-    color: var(--texto-2-oscuro);
-  }
-
   .resumen {
     font-size: 1.125rem;
   }
@@ -1079,32 +1260,6 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
   .detalle {
     color: var(--texto-2-oscuro);
     font-size: 1rem;
-  }
-
-  .codigo {
-    margin: 0;
-    white-space: pre-wrap;
-    font-size: 0.875rem;
-    color: #fbbf77;
-  }
-
-  .tabla {
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-
-  .tabla th,
-  .tabla td {
-    padding: 0.375rem 1.5rem 0.375rem 0;
-    border-bottom: 1px solid var(--borde-oscuro);
-    color: var(--texto-2-oscuro);
-    font-weight: 400;
-    text-align: left;
-  }
-
-  .tabla td.cifra {
-    color: var(--blanco);
-    text-align: right;
   }
 
   .enlaces {
@@ -1141,23 +1296,97 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
     color: var(--blanco);
   }
 
-  /* Medios */
-  .archivo__media video {
-    display: block;
-    width: 100%;
-    height: auto;
-    background: var(--fondo);
+  /* Proyectos: cabecera grande, la demo a todo el ancho, las cifras en una franja y el texto debajo. */
+  .proyecto {
+    padding-top: clamp(4rem, 9vw, 7rem);
   }
 
-  .archivo__media figcaption {
+  .proyecto__ruta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+  }
+
+  .proyecto__cabeza {
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .proyecto h2 {
+    margin-top: 0.25rem;
+    font-size: clamp(2.75rem, 8vw, 6.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+
+  .proyecto__etiqueta {
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  .demo {
+    margin-top: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .demo > figcaption {
     margin-top: 0.75rem;
     font-size: 0.75rem;
   }
 
-  .archivo__media img,
-  .archivo__media video {
+  .demo__marco {
+    background: var(--fondo);
     border: 1px solid var(--borde-oscuro);
     border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .demo__marco video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Fases del vídeo: cada una se llena mientras se reproduce y lleva a su segundo al pulsarla. */
+  .capitulos {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .capitulos button {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0 0 0.25rem;
+    background: none;
+    border: 0;
+    color: var(--comentario);
+    font: inherit;
+    font-size: 0.75rem;
+    text-align: left;
+    cursor: pointer;
+    transition: color 150ms ease;
+  }
+
+  .capitulos button:hover,
+  .capitulos button[aria-current="step"] {
+    color: var(--blanco);
+  }
+
+  .capitulos__barra {
+    display: block;
+    height: 2px;
+    background: var(--borde-oscuro);
+  }
+
+  .capitulos__barra i {
+    display: block;
+    height: 100%;
+    width: calc(var(--avance, 0) * 100%);
+    background: var(--acento);
   }
 
   .video__boton {
@@ -1175,60 +1404,399 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
     border-color: var(--acento);
   }
 
-  .log {
-    margin: 0;
-    padding: 1.5rem;
+  /* Llamada del asistente: la conversación a la izquierda y la agenda del personal a la derecha. */
+  .llamada {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .llamada__panel,
+  .agenda {
     background: var(--fondo);
     border: 1px solid var(--borde-oscuro);
     border-radius: 2px;
-    font-size: 0.875rem;
-    line-height: 1.8;
-    white-space: pre-wrap;
-    color: var(--blanco);
   }
 
-  .log__h {
+  .llamada__panel {
+    padding: clamp(1rem, 3vw, 1.75rem);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .llamada__cabeza {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .llamada__repetir {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--blanco);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .llamada__repetir:hover {
+    color: var(--acento);
+  }
+
+  .llamada__lineas {
+    display: grid;
+    gap: 0.625rem;
+    list-style: none;
+  }
+
+  .linea {
+    display: grid;
+    grid-template-columns: 5.75rem minmax(0, 1fr);
+    gap: 0.75rem;
+    color: var(--blanco);
+    transition:
+      opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      translate 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .linea__quien {
+    color: var(--comentario);
+  }
+
+  .linea--asistente .linea__quien {
+    color: #8f9fff;
+  }
+
+  .linea--h {
+    color: var(--comentario);
+    font-size: 0.8125rem;
+  }
+
+  .linea--h .linea__quien {
+    padding-left: 1.5rem;
     color: #4ade80;
   }
 
-  /* Otros proyectos */
-  .otros {
-    margin-top: 1.5rem;
+  .linea__ok {
+    color: #4ade80;
+  }
+
+  .agenda {
+    align-self: start;
+  }
+
+  .agenda__cabeza {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .agenda ul {
+    list-style: none;
+  }
+
+  .agenda__franja {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: center;
+    min-height: 3.5rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  .agenda__franja + .agenda__franja {
     border-top: 1px solid var(--borde-oscuro);
   }
 
-  .otros li {
-    display: grid;
-    gap: 0.375rem 2rem;
-    padding-block: 1.25rem;
-    border-bottom: 1px solid var(--borde-oscuro);
-    scroll-margin-top: 4rem;
-  }
-
-  .otros h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-  }
-
-  .otros p {
-    color: var(--texto-2-oscuro);
-    font-size: 1rem;
-  }
-
-  .otros__stack {
-    margin-top: 0.25rem;
+  .agenda__hora {
     font-size: 0.8125rem;
-    color: #fbbf77 !important;
+    color: var(--comentario);
+  }
+
+  .agenda__reserva {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.625rem;
+    padding: 0.5rem 0.75rem;
+    border-left: 2px solid var(--acento);
+    background: var(--grafito-2);
+    transition:
+      opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      translate 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .agenda__origen {
+    font-size: 0.6875rem;
+    color: var(--texto-2-oscuro);
+    padding: 0.125rem 0.375rem;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+  }
+
+  .llamada--animando .linea:not(.vista),
+  .llamada--animando .agenda__franja--reserva:not(.vista) .agenda__reserva {
+    opacity: 0;
+    translate: 0 0.375rem;
+  }
+
+  /* agenteval: un caso real del YAML y la nota que sale de las tres dimensiones. */
+  .evaluacion {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .evaluacion__caso,
+  .evaluacion__nota {
+    background: var(--fondo);
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+    padding: clamp(1rem, 3vw, 1.75rem);
+  }
+
+  .evaluacion__archivo {
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--borde-oscuro);
+    font-size: 0.75rem;
+    color: #8f9fff;
+  }
+
+  .yaml {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: var(--texto-2-oscuro);
+  }
+
+  .yaml :global(.y-k) {
+    color: var(--blanco);
+  }
+
+  .yaml :global(.y-s) {
+    color: #fbbf77;
+  }
+
+  .yaml :global(.y-n) {
+    color: #8f9fff;
+  }
+
+  .barras {
+    display: grid;
+    gap: 1.25rem;
+    list-style: none;
+  }
+
+  /* Nombre y nota arriba, la barra a todo el ancho (igual en las tres) y el peso debajo. */
+  .barras li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  .barras__nombre {
+    grid-area: 1 / 1;
+    font-size: 0.9375rem;
+  }
+
+  .barras__valor {
+    grid-area: 1 / 2;
+  }
+
+  .barras__pista {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: block;
+    height: 0.5rem;
+    background: var(--grafito-2);
+  }
+
+  .barras__como {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .barras__pista i {
+    display: block;
+    height: 100%;
+    width: calc(var(--valor) * 1%);
+    background: #4ade80;
+    transition: width 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .barras--medio .barras__pista i {
+    background: #fbbf77;
+  }
+
+  .barras li:nth-child(2) .barras__pista i {
+    transition-delay: 150ms;
+  }
+
+  .barras li:nth-child(3) .barras__pista i {
+    transition-delay: 300ms;
+  }
+
+  .barras__valor {
+    font-size: 0.875rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .evaluacion__total {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--borde-oscuro);
+    color: var(--comentario);
+    transition: opacity 500ms 600ms ease;
+  }
+
+  .evaluacion__cifra {
+    font-size: clamp(3.5rem, 8vw, 5.5rem);
+    font-weight: 600;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--blanco);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .evaluacion__formula {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--comentario);
+  }
+
+  .evaluacion--animando:not(.evaluacion--vista) .barras__pista i {
+    width: 0;
+  }
+
+  .evaluacion--animando:not(.evaluacion--vista) .evaluacion__total {
+    opacity: 0;
+  }
+
+  /* Franja de cifras */
+  .proyecto__cifras {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: clamp(2rem, 4vw, 3rem);
+    border-block: 1px solid var(--borde-oscuro);
+  }
+
+  .proyecto__cifras div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1.25rem 1rem 1.25rem 0;
+  }
+
+  .proyecto__cifras div + div {
+    padding-left: clamp(0.75rem, 2vw, 1.5rem);
+    border-left: 1px solid var(--borde-oscuro);
+  }
+
+  .proyecto__cifras dd {
+    font-size: clamp(1.5rem, 4.5vw, 3.25rem);
+    white-space: nowrap;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .proyecto__cifras dt {
+    font-size: 0.75rem;
+    color: var(--texto-2-oscuro);
+  }
+
+  /* Texto y ficha técnica */
+  .proyecto__cuerpo {
+    display: grid;
+    gap: 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .proyecto__texto {
+    display: grid;
+    gap: 0.875rem;
+    align-content: start;
+    max-width: 40rem;
+  }
+
+  .proyecto__texto .resumen {
+    font-size: clamp(1.125rem, 2vw, 1.3125rem);
+    line-height: 1.5;
+  }
+
+  .proyecto__ficha {
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    font-size: 0.8125rem;
+  }
+
+  .chips li {
+    padding: 0.25rem 0.625rem;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+    color: var(--texto-2-oscuro);
   }
 
   @media (min-width: 64rem) {
-    .otros li {
-      grid-template-columns: 4fr 6fr 3fr;
-      align-items: baseline;
+    .llamada {
+      grid-template-columns: 7fr 5fr;
     }
 
-    .otros .enlace-flecha {
-      justify-self: end;
+    .evaluacion {
+      grid-template-columns: 6fr 5fr;
+    }
+
+    .proyecto__cuerpo {
+      grid-template-columns: 7fr 4fr;
+      gap: 4rem;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .capitulos {
+      gap: 0.25rem;
+    }
+
+    .capitulos button {
+      font-size: 0.6875rem;
+    }
+
+    .linea {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.125rem;
+    }
+
+    .linea--h .linea__quien {
+      display: none;
+    }
+
+    .linea--h {
+      padding-left: 1rem;
+      border-left: 1px solid #4ade80;
     }
   }
 
@@ -1464,7 +2032,12 @@ const partirFechas = (fechas: string) => fechas.split(" – ");
 
     .contacto__grande,
     .contacto__grande span,
-    .aviso {
+    .aviso,
+    .capitulos button,
+    .linea,
+    .agenda__reserva,
+    .barras__pista i,
+    .evaluacion__total {
       transition: none;
     }
   }

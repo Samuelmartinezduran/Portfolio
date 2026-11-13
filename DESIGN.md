@@ -28,7 +28,7 @@ Reglas de la metáfora:
 - Los atajos (1, 2, 3, C, G, L y Ctrl/Cmd+K) son un extra: todo se puede hacer con enlaces normales, y los
   de una tecla se desactivan desde la paleta.
 - Los archivos del editor son `sobre-mi.md` (el párrafo para buscadores y asistentes de IA y una ficha),
-  uno por proyecto y `otros.md`. Lo que solo es decoración de la metáfora (`#`, `##`, el prompt) se oculta a
+  uno por proyecto. Lo que solo es decoración de la metáfora (`#`, `##`, el prompt) se oculta a
   los lectores de pantalla.
 
 ## Sistema visual
@@ -45,10 +45,10 @@ acento propio y colores de sintaxis.
 | Sintaxis | Solo dentro de la metáfora: verde `#4ADE80` (prompt, OK), azul `#8F9FFF` (rutas, formación), ámbar `#FBBF77` (cadenas, fechas), rojo `#F87171` (error de la 404). No se usan fuera de código o salidas. |
 | Composición | Contenedor de 72 rem, múltiplos de 8 px, filas separadas por líneas finas. |
 | Superficies | Planas. Esquinas de 2 px. Sin degradados, sombras, cristal ni texto con degradado. |
-| Movimiento | Tecleo de la terminal (unos 9 s, con «Saltar animación» y Enter), cursor que parpadea 8 s y se queda fijo, vídeo en bucle que se pausa con un botón y solo corre cuando se ve, y transiciones cortas al pasar el ratón. Con `prefers-reduced-motion` no hay tecleo ni parpadeo y el vídeo no arranca solo. |
+| Movimiento | Tecleo de la terminal (unos 9 s, con «Saltar animación» y Enter), cursor que parpadea 8 s y se queda fijo, vídeo en bucle que se pausa con un botón y solo corre cuando se ve, y transiciones cortas al pasar el ratón; en los proyectos, las fases del vídeo que se llenan al reproducir, la llamada del asistente que se escribe una vez al llegar (con «↻ repetir») y las barras de agenteval que se llenan una vez. Con `prefers-reduced-motion` no hay tecleo ni parpadeo y el vídeo no arranca solo. |
 | Estabilidad | Nada empuja el contenido al animarse: lo que la terminal aún no ha escrito está oculto pero ocupa su sitio (CLS 0). |
 | Aviso de cookies | Bloque de terminal fijo abajo a la izquierda (`$ cookies --analitica`), con «Aceptar» y «Rechazar» idénticos. Solo aparece si hay GA4. |
-| Imágenes | Grabación y capturas reales con borde de 1 px y pie. Sin foto de Samuel. |
+| Proyectos | Nombre a gran tamaño, la demostración a todo el ancho, una franja de tres cifras grandes y debajo el texto y la ficha. Cada demostración es real y distinta: la grabación de Deep Prep, la llamada del guion del asistente y un caso del YAML de agenteval con su nota. Sin capturas sueltas ni foto de Samuel. |
 
 ## Comprobar antes de publicar
 
