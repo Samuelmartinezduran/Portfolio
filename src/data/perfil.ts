@@ -21,7 +21,7 @@ export const persona = {
 // Bloque «sobre mí»: un párrafo que se entiende solo (unas 115 palabras), pensado para que buscadores y
 // asistentes de IA puedan citarlo tal cual. Escrito en tercera persona, como un README.
 export const sobreMi =
-  "Samuel Martínez Durán es desarrollador web en Vigo (Galicia, España) y trabaja con Python y TypeScript. Desde septiembre de 2026 hace webs corporativas y landings de campaña en Asomados, una agencia de marketing, para clientes como Vithas e IGMontes. Por su cuenta ha construido tres proyectos completos, con su código y sus pruebas: Deep Prep, una aplicación de escritorio para League of Legends publicada con instalador y actualizador (281 pruebas automatizadas y un 76,9 % de cobertura); un asistente telefónico con IA que gestiona las reservas de un restaurante (499 pruebas de base de datos), y agenteval, un framework open source para evaluar agentes LLM que usan herramientas. Habla español, gallego e inglés avanzado.";
+  "Samuel Martínez Durán es desarrollador web en Vigo (Galicia, España) y trabaja con Python y TypeScript. Desde septiembre de 2026 hace webs corporativas y landings de campaña en Asomados, una agencia de marketing. Por su cuenta ha construido tres proyectos completos, con su código y sus pruebas: Deep Prep, una aplicación de escritorio para League of Legends publicada con instalador y actualizador (281 pruebas automatizadas y un 76,9 % de cobertura); un asistente telefónico con IA que gestiona las reservas de un restaurante (499 pruebas de base de datos), y agenteval, un framework open source para evaluar agentes LLM que usan herramientas. Habla español, gallego e inglés avanzado.";
 
 export const datosPersonales = [
   { clave: "ubicación", valor: "Vigo, Galicia (España) · presencial, híbrido o remoto" },
@@ -207,8 +207,8 @@ export const experiencia = [
     organizacion: { nombre: "Asomados", url: "https://asomados.com" },
     puntos: [
       "Web corporativa de la agencia, en producción, con WordPress y Divi.",
-      "Landings de campaña orientadas a conversión en HTML, CSS y TypeScript, entre ellas las de Vithas.",
-      "Webs corporativas para clientes con WordPress y Elementor, como la de IGMontes.",
+      "Landings de campaña orientadas a conversión en HTML, CSS y TypeScript.",
+      "Webs corporativas para clientes con WordPress y Elementor.",
     ],
   },
   {
