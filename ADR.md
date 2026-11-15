@@ -238,3 +238,13 @@
 - **Decision:** La regla de `vercel.json` de un día de caché pasa de `/proyectos/(.*)` a `/proyectos/(.*)\.(mp4|webp)`. Matiza «Caché».
 - **Reason:** Las páginas de proyecto viven ahora en `/proyectos/<id>/`. Con la regla anterior, su HTML habría quedado guardado un día en el navegador y un cambio no se vería hasta el día siguiente.
 - **Source:** Agent assumption
+
+## Página del asistente telefónico
+- **Decision:** El asistente tiene su página, `/proyectos/asistente-reservas/`, con la misma plantilla que las otras dos, y tres diferencias:
+  - una captura real del panel del personal con los datos ficticios de la demo (`public/proyectos/asistente-agenda.webp`, sacada de `video/public/shots/after-agenda.png` del repositorio);
+  - una tabla con las diez herramientas del agente;
+  - «Cómo se verifica» en lugar de «Pruébalo», porque el repositorio es privado.
+  
+  Las cifras salen de `TASKS.md`: 499 pruebas pgTAP el 05/11, las suites y la latencia el 25/10. El texto dice que el agente ya ha atendido llamadas web de prueba desde Retell y que falta conectarlo a un número de teléfono. Sin repositorio público, la página no lleva `SoftwareSourceCode` ni `about`.
+- **Reason:** Faltaba la tercera página; se hizo al tener el Mac encendido, donde está el código.
+- **Source:** User instruction (15/11/2026); contenido del README, `TASKS.md` y `ADR.md` del repositorio privado.

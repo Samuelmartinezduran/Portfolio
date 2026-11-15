@@ -41,7 +41,8 @@ const grafo: Record<string, unknown>[] = [
     inLanguage: "es-ES",
     dateModified: `${actualizada}T00:00:00+01:00`,
     isPartOf: { "@id": abs("/#web") },
-    about: { "@id": abs(`/#${id}`) },
+    // Sin repositorio público no hay nodo SoftwareSourceCode al que apuntar.
+    ...(p.repo ? { about: { "@id": abs(`/#${id}`) } } : {}),
     breadcrumb: { "@id": `${url}#migas` },
   },
   {
@@ -94,7 +95,7 @@ const secciones = [
   { id: "decisiones", titulo: "Decisiones" },
   { id: "calidad", titulo: "Calidad" },
   { id: "limites", titulo: "Límites conocidos" },
-  { id: "pruebalo", titulo: "Pruébalo" },
+  { id: "pruebalo", titulo: pagina.pruebalo.titulo ?? "Pruébalo" },
 ];
 const titulo = (sid: string) => secciones.find((s) => s.id === sid)!.titulo;
 const dosCifras = (n: number) => String(n).padStart(2, "0");
@@ -155,6 +156,21 @@ const consola = pagina.pruebalo.comandos
         <div class="seccion__cuerpo">
           {pagina.intro.map((t, i) => <p class={i === 0 ? "entrada" : undefined}>{t}</p>)}
           {
+            pagina.captura && (
+              <figure class="captura">
+                <img
+                  src={pagina.captura.src}
+                  width={pagina.captura.ancho}
+                  height={pagina.captura.alto}
+                  alt={pagina.captura.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption class="mono comentario">// {pagina.captura.pie}</figcaption>
+              </figure>
+            )
+          }
+          {
             pagina.ejemplos?.map((e) => (
               <figure class="codigo">
                 <figcaption class="mono">{e.etiqueta}</figcaption>
@@ -179,7 +195,9 @@ const consola = pagina.pruebalo.comandos
                       <tr>
                         {fila.map((celda, j) =>
                           j === 0 ? (
-                            <th scope="row">{celda}</th>
+                            <th scope="row" class={pagina.tabla!.codigo ? "mono tabla__codigo" : undefined}>
+                              {celda}
+                            </th>
                           ) : (
                             <td data-columna={pagina.tabla!.columnas[j]}>{celda}</td>
                           ),
@@ -319,18 +337,20 @@ const consola = pagina.pruebalo.comandos
         <div class="seccion__cuerpo">
           <pre class="mono consola" set:html={consola} />
           <p class="detalle">{pagina.pruebalo.nota}</p>
-          <ul class="enlaces">
-            {
-              pagina.enlaces.map((e) => (
-                <li>
-                  <a class="enlace-flecha" href={e.url}>
-                    {e.texto}
-                    <span class="solo-lector"> de {p.nombre}</span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
+          {
+            pagina.enlaces.length > 0 && (
+              <ul class="enlaces">
+                {pagina.enlaces.map((e) => (
+                  <li>
+                    <a class="enlace-flecha" href={e.url}>
+                      {e.texto}
+                      <span class="solo-lector"> de {p.nombre}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
         </div>
       </section>
 
@@ -455,6 +475,27 @@ const consola = pagina.pruebalo.comandos
       top: 2rem;
       align-self: start;
     }
+  }
+
+  /* Captura real del proyecto */
+  .captura img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+  }
+
+  .captura figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  th.tabla__codigo {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: #8f9fff;
+    overflow-wrap: anywhere;
   }
 
   /* Código del contrato y consola de «Pruébalo» */

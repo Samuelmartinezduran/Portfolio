@@ -1,7 +1,8 @@
 // Páginas de proyecto (/proyectos/<id>/). Todo sale de los repositorios: Deep Prep de su README y de
 // docs/ARQUITECTURA.md (main, b062a92, versión 2.0.0); agenteval de su README, ADR.md, el código de
-// packages/core y la CI (main, b2cd22a, versión 0.1.0). Si cambia una cifra en el repo, cambiarla aquí.
-// El asistente telefónico no tiene página todavía: su código está en el Mac.
+// packages/core y la CI (main, b2cd22a, versión 0.1.0); el asistente, de su README, TASKS.md y ADR.md
+// (repositorio privado en el Mac, ~/Documents/Trabajos_Rise&Co/Agente_voz_llamada, leído el 15/11/2026).
+// Si cambia una cifra en el repo, cambiarla aquí.
 
 export type Paso = { nombre: string; texto: string };
 export type Decision = {
@@ -19,15 +20,19 @@ export type PaginaProyecto = {
   cifras: { valor: string; texto: string }[];
   intro: string[];
   /** Tabla opcional bajo la introducción. */
-  tabla?: { titulo: string; columnas: string[]; filas: string[][] };
+  /** Con `codigo`, la primera columna son nombres de código y van en monoespaciada. */
+  tabla?: { titulo: string; columnas: string[]; filas: string[][]; codigo?: boolean };
   /** Bloques de código opcionales bajo la introducción (por ejemplo, un contrato). */
   ejemplos?: { etiqueta: string; codigo: string }[];
+  /** Captura real opcional bajo la introducción. */
+  captura?: { src: string; ancho: number; alto: number; alt: string; pie: string };
   flujo: { titulo: string; pasos: Paso[] };
   capas: { intro: string; filas: { nombre: string; donde: string; texto: string }[] };
   decisiones: Decision[];
   calidad: { medido: string; filas: { que: string; cifra: string; como: string }[]; nota: string };
   limites: string[];
-  pruebalo: { comandos: string; nota: string };
+  /** «Pruébalo» por defecto; un proyecto privado puede enseñar en su lugar cómo se verifica. */
+  pruebalo: { titulo?: string; comandos: string; nota: string };
   enlaces: { texto: string; url: string }[];
 };
 
@@ -218,6 +223,181 @@ py -m deepprep --demo`,
       { texto: "Arquitectura completa", url: "https://github.com/Samuelmartinezduran/deep-prep/blob/main/docs/ARQUITECTURA.md" },
       { texto: "Versiones publicadas", url: "https://github.com/Samuelmartinezduran/deep-prep/releases" },
     ],
+  },
+
+  "asistente-reservas": {
+    titulo: "Asistente telefónico de reservas con IA para restaurantes",
+    descripcion:
+      "Agente de voz que atiende las llamadas de un restaurante y gestiona sus reservas: motor de disponibilidad en PostgreSQL, 499 pruebas y agenda en directo.",
+    cifras: [
+      { valor: "499", texto: "pruebas de base de datos" },
+      { valor: "10", texto: "herramientas del agente" },
+      { valor: "169 ms", texto: "p95 de las herramientas (en local)" },
+      { valor: "23/23", texto: "pasos del recorrido completo" },
+    ],
+    intro: [
+      "Un agente de voz que coge el teléfono de un restaurante: consulta la disponibilidad, crea, cambia o cancela reservas, responde preguntas con información aprobada y deja anotado lo que no puede resolver. El personal lo ve todo al momento en su panel.",
+      "Es un encargo de un comercial para venderlo a restaurantes. Está en beta, con un restaurante ficticio: todo lo que pasa detrás de la llamada está probado, y el agente ya ha atendido llamadas web de prueba desde Retell. Falta conectarlo a un número de teléfono.",
+    ],
+    captura: {
+      src: "/proyectos/asistente-agenda.webp",
+      ancho: 1440,
+      alto: 810,
+      alt: "Agenda del panel del personal con las reservas de un día del restaurante de demostración: ocupación por franjas en la comida y la cena, y las reservas del asistente marcadas",
+      pie: "El panel del personal con los datos ficticios de la demo: las reservas del asistente llevan su marca y la ocupación se ve por franjas.",
+    },
+    tabla: {
+      titulo: "Lo que puede hacer el agente en una llamada",
+      codigo: true,
+      columnas: ["Herramienta", "Para qué"],
+      filas: [
+        ["getCallContext", "Saber qué restaurante es y cómo está configurado al empezar la llamada."],
+        ["checkAvailability", "Consultar si cabe una reserva y, si no, proponer hasta tres horas del mismo día."],
+        ["prepareReservationAction", "Preparar crear, cambiar o cancelar: devuelve el resumen que se lee al cliente, sin tocar nada."],
+        ["createReservation · modifyReservation · cancelReservation", "Ejecutar lo preparado, solo cuando el cliente acepta."],
+        ["getReservation", "Encontrar una reserva por teléfono, nombre y fecha. Tres intentos fallidos cierran esa vía."],
+        ["getOperationStatus", "Recuperar el resultado de una operación si se perdió la respuesta."],
+        ["getRestaurantInformation", "Responder sobre horarios, terraza, alérgenos y demás, solo con información aprobada."],
+        ["createFollowup", "Dejar anotado lo que no puede resolver, para que el personal lo vea en Pendientes."],
+      ],
+    },
+    flujo: {
+      titulo: "Una reserva de principio a fin",
+      pasos: [
+        {
+          nombre: "Contexto",
+          texto:
+            "Retell llama a cada herramienta con una petición firmada. La firma se comprueba sobre el cuerpo original antes de leer el JSON, y el restaurante sale de la integración dada de alta (agente y número), nunca de lo que diga el modelo.",
+        },
+        {
+          nombre: "Disponibilidad",
+          texto:
+            "checkAvailability pregunta al motor de PostgreSQL: horarios, turnos de entrada, duración, antelación, aforo y bloqueos, en la zona horaria del restaurante. Si no cabe, propone hasta tres horas del mismo día. Con el servicio ya empezado, el asistente no reserva para ese turno.",
+        },
+        {
+          nombre: "Resumen",
+          texto:
+            "prepareReservationAction guarda una propuesta que dura diez minutos y devuelve el resumen que el agente lee al cliente. Todavía no se ha reservado nada.",
+        },
+        {
+          nombre: "Confirmación",
+          texto:
+            "Solo cuando el cliente acepta, createReservation ejecuta esa propuesta: bloquea el restaurante, vuelve a comprobar el aforo y guarda la reserva y el resultado en la misma transacción. Un reintento devuelve el mismo resultado sin crear otra reserva.",
+        },
+        {
+          nombre: "Agenda",
+          texto:
+            "La reserva llega al panel por Realtime. El panel no se fía del contenido del evento: vuelve a pedir el día, así que tampoco se pierde nada si la conexión se cortó un momento.",
+        },
+      ],
+    },
+    capas: {
+      intro:
+        "Astro con React y TypeScript estricto para el panel y la API, PostgreSQL en Supabase con RLS para los datos y las reglas, y Retell para la voz. Las reglas de negocio viven en la base de datos: el agente y el panel usan el mismo motor.",
+      filas: [
+        {
+          nombre: "Base de datos",
+          donde: "supabase/migrations · seed.sql",
+          texto:
+            "El esquema, el RLS por restaurante, el motor de disponibilidad y las operaciones, en PL/pgSQL. Los datos de la demo son ficticios y se regeneran en cada reconstrucción.",
+        },
+        {
+          nombre: "Voz",
+          donde: "pages/api/voice · server/retell · voice/",
+          texto:
+            "Las diez herramientas firmadas y los contratos Zod de los que sale la definición para Retell, además del prompt del agente.",
+        },
+        {
+          nombre: "Panel",
+          donde: "pages/dashboard · components",
+          texto:
+            "Agenda en directo, reservas manuales, bloqueos, pendientes, llamadas y configuración, con sesión en el servidor y cookies HttpOnly.",
+        },
+        {
+          nombre: "Operación",
+          donde: "pages/api/webhooks · pages/api/cron",
+          texto:
+            "Los avisos de inicio, fin y análisis de cada llamada, y una tarea diaria que anonimiza los datos de clientes a los 30 días.",
+        },
+        {
+          nombre: "Pruebas",
+          donde: "supabase/tests · tests/",
+          texto:
+            "pgTAP para la base de datos, integración HTTP con una firma de prueba y Playwright en Chromium contra la API y la base reales.",
+        },
+      ],
+    },
+    decisiones: [
+      {
+        titulo: "El modelo nunca decide a qué restaurante toca",
+        decision:
+          "Ni el restaurante, ni el empleado, ni la llamada salen de los argumentos del LLM. Se resuelven en el servidor a partir de la integración firmada (agente y número de destino), y el vínculo entre llamada e integración se guarda, para que el mismo identificador no se pueda reaprovechar en otro restaurante.",
+        notas: [
+          { etiqueta: "Por qué", texto: "Los metadatos y los argumentos los puede inventar el modelo; la firma del proveedor, no." },
+        ],
+      },
+      {
+        titulo: "Un único motor de disponibilidad, en PostgreSQL",
+        decision:
+          "check_availability, en PL/pgSQL, responde a la consulta del agente, a la reserva manual y a la comprobación que se repite dentro de la transacción de escritura.",
+        notas: [
+          { etiqueta: "Por qué", texto: "Las reglas no se duplican en TypeScript, y la consulta y la escritura no pueden decir cosas distintas." },
+        ],
+      },
+      {
+        titulo: "Preparar y ejecutar, en dos pasos",
+        decision:
+          "Primero se prepara una operación, con el resumen que se lee al cliente; después se ejecuta por su identificador. La ejecución bloquea el restaurante, vuelve a comprobar y guarda la reserva y el resultado juntos.",
+        notas: [
+          { etiqueta: "Por qué", texto: "Impide vender dos veces las últimas plazas y los duplicados por reintentos, y si se pierde la respuesta se consulta el resultado sin repetir la escritura." },
+          { etiqueta: "Detalle", texto: "Si el personal edita la reserva entre el resumen y la ejecución, la operación da VERSION_CONFLICT y no cambia nada." },
+        ],
+      },
+      {
+        titulo: "La agenda vuelve a consultar en vez de fiarse del evento",
+        decision:
+          "Realtime publica solo altas y cambios de las reservas de cada restaurante, y ante cada evento, reconexión o vuelta al foco el panel vuelve a pedir el día. Cancelar es un cambio de estado, no un borrado.",
+        notas: [
+          { etiqueta: "Por qué", texto: "Los borrados de Realtime no pasan por RLS, y una nueva consulta recupera lo que se perdiera durante una desconexión." },
+        ],
+      },
+      {
+        titulo: "Sin reservas por teléfono con el servicio empezado",
+        decision:
+          "Desde la apertura de la comida o de la cena, el asistente no reserva ni mueve reservas a ese turno y propone horas de uno posterior. El personal no tiene esa restricción.",
+        notas: [
+          { etiqueta: "Por qué", texto: "En plena sala el restaurante no puede absorber reservas de última hora por teléfono; las de quien llega al local las sigue apuntando el personal." },
+        ],
+      },
+    ],
+    calidad: {
+      medido: "Medido en local, sobre una base reconstruida, entre el 25/10 y el 05/11/2026.",
+      filas: [
+        { que: "Base de datos", cifra: "499 pruebas pgTAP en 15 archivos", como: "supabase test db" },
+        { que: "Integración HTTP", cifra: "Auth 14, reservas 18, voz 45", como: "npm run test:auth · test:reservations · test:voice" },
+        { que: "Navegador", cifra: "Agenda 13, manual 14, bloqueos 8, información 4, retención 4", como: "Playwright con Chromium" },
+        { que: "Recorrido completo", cifra: "23/23 pasos de la especificación", como: "llamadas simuladas por HTTP firmado" },
+        { que: "Argumentos malformados", cifra: "34/34, sin ningún error 5xx", como: "las diez herramientas" },
+        { que: "Latencia de las herramientas", cifra: "p50 24 ms · p95 169 ms (235 llamadas)", como: "registro voice_tool, en local" },
+        { que: "Tipos y build", cifra: "0 errores", como: "npm run verify" },
+      ],
+      nota: "Las pruebas de la base de datos cubren el aforo exacto y una persona de más, los solapes, la medianoche y los cambios de hora, los permisos de cada rol, el aislamiento entre restaurantes y que todo se deshaga si falla el guardado. Las de integración crean y borran sus propios restaurantes y usan una firma de prueba: no tocan Retell ni un teléfono.",
+    },
+    limites: [
+      "Falta conectarlo a un número de teléfono: sin él no se ha hecho la llamada telefónica completa, que es lo que cierra la primera fase.",
+      "La conversación solo se ha probado en llamadas web de prueba desde Retell; faltan medir latencias y ajustar las interrupciones en llamadas reales.",
+      "No está desplegado: falta el proyecto de Supabase en la nube y decidir dónde se aloja.",
+      "La información del restaurante de demostración es ficticia; hay que cambiarla por la del restaurante antes de usarlo.",
+    ],
+    pruebalo: {
+      titulo: "Cómo se verifica",
+      comandos: `supabase db reset --local --yes && npm run staff:create:local
+supabase test db && supabase db advisors --local --fail-on warn
+npm run verify
+npm run test:reservations && npm run test:voice && npm run test:agenda`,
+      nota: "La verificación completa en local, con Supabase arrancado. El repositorio es privado: lo enseño en una llamada.",
+    },
+    enlaces: [],
   },
 
   agenteval: {

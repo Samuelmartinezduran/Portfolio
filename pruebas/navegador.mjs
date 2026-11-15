@@ -238,12 +238,13 @@ comprobar("la terminal termina y oculta «Saltar animación»", terminalAcabada 
 // siguiente proyecto funciona.
 const enlacesProyecto = await pagina.$$eval(".proyecto__mas", (as) => as.map((a) => a.getAttribute("href")));
 comprobar(
-  "la portada enlaza la página de Deep Prep y la de agenteval",
-  enlacesProyecto.join(",") === "/proyectos/deep-prep/,/proyectos/agenteval/",
+  "la portada enlaza la página de cada proyecto",
+  enlacesProyecto.join(",") === "/proyectos/deep-prep/,/proyectos/asistente-reservas/,/proyectos/agenteval/",
   enlacesProyecto.join(","),
 );
 for (const [id, nombre] of [
   ["deep-prep", "Deep Prep"],
+  ["asistente-reservas", "Asistente telefónico de reservas"],
   ["agenteval", "agenteval"],
 ]) {
   await pagina.goto(`${URL_BASE}proyectos/${id}/`, { waitUntil: "networkidle0" });
@@ -261,11 +262,11 @@ for (const [id, nombre] of [
 }
 await pagina.goto(`${URL_BASE}proyectos/deep-prep/`, { waitUntil: "networkidle0" });
 await Promise.all([pagina.waitForNavigation({ waitUntil: "networkidle0" }), pagina.click(".siguiente__proyecto")]);
-comprobar("«siguiente proyecto» lleva de Deep Prep a agenteval", pagina.url().endsWith("/proyectos/agenteval/"), pagina.url());
+comprobar("«siguiente proyecto» lleva de Deep Prep al asistente", pagina.url().endsWith("/proyectos/asistente-reservas/"), pagina.url());
 const sitemap = await (await fetch(`${URL_BASE}sitemap.xml`)).text();
 comprobar(
   "el sitemap incluye las páginas de proyecto",
-  sitemap.includes("/proyectos/deep-prep/") && sitemap.includes("/proyectos/agenteval/"),
+  ["deep-prep", "asistente-reservas", "agenteval"].every((id) => sitemap.includes(`/proyectos/${id}/`)),
 );
 
 comprobar("sin errores en la consola", errores.length === 0, errores.join(" | "));
