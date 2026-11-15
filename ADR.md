@@ -238,3 +238,8 @@
 - **Decision:** La regla de `vercel.json` de un día de caché pasa de `/proyectos/(.*)` a `/proyectos/(.*)\.(mp4|webp)`. Matiza «Caché».
 - **Reason:** Las páginas de proyecto viven ahora en `/proyectos/<id>/`. Con la regla anterior, su HTML habría quedado guardado un día en el navegador y un cambio no se vería hasta el día siguiente.
 - **Source:** Agent assumption
+
+## Deep Prep 2.1.0
+- **Decision:** La web y el CV pasan a la versión 2.1.0 de Deep Prep (main, 74a1439, publicada el 15/11/2026): 281 pruebas (59 de la interfaz) y 76,9 % de cobertura, medidas ejecutándolas ese día («Ran 281 tests in 17.131s»), y Qt Quick (PySide6) en lugar del panel web. La página del proyecto cambia sus cifras, la introducción, las capas, la calidad y los límites (Arena viene apagado), y gana la decisión «De una página web en WebView2 a Qt Quick». Debajo de la introducción va la captura real de Revisiones de la 2.1 (`docs/img/revision.png` del repo, en WebP); para eso la plantilla acepta una `captura` opcional, la misma que tenía la rama `pagina-asistente`. El vídeo sigue siendo el de la 2.0 y su pie lo dice. `og.png` se rehace con las cifras nuevas desde `docs/og.html`, que ahora queda en el repo.
+- **Reason:** La portada decía 208 pruebas y «panel web» de una versión que ya no es la última. No hay grabación de la 2.1, así que se enseña una captura real de ella y no se inventa un vídeo.
+- **Source:** Agent assumption. Cifras de `py -X utf8 -m unittest discover -s tests -t .` y `coverage report` en deep-prep; los datos técnicos, del README y de `docs/ARQUITECTURA.md` de la 2.1.0.

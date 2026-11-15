@@ -2,7 +2,7 @@
 // Las cifras salen de los repositorios de cada proyecto; ver la nota de cada una.
 
 /** Fecha de la última revisión del contenido (ISO). Se muestra en el pie, en el sitemap y en los datos estructurados. */
-export const actualizada = "2026-11-13";
+export const actualizada = "2026-11-15";
 
 export const persona = {
   nombre: "Samuel Martínez Durán",
@@ -21,7 +21,7 @@ export const persona = {
 // Bloque «sobre mí»: un párrafo que se entiende solo (unas 115 palabras), pensado para que buscadores y
 // asistentes de IA puedan citarlo tal cual. Escrito en tercera persona, como un README.
 export const sobreMi =
-  "Samuel Martínez Durán es desarrollador web en Vigo (Galicia, España) y trabaja con Python y TypeScript. Desde septiembre de 2026 hace webs corporativas y landings de campaña en Asomados, una agencia de marketing, para clientes como Vithas e IGMontes. Por su cuenta ha construido tres proyectos completos, con su código y sus pruebas: Deep Prep, una aplicación de escritorio para League of Legends publicada con instalador y actualizador (208 pruebas automatizadas y un 73,8 % de cobertura); un asistente telefónico con IA que gestiona las reservas de un restaurante (499 pruebas de base de datos), y agenteval, un framework open source para evaluar agentes LLM que usan herramientas. Habla español, gallego e inglés avanzado.";
+  "Samuel Martínez Durán es desarrollador web en Vigo (Galicia, España) y trabaja con Python y TypeScript. Desde septiembre de 2026 hace webs corporativas y landings de campaña en Asomados, una agencia de marketing, para clientes como Vithas e IGMontes. Por su cuenta ha construido tres proyectos completos, con su código y sus pruebas: Deep Prep, una aplicación de escritorio para League of Legends publicada con instalador y actualizador (281 pruebas automatizadas y un 76,9 % de cobertura); un asistente telefónico con IA que gestiona las reservas de un restaurante (499 pruebas de base de datos), y agenteval, un framework open source para evaluar agentes LLM que usan herramientas. Habla español, gallego e inglés avanzado.";
 
 export const datosPersonales = [
   { clave: "ubicación", valor: "Vigo, Galicia (España) · presencial, híbrido o remoto" },
@@ -79,14 +79,14 @@ export const proyectos: Proyecto[] = [
     resumen:
       "Compañero para League of Legends: estudia al rival antes de la partida, muestra un overlay durante ella y, al terminar, prepara una revisión con la grabación y un clip de cada muerte.",
     detalle: [
-      "Publicada con instalador y actualizador automático, y con usuarios desde la versión 1.0. La 2.0 migra los datos y trae una versión puente para que las 1.0 se actualicen solas.",
+      "Publicada con instalador y actualizador automático, y con usuarios desde la versión 1.0. La 2.0 trajo una versión puente para que las 1.0 se actualizaran solas; la 2.1 cambia el panel web por una interfaz nativa con Qt Quick y adapta el panel a tu posición y al modo de juego.",
       "Cumple las normas de Riot para aplicaciones de terceros: el filtro que decide qué se puede mostrar en cada momento está en el motor, no en la interfaz.",
     ],
-    stack: ["Python", "SQLite", "API de Riot", "ffmpeg", "GitHub Actions"],
-    // Medido en main (b062a92, versión 2.0.0) el 08/11/2026: 208 pruebas, 73,8 % de cobertura.
+    stack: ["Python", "Qt Quick (PySide6)", "SQLite", "API de Riot", "ffmpeg", "GitHub Actions"],
+    // Medido en main (74a1439, versión 2.1.0) el 15/11/2026: 281 pruebas (59 de la interfaz), 76,9 % de cobertura.
     datos: [
-      { valor: "208", texto: "pruebas" },
-      { valor: "73,8 %", texto: "cobertura" },
+      { valor: "281", texto: "pruebas" },
+      { valor: "76,9 %", texto: "cobertura" },
       { valor: "mypy", texto: "tipado estricto" },
     ],
     enlaces: [{ texto: "Código en GitHub", url: "https://github.com/Samuelmartinezduran/deep-prep" }],
@@ -99,7 +99,7 @@ export const proyectos: Proyecto[] = [
       ancho: 1200,
       alto: 760,
       alt: "Grabación de Deep Prep: selección de campeón con el análisis del rival, la partida y la revisión con las muertes",
-      pie: "Grabación de la app real con los datos de demostración (docs/img/demo.gif del repo).",
+      pie: "Grabación de la versión 2.0, todavía con el panel web, con los datos de demostración (docs/img/demo.gif del repo).",
       duracion: "PT14S",
       fecha: "2026-11-06T22:24:00+01:00",
       // Medido sobre deep-prep-demo.mp4 (13,5 s) con un fotograma cada medio segundo.
@@ -269,7 +269,7 @@ export const temas = ["Python", "TypeScript", "Desarrollo web", "Agentes de IA",
 
 // Salidas reales de las pruebas de cada proyecto, para la terminal de la portada. Las carpetas usan el
 // identificador de cada proyecto en la web (el del asistente es privado y en disco se llama de otra forma).
-// - Deep Prep: main en b062a92 (versión 2.0.0), ejecutado el 08/11/2026.
+// - Deep Prep: main en 74a1439 (versión 2.1.0), ejecutado el 15/11/2026.
 // - Asistente: `supabase test db` según su TASKS.md del 05/11/2026 (15 archivos, 499 pruebas).
 // - agenteval: suite de ejemplo con el juez heurístico (sin clave de API), ejecutada el 08/11/2026 en b2cd22a.
 //   El 87 del dashboard es otra ejecución, con el juez LLM.
@@ -278,7 +278,7 @@ export const sesionTerminal: { comando: string; salida: Salida }[] = [
   { comando: "whoami", salida: { lineas: ["Samuel Martínez Durán · desarrollador web · Vigo"] } },
   {
     comando: "cd ~/deep-prep && python -m unittest discover -s tests -t .",
-    salida: { lineas: ["Ran 208 tests in 6.763s", "", "OK"] },
+    salida: { lineas: ["Ran 281 tests in 17.131s", "", "OK"] },
   },
   {
     comando: "cd ~/asistente-reservas && supabase test db",
@@ -305,4 +305,4 @@ export const sesionTerminal: { comando: string; salida: Salida }[] = [
 ];
 
 /** Resumen de la barra de estado: coincide con las salidas de la terminal. */
-export const estado = ["208 pruebas", "499 pruebas", "3/3 casos"];
+export const estado = ["281 pruebas", "499 pruebas", "3/3 casos"];

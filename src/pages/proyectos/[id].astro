@@ -155,6 +155,23 @@ const consola = pagina.pruebalo.comandos
         <div class="seccion__cuerpo">
           {pagina.intro.map((t, i) => <p class={i === 0 ? "entrada" : undefined}>{t}</p>)}
           {
+            pagina.captura && (
+              <figure class="captura">
+                <a href={pagina.captura.src}>
+                  <img
+                    src={pagina.captura.src}
+                    width={pagina.captura.ancho}
+                    height={pagina.captura.alto}
+                    alt={pagina.captura.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+                <figcaption class="mono comentario">// {pagina.captura.pie}</figcaption>
+              </figure>
+            )
+          }
+          {
             pagina.ejemplos?.map((e) => (
               <figure class="codigo">
                 <figcaption class="mono">{e.etiqueta}</figcaption>
@@ -455,6 +472,25 @@ const consola = pagina.pruebalo.comandos
       top: 2rem;
       align-self: start;
     }
+  }
+
+  /* Captura real del proyecto: se abre a tamaño completo, que en el móvil se lee mal */
+  .captura a {
+    display: block;
+    cursor: zoom-in;
+  }
+
+  .captura img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--borde-oscuro);
+    border-radius: 2px;
+  }
+
+  .captura figcaption {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
   }
 
   /* Código del contrato y consola de «Pruébalo» */

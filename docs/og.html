@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<!-- Fuente de public/og.png (1200 × 630). Para rehacerla, abrir este archivo con Edge o Chrome a 1200 × 630 y
+     capturar la página entera; las cifras tienen que ser las de src/data/perfil.ts (salida y estado). -->
+<style>
+  @font-face {
+    font-family: "Inter Variable";
+    src: url("../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2");
+    font-weight: 100 900;
+  }
+  @font-face {
+    font-family: "Geist Mono";
+    src: url("../node_modules/@fontsource/geist-mono/files/geist-mono-latin-400-normal.woff2") format("woff2");
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #0b0d11; }
+  body { position: relative; color: #f8fafc; font-family: "Geist Mono", monospace; }
+  .barra { position: absolute; left: 0; top: 0; width: 1200px; height: 60px; border-bottom: 1px solid #2c303a; }
+  .punto { position: absolute; top: 24px; width: 12px; height: 12px; border-radius: 50%; background: #2c303a; }
+  .ruta-ventana { position: absolute; left: 131px; top: 0; line-height: 60px; font-size: 18px; color: #a3a9b6; }
+  .terminal { position: absolute; left: 64px; top: 104px; font-size: 22px; line-height: 36px; white-space: pre; }
+  .prompt { color: #4ade80; }
+  .ruta { color: #8f9fff; }
+  .dolar, .salida { color: #a3a9b6; }
+  .bien { color: #4ade80; }
+  h1 { position: absolute; left: 64px; top: 460px; font-family: "Inter Variable", sans-serif; font-weight: 600; font-size: 83.5px; line-height: 1; letter-spacing: -0.035em; color: #f8fafc; white-space: nowrap; }
+  h1 span { color: #ff5f1f; }
+  .estado { position: absolute; left: 0; top: 587px; width: 1200px; height: 43px; background: #ff5f1f; color: #111318; font-size: 17px; line-height: 43px; padding: 0 40px; display: flex; gap: 28px; white-space: pre; }
+  .estado .web { margin-left: auto; }
+</style>
+</head>
+<body>
+  <div class="barra">
+    <i class="punto" style="left: 40px; background: #ff5f1f"></i>
+    <i class="punto" style="left: 63px"></i>
+    <i class="punto" style="left: 86px"></i>
+    <span class="ruta-ventana">samuel@vigo: ~/portfolio</span>
+  </div>
+  <div class="terminal"><span class="prompt">samuel@vigo</span><span class="ruta">~</span><span class="dolar">$</span> python -m unittest discover -s tests -t .
+<span class="salida">Ran 281 tests in 17.131s</span>
+<span class="bien">OK</span></div>
+  <h1>Samuel Martínez Durán<span>.</span></h1>
+  <div class="estado"><span>⎇ main</span><span>✓ 281 pruebas</span><span>✓ 499 pruebas</span><span>✓ 3/3 casos</span><span class="web">samuelmartinez.dev</span></div>
+</body>
+</html>

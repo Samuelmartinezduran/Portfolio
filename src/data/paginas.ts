@@ -1,5 +1,5 @@
 // Páginas de proyecto (/proyectos/<id>/). Todo sale de los repositorios: Deep Prep de su README y de
-// docs/ARQUITECTURA.md (main, b062a92, versión 2.0.0); agenteval de su README, ADR.md, el código de
+// docs/ARQUITECTURA.md (main, 74a1439, versión 2.1.0); agenteval de su README, ADR.md, el código de
 // packages/core y la CI (main, b2cd22a, versión 0.1.0). Si cambia una cifra en el repo, cambiarla aquí.
 // El asistente telefónico no tiene página todavía: su código está en el Mac.
 
@@ -22,6 +22,8 @@ export type PaginaProyecto = {
   tabla?: { titulo: string; columnas: string[]; filas: string[][] };
   /** Bloques de código opcionales bajo la introducción (por ejemplo, un contrato). */
   ejemplos?: { etiqueta: string; codigo: string }[];
+  /** Captura real opcional bajo la introducción. */
+  captura?: { src: string; ancho: number; alto: number; alt: string; pie: string };
   flujo: { titulo: string; pasos: Paso[] };
   capas: { intro: string; filas: { nombre: string; donde: string; texto: string }[] };
   decisiones: Decision[];
@@ -35,17 +37,24 @@ export const paginas: Record<string, PaginaProyecto> = {
   "deep-prep": {
     titulo: "Deep Prep · app de escritorio para League of Legends",
     descripcion:
-      "Deep Prep prepara cada partida de League of Legends con datos de Master+ y la revisa sola al acabar. Python, SQLite y FFmpeg, con 208 pruebas y código abierto.",
+      "Deep Prep prepara cada partida de League of Legends con datos de Master+ y la revisa sola al acabar. Python, Qt Quick y SQLite, con 281 pruebas y código abierto.",
     cifras: [
-      { valor: "208", texto: "pruebas de Python" },
-      { valor: "95", texto: "pruebas del panel" },
-      { valor: "73,8 %", texto: "cobertura" },
+      { valor: "281", texto: "pruebas de Python" },
+      { valor: "59", texto: "de ellas, de la interfaz" },
+      { valor: "76,9 %", texto: "cobertura" },
       { valor: "1", texto: "dependencia de ejecución" },
     ],
     intro: [
       "Deep Prep es una app de escritorio para Windows que acompaña cada partida de League of Legends en tres momentos: la prepara con datos de partidas de Master o más, enseña un panel encima del juego mientras juegas y, al acabar, la revisa sola, con un clip de cada muerte.",
-      "Empezó como Porofesor, una herramienta para mí y unos amigos que reciben las versiones solas. La 2.0 la rehíce como proyecto de código abierto: paquete nuevo, pruebas de caracterización antes de reordenar nada, tipos estrictos, integración continua, un modo demo y una versión puente para que las copias 1.0 se pasaran solas.",
+      "Empezó como Porofesor, una herramienta para mí y unos amigos que reciben las versiones solas. La 2.0 la rehíce como proyecto de código abierto: paquete nuevo, pruebas de caracterización antes de reordenar nada, tipos estrictos, integración continua, un modo demo y una versión puente para que las copias 1.0 se pasaran solas. La 2.1 cambió el panel web por una interfaz nativa con Qt Quick y adapta el panel a tu posición y al modo de juego.",
     ],
+    captura: {
+      src: "/proyectos/deep-prep-revision-2-1.webp",
+      ancho: 1200,
+      alto: 1056,
+      alt: "Pantalla de Revisiones de Deep Prep 2.1: tendencias de la temporada, el mapa de dónde mueres con las muertes de la partida elegida en violeta y la revisión de una derrota con la diferencia de oro minuto a minuto",
+      pie: "Revisiones en la 2.1, con la interfaz nativa y los datos de la demo (docs/img/revision.png del repo). La grabación de arriba es de la 2.0, todavía con el panel web.",
+    },
     tabla: {
       titulo: "Qué enseña en cada momento",
       columnas: ["Momento", "De dónde salen los datos", "Qué se ve"],
@@ -58,7 +67,7 @@ export const paginas: Record<string, PaginaProyecto> = {
         [
           "Pantalla de carga",
           "API de Riot: spectator, league, mastery y match",
-          "Los diez jugadores (rango, maestría, forma, premades) y el perfil del jungla rival, con su mapa minuto a minuto del 2:00 al 6:00",
+          "Los diez jugadores (rango, maestría, forma, premades) y el perfil de tu rival: el del jungla, con su mapa minuto a minuto del 2:00 al 6:00, o el de tu rival de línea si juegas otra posición",
         ],
         [
           "En partida",
@@ -68,7 +77,7 @@ export const paginas: Record<string, PaginaProyecto> = {
         [
           "Después",
           "match-v5, cuando Riot publica la partida, y la grabación",
-          "Cada muerte y lo que costó, los objetivos, los LP ganados o perdidos y un clip de cada muerte",
+          "Cada muerte y lo que costó, los objetivos, la diferencia de oro minuto a minuto, los LP ganados o perdidos y un clip de cada muerte",
         ],
       ],
     },
@@ -78,12 +87,12 @@ export const paginas: Record<string, PaginaProyecto> = {
         {
           nombre: "Selección",
           texto:
-            "El vigía mira la fase del cliente cada 2,5 s. En la selección calcula tu duelo y tu pool con las bases locales, sin gastar cuota de Riot, y deja la cuota de fondo a cero para la partida.",
+            "El vigía mira la fase del cliente cada 2,5 s. Decide tu posición (la que elijas a mano, la que te toque o tu rol principal), calcula tu duelo y tu pool con las bases locales, sin gastar cuota de Riot, y deja la cuota de fondo a cero para la partida.",
         },
         {
           nombre: "Carga",
           texto:
-            "Con la caché vacía, una partida cuesta unas 270 peticiones y la clave personal da 100 cada 2 minutos. Una cola de 6 hilos con prioridades hace que lo más útil (ligas, maestrías y las primeras partidas del jungla rival) llegue en la primera ventana de cuota.",
+            "Con la caché vacía, una partida cuesta unas 270 peticiones y la clave personal da 100 cada 2 minutos. Una cola de 6 hilos con prioridades hace que lo más útil (ligas, maestrías y las primeras partidas de tu rival) llegue en la primera ventana de cuota.",
         },
         {
           nombre: "Empieza",
@@ -98,13 +107,13 @@ export const paginas: Record<string, PaginaProyecto> = {
         {
           nombre: "Después",
           texto:
-            "Cuando Riot publica la partida (hasta 20 intentos, uno por minuto), la revisa, guarda los LP y recorta un clip por muerte, 20 s antes y 4 s después, a prioridad mínima.",
+            "Cuando Riot publica la partida (hasta 20 intentos, uno por minuto), la revisa, guarda los LP y recorta un clip por muerte, 20 s antes y 4 s después, a prioridad mínima. Fuera de la Grieta no se graba ni se revisa.",
         },
       ],
     },
     capas: {
       intro:
-        "Python 3.14 con una sola dependencia de ejecución, pywebview. Lo demás es biblioteca estándar (http.server, sqlite3, urllib, ctypes) y un ffmpeg dentro del paquete. 34 módulos de Python, unas 7 900 líneas, y 19 módulos ES de JavaScript, unas 1 300, sin bundler ni npm. El código va por capas, de más estable a más pegado a Windows.",
+        "Python 3.14 con una sola dependencia de ejecución, PySide6-Essentials (Qt Quick). Lo demás es biblioteca estándar (http.server, sqlite3, urllib, ctypes) y un ffmpeg dentro del paquete. 40 módulos de Python, unas 10 700 líneas, y 57 archivos de QML, unas 7 000. El código va por capas, de más estable a más pegado a Windows.",
       filas: [
         {
           nombre: "Composición",
@@ -116,7 +125,7 @@ export const paginas: Record<string, PaginaProyecto> = {
           nombre: "Lógica pura",
           donde: "analisis.py · duelos.py · revision.py",
           texto:
-            "El perfil del jungla, los duelos de Master+ y la revisión, sin red ni disco. Es donde está el valor y donde más se prueba: entre el 93 y el 97 % de cobertura.",
+            "Los perfiles del jungla y del rival de línea, los duelos de Master+ y la revisión, sin red ni disco. Es donde está el valor y donde más se prueba: entre el 93 y el 97 % de cobertura.",
         },
         {
           nombre: "Datos",
@@ -131,9 +140,9 @@ export const paginas: Record<string, PaginaProyecto> = {
         },
         {
           nombre: "Interfaz",
-          donde: "servidor.py · web/",
+          donde: "nativa/ · qml/ · servidor.py",
           texto:
-            "Un servidor HTTP en 127.0.0.1 y el panel en HTML, CSS y módulos ES, en dos ventanas de WebView2: el panel y el overlay.",
+            "Dos ventanas de Qt Quick, la principal y el overlay. Lo que se escribe en pantalla se prepara en Python (vistas.py, probado sin Qt) y el QML solo lo coloca; servidor.py queda como canal de control.",
         },
       ],
     },
@@ -148,9 +157,19 @@ export const paginas: Record<string, PaginaProyecto> = {
         ],
       },
       {
+        titulo: "De una página web en WebView2 a Qt Quick",
+        decision:
+          "Hasta la 2.0 la interfaz era una página web en dos ventanas de WebView2. En la 2.1 pasó a Qt Quick: las vistas se preparan en Python y el QML solo coloca, y un puente lee el estado cada segundo y solo avisa a la interfaz si ha cambiado.",
+        notas: [
+          { etiqueta: "Por qué", texto: "Era un navegador entero para un panel: unos 283 MB de memoria frente a unos 125 con Qt, una barra de ventana que no era la de la app y una interfaz que se notaba que era una web." },
+          { etiqueta: "Descartado", texto: "Rehacerla en Rust: con Tauri seguiría siendo WebView2, y con una biblioteca nativa habría que reescribir también el motor, que es la parte probada." },
+          { etiqueta: "Coste", texto: "18 MB más de descarga y una tecnología más que mantener (QML)." },
+        ],
+      },
+      {
         titulo: "Una ventana aparte, no un overlay dentro del juego",
         decision:
-          "El overlay es una ventana sin bordes con WS_EX_LAYERED, WS_EX_TRANSPARENT y WS_EX_NOACTIVATE: siempre encima, sin coger el foco y dejando pasar los clics. El atajo se lee con GetAsyncKeyState cada 30 ms.",
+          "El overlay es una ventana de Qt sin marco, siempre encima, sin coger el foco y transparente al ratón. El atajo se lee con GetAsyncKeyState cada 30 ms.",
         notas: [
           { etiqueta: "Descartado", texto: "Dibujar dentro del juego enganchándose a DirectX: exige inyectarse en el proceso, justo lo que no se puede hacer." },
           { etiqueta: "Coste", texto: "Solo funciona con el juego en ventana sin bordes; la app lee game.cfg y avisa." },
@@ -185,24 +204,24 @@ export const paginas: Record<string, PaginaProyecto> = {
       },
     ],
     calidad: {
-      medido: "Medido sobre main, versión 2.0.0.",
+      medido: "Medido sobre main, versión 2.1.0.",
       filas: [
-        { que: "Pruebas de Python", cifra: "208 en 15 archivos, 7 s", como: "py -X utf8 -m unittest discover -s tests -t ." },
+        { que: "Pruebas de Python", cifra: "281 en 16 archivos", como: "py -X utf8 -m unittest discover -s tests -t ." },
         { que: "De caracterización", cifra: "12, contra 12 JSON esperados", como: "tests/test_caracterizacion.py" },
-        { que: "Pruebas del panel", cifra: "95 en 9 archivos", como: "node --test" },
-        { que: "Cobertura", cifra: "73,8 %, con un mínimo del 70 %", como: "coverage run … && coverage report" },
-        { que: "Tipos", cifra: "mypy estricto, 0 errores en 50 archivos", como: "mypy" },
+        { que: "De la interfaz", cifra: "59, las de Qt sin pantalla", como: "tests/test_nativa.py" },
+        { que: "Cobertura", cifra: "76,9 %, con un mínimo del 70 %", como: "coverage run … && coverage report" },
+        { que: "Tipos", cifra: "mypy estricto, 0 errores en 57 archivos", como: "mypy" },
         { que: "Lint y formato", cifra: "ruff, 0 avisos", como: "ruff check . && ruff format --check ." },
-        { que: "CI", cifra: "Windows con Python 3.14 y Ubuntu con Node 24", como: "GitHub Actions" },
+        { que: "CI", cifra: "Windows con Python 3.14", como: "GitHub Actions" },
       ],
-      nota: "Antes de reordenar el código se fijó con pruebas de caracterización lo que salía de las funciones grandes; con esa red se partió la clase principal y ninguna función pasa de 50 líneas. La lógica pura supera el 93 % de cobertura; lo que habla con Windows o con la red se queda muy por debajo (ventanas 0 %, cliente del LoL 18,5 %) y se prueba a mano con el cliente real. Es el hueco principal.",
+      nota: "Antes de reordenar el código se fijó con pruebas de caracterización lo que salía de las funciones grandes; con esa red se partió la clase principal y ninguna función pasa de 50 líneas. Las pruebas de la interfaz cargan entera la de Qt sin pantalla, con todas las escenas de la demo, y fallan si Qt da un solo aviso. La lógica pura supera el 93 % de cobertura; lo que habla con Windows o con la red se queda por debajo (cliente del LoL 18,5 %, grabación 36,9 %) y se prueba a mano con el cliente real. Es el hueco principal.",
     },
     limites: [
       "Las actualizaciones no están firmadas: la huella SHA-256 detecta una descarga rota, no una versión maliciosa.",
       "La instalación copia encima de la versión vieja; si falla a medias, puede quedar una mezcla de archivos.",
       "Depende de APIs locales de Riot sin contrato (el cliente, game.cfg y la ventana del juego): un cambio las rompe sin que lo vea ninguna prueba.",
       "Poca cobertura en la capa de Windows y red, y sin una prueba de extremo a extremo con el cliente real.",
-      "El overlay solo funciona con el juego en ventana sin bordes.",
+      "El overlay solo funciona con el juego en ventana sin bordes, y Arena está sin probar: viene apagado en Ajustes.",
     ],
     pruebalo: {
       comandos: `git clone https://github.com/Samuelmartinezduran/deep-prep.git

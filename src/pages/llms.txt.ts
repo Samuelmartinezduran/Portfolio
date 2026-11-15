@@ -55,7 +55,7 @@ export const GET: APIRoute = ({ site }) => {
     "## Notas",
     "",
     `- Actualizado el ${actualizada}.`,
-    "- Las cifras de pruebas salen de ejecuciones reales: Deep Prep en su versión 2.0.0 publicada; el asistente, de su suite de base de datos; agenteval, de su suite de ejemplo.",
+    "- Las cifras de pruebas salen de ejecuciones reales: Deep Prep en su versión 2.1.0 publicada; el asistente, de su suite de base de datos; agenteval, de su suite de ejemplo.",
     "",
   ];
   return new Response(lineas.join("\n"), {

@@ -37,7 +37,7 @@ npm run prueba:navegador   # 33 pruebas de comportamiento en Edge o Chrome (ver 
 | `llms.txt` y `sitemap.xml` | `src/pages/llms.txt.ts` y `src/pages/sitemap.xml.ts`, generados con los mismos datos |
 | Vídeo de Deep Prep y capturas | `public/proyectos/` (MP4 y WebP; el vídeo sale de `docs/img/demo.gif` de deep-prep) |
 | CV en PDF | `public/cv/CV_Samuel_Martinez_Duran.pdf`, copia del de `~/Documents/CV` en el Mac |
-| Imagen para redes | `public/og.png` (1200 × 630, estilo terminal) |
+| Imagen para redes | `public/og.png` (1200 × 630, estilo terminal), hecha con `docs/og.html` |
 | Redirecciones de las páginas antiguas y caché | `vercel.json` |
 
 Las fuentes (Inter y Geist Mono) vienen de Fontsource y se sirven desde la propia web.
