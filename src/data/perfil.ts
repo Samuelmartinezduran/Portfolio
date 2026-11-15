@@ -99,7 +99,7 @@ export const proyectos: Proyecto[] = [
       ancho: 1200,
       alto: 760,
       alt: "Grabación de Deep Prep 2.1: selección de campeón con tu duelo, la pantalla de carga con el mapa del jungla rival del 2:00 al 6:00, la partida, el overlay y la revisión",
-      pie: "Versión 2.1 con los datos de demostración, sacada de su interfaz de Qt Quick.",
+      pie: "Versión 2.1 con los datos de demostración, sacada de su interfaz de Qt Quick (también en docs/img/demo.gif del repo).",
       duracion: "PT15S",
       fecha: "2026-11-15T20:20:00+01:00",
       // Del montaje de deep-prep-demo-2-1.mp4 (15,4 s, 20 fotogramas por segundo): segundo en que acaba el fundido
