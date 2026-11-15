@@ -35,7 +35,7 @@ npm run prueba:navegador   # 33 pruebas de comportamiento en Edge o Chrome (ver 
 | Pruebas de navegador | `pruebas/navegador.mjs` |
 | Fuentes, colores y piezas comunes | `src/styles/global.css` (reglas en `DESIGN.md`) |
 | `llms.txt` y `sitemap.xml` | `src/pages/llms.txt.ts` y `src/pages/sitemap.xml.ts`, generados con los mismos datos |
-| Vídeo de Deep Prep y capturas | `public/proyectos/` (MP4 y WebP; el vídeo sale de `docs/img/demo.gif` de deep-prep) |
+| Vídeo de Deep Prep y capturas | `public/proyectos/` (MP4 y WebP; el vídeo de la 2.1 se monta con capturas de su interfaz de Qt, ver ADR) |
 | CV en PDF | `public/cv/CV_Samuel_Martinez_Duran.pdf`, copia del de `~/Documents/CV` en el Mac |
 | Imagen para redes | `public/og.png` (1200 × 630, estilo terminal), hecha con `docs/og.html` |
 | Redirecciones de las páginas antiguas y caché | `vercel.json` |

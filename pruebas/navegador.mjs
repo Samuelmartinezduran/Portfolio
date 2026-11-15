@@ -199,9 +199,14 @@ await new Promise((r) => setTimeout(r, 600));
 const fase = await pagina.$eval("[data-video] video", (v) => {
   v.pause();
   const actual = document.querySelector("[data-capitulos] [aria-current='step']");
-  return { t: v.currentTime, actual: actual?.textContent.trim() };
+  const boton = [...document.querySelectorAll("[data-capitulos] button")].find((x) => x.textContent.trim() === "overlay");
+  return { t: v.currentTime, actual: actual?.textContent.trim(), desde: Number(boton.dataset.desde), hasta: Number(boton.dataset.hasta) };
 });
-comprobar("pulsar una fase salta a su segundo", fase.t >= 7.3 && fase.t < 9.8, `t=${fase.t}`);
+comprobar(
+  "pulsar una fase salta a su segundo",
+  fase.t >= fase.desde && fase.t < fase.hasta,
+  `t=${fase.t} (fase de ${fase.desde} a ${fase.hasta})`,
+);
 comprobar("la fase pulsada queda marcada", fase.actual === "overlay", fase.actual ?? "ninguna");
 
 // 7c. Llamada del asistente: al verla se reproduce entera y la reserva entra en la agenda.

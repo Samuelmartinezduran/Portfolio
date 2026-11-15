@@ -53,7 +53,7 @@ export const paginas: Record<string, PaginaProyecto> = {
       ancho: 1200,
       alto: 1056,
       alt: "Pantalla de Revisiones de Deep Prep 2.1: tendencias de la temporada, el mapa de dónde mueres con las muertes de la partida elegida en violeta y la revisión de una derrota con la diferencia de oro minuto a minuto",
-      pie: "Revisiones en la 2.1, con la interfaz nativa y los datos de la demo (docs/img/revision.png del repo). La grabación de arriba es de la 2.0, todavía con el panel web.",
+      pie: "Revisiones en la 2.1, con la interfaz nativa y los datos de la demo (docs/img/revision.png del repo).",
     },
     tabla: {
       titulo: "Qué enseña en cada momento",
